@@ -1,0 +1,1 @@
+window.base_url = 'BASE_URL/' + Cypress.config('baseUrl').replace(/\//g, "\\/")
