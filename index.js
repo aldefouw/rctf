@@ -52,8 +52,10 @@ function load_support_files(){
     require('./support/index')
 }
 
+//Load REDCap Cypress Test Framework Support Files
 load_support_files()
 
+//This is where we initialize the stuff we need in a basic install
 before(() => {
     rctf_initialize()
 })

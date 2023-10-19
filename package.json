@@ -1,11 +1,8 @@
 {
   "name": "rctf",
   "version": "1.0.0",
-  "description": "These are the supporting files that underpin the REDCap Cypress Test Framework",
-  "main": "index.mjs",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "These are the supporting files that underpin the REDCap Cypress Test Framework.",
+  "main": "index.js",
   "dependencies": {
     "@4tw/cypress-drag-drop": "^2.2.3",
     "@foreachbe/cypress-tinymce": "^1.0.0",
@@ -14,7 +11,9 @@
     "cypress-cucumber-preprocessor": "^4.3.1",
     "cypress-iframe": "1.0.1",
     "sed-lite": "0.8.4",
-    "shelljs": "0.8.5",
+    "shelljs": "0.8.5"
+  },
+  "peerDependencies": {
     "cypress": "^11.2.0"
   },
   "devDependencies": {
@@ -24,6 +23,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs:build": "./node_modules/.bin/documentation build /step_definitions/* -f html --theme node_modules/redcap_cypress_doc_theme/index.js -o docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aldefouw/rctf.git"
   },
   "author": "Adam De Fouw",
   "license": "MIT"
