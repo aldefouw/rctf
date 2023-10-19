@@ -15,7 +15,7 @@ require('./user_interface')
 require('./user_rights')
 require('./visit_urls')
 
-//Base requirements
+// //Base requirements
 require('./base')
 
 console.log('RCTF: Core Commands Loaded')

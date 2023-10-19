@@ -1,5 +1,3 @@
-import compareVersions from "compare-versions";
-
 //#############################################################################
 //# Commands       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z        #
 //#############################################################################
@@ -45,7 +43,7 @@ Cypress.Commands.add('base_db_seed', () => {
 
                     cy.task('populateStructureAndData', {
                         redcap_version: Cypress.env('redcap_version'),
-                        advanced_user_info: compareVersions.compare(Cypress.env('redcap_version'), '10.1.0', '>='),
+                        advanced_user_info: window.compareVersions.compare(Cypress.env('redcap_version'), '10.1.0', '>='),
                         source_location: redcap_source_path
                     }).then((structure_and_data_file_exists) => {
 
