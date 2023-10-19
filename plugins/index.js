@@ -26,14 +26,14 @@ module.exports = (on, config) => {
     on('task', {
 
         currentSnapshotInfo({url, user, pass}){
-            let snapshot_url_path = shell.pwd() + '/test_db/latest_snapshot.info'
+            let snapshot_url_path = shell.pwd() + '/node_modules/rctf/test_db/latest_snapshot.info'
             shell.ShellString(`${url}\n${user}\n${pass}`).to(snapshot_url_path);
             return fs.existsSync(snapshot_url_path)
         },
 
         snapshotExists(){
             //SNAPSHOT PATH
-            var snapshot_file = shell.pwd() + '/test_db/latest_snapshot.sql';
+            var snapshot_file = shell.pwd() + '/node_modules/rctf/test_db/latest_snapshot.sql';
 
             // SEE IF SNAPSHOT EXISTS
             return fs.existsSync(snapshot_file)
@@ -42,7 +42,7 @@ module.exports = (on, config) => {
         populateStructureAndData({redcap_version, advanced_user_info, source_location}) {
 
             // DEFINE OTHER LOCATIONS
-            var test_seeds_location = shell.pwd() + '/test_db';
+            var test_seeds_location = shell.pwd() + '/node_modules/rctf/test_db';
             var seeds_location = test_seeds_location + '/seeds';
 
             var db_prefix_sql = test_seeds_location + '/structure_prefix.sql';
@@ -97,7 +97,7 @@ module.exports = (on, config) => {
                 var db_cmd=`${mysql_name} -h${host} --port=${port} -u${db_user} -p${db_pass}`;
             }
 
-            var sql=`${shell.pwd()}/test_db/${type}.sql`;
+            var sql=`${shell.pwd()}/node_modules/rctf/test_db/${type}.sql`;
             var tmp=`${sql}.tmp`;
 
             //REPLACE ALL INSTANCES OF THE REDCAP_DB_NAME MAGIC CONSTANT
@@ -140,12 +140,12 @@ module.exports = (on, config) => {
         },
 
         createInitialDbSeedLock(){
-            const file = shell.cat("").to(shell.pwd() + '/test_db/initial_db_seed.lock')
+            const file = shell.cat("").to(shell.pwd() + '/node_modules/rctf/test_db/initial_db_seed.lock')
             return fs.existsSync(file)
         },
 
         removeInitialDbSeedLock(){
-            const path = shell.pwd() + '/test_db/initial_db_seed.lock'
+            const path = shell.pwd() + '/node_modules/rctf/test_db/initial_db_seed.lock'
 
             if (fs.existsSync(path)) {
                 shell.rm(path)
@@ -159,7 +159,7 @@ module.exports = (on, config) => {
         },
 
         dbSeedLockExists(){
-            const file = shell.pwd() + '/test_db/initial_db_seed.lock'
+            const file = shell.pwd() + '/node_modules/rctf/test_db/initial_db_seed.lock'
             return fs.existsSync(file)
         },
 

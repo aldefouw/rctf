@@ -14,16 +14,16 @@
     "cypress-cucumber-preprocessor": "^4.3.1",
     "cypress-iframe": "1.0.1",
     "sed-lite": "0.8.4",
-    "shelljs": "0.8.5"
+    "shelljs": "0.8.5",
+    "cypress": "^11.2.0"
   },
   "devDependencies": {
-    "cypress": "^11.2.0",
     "documentation": "git://github.com/documentationjs/documentation#97e9361",
     "redcap_cypress_doc_theme": "git://github.com/aldefouw/redcap_cypress_doc_theme#777b0a0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs:build": "./node_modules/.bin/documentation build cypress/support/step_definitions/* -f html --theme node_modules/redcap_cypress_doc_theme/index.js -o docs"
+    "docs:build": "./node_modules/.bin/documentation build /step_definitions/* -f html --theme node_modules/redcap_cypress_doc_theme/index.js -o docs"
   },
   "author": "Adam De Fouw",
   "license": "MIT"
