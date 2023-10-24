@@ -90,14 +90,17 @@ module.exports = (on, config) => {
             return false
         },
 
-        generateMySQLCommand({mysql_name, host, port, db_name, db_user, db_pass, type, replace, include_db_name}) {
+        generateMySQLCommand({mysql_name, host, port, db_name, db_user, db_pass, type, replace, include_db_name, module = true}) {
             if(include_db_name){
                 var db_cmd=`${mysql_name} -h${host} --port=${port} ${db_name} -u${db_user} -p${db_pass}`;
             } else {
                 var db_cmd=`${mysql_name} -h${host} --port=${port} -u${db_user} -p${db_pass}`;
             }
 
-            var sql=`${shell.pwd()}/node_modules/rctf/test_db/${type}.sql`;
+            var sql = module ?
+                `${shell.pwd()}/node_modules/rctf/test_db/${type}.sql` :
+                `${shell.pwd()}/test_db/${type}.sql`
+
             var tmp=`${sql}.tmp`;
 
             //REPLACE ALL INSTANCES OF THE REDCAP_DB_NAME MAGIC CONSTANT

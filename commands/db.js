@@ -82,7 +82,7 @@ Cypress.Commands.add('base_db_seed', () => {
 
 })
 
-Cypress.Commands.add('mysql_db', (type, replace = '', include_db_name = true) => {
+Cypress.Commands.add('mysql_db', (type, replace = '', include_db_name = true, module = true) => {
 
     const mysql = Cypress.env("mysql")
 
@@ -102,7 +102,8 @@ Cypress.Commands.add('mysql_db', (type, replace = '', include_db_name = true) =>
         db_pass: mysql['db_pass'],
         type: type,
         replace: replace,
-        include_db_name: include_db_name
+        include_db_name: include_db_name,
+        module: module
     }).then((mysql_cli) => {
 
         //Execute the MySQL Command
