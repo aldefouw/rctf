@@ -102,8 +102,7 @@ Cypress.Commands.add('mysql_db', (type, replace = '', include_db_name = true, mo
         db_pass: mysql['db_pass'],
         type: type,
         replace: replace,
-        include_db_name: include_db_name,
-        module: module
+        include_db_name: include_db_name
     }).then((mysql_cli) => {
 
         //Execute the MySQL Command
