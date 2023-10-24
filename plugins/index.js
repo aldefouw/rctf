@@ -90,7 +90,7 @@ module.exports = (on, config) => {
             return false
         },
 
-        generateMySQLCommand({mysql_name, host, port, db_name, db_user, db_pass, type, replace, include_db_name, module = true}) {
+        generateMySQLCommand({mysql_name, host, port, db_name, db_user, db_pass, type, replace, include_db_name, module}) {
             if(include_db_name){
                 var db_cmd=`${mysql_name} -h${host} --port=${port} ${db_name} -u${db_user} -p${db_pass}`;
             } else {
