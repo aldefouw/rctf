@@ -258,3 +258,8 @@ defineParameterType({
     name: 'beforeAfter',
     regexp: /|before|after|/
 })
+
+defineParameterType({
+    name: 'recordIDEvent',
+    regexp: /|record ID|event|/
+})

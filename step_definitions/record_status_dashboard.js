@@ -9,7 +9,7 @@
  * @param {string} record_id - the value of the record_id you want to target
  * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the data instrument specified.
  */
-Given("I click on the bubble for the {string} data collection instrument for record ID {string}", (text, record_id) => {
+Given("I click on the bubble for the {string} data collection instrument for {recordIDEvent} {string}", (text, event_type, record_id) => {
     cy.table_cell_by_column_and_row_label(text, record_id).then(($td) => {
         cy.wrap($td).find('a:visible:first').click()
     })
