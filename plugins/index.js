@@ -90,15 +90,14 @@ module.exports = (on, config) => {
             return false
         },
 
-        generateMySQLCommand({mysql_name, host, port, db_name, db_user, db_pass, type, replace, include_db_name}) {
-            if(include_db_name){
-                var db_cmd=`${mysql_name} -h${host} --port=${port} ${db_name} -u${db_user} -p${db_pass}`;
-            } else {
-                var db_cmd=`${mysql_name} -h${host} --port=${port} -u${db_user} -p${db_pass}`;
-            }
+        generateMySQLCommand({mysql_name, host, port, db_name, db_user, db_pass, type, replace, include_db_name, framework}) {
+            var db_cmd = include_db_name ?
+                `${mysql_name} -h${host} --port=${port} ${db_name} -u${db_user} -p${db_pass}` :
+                `${mysql_name} -h${host} --port=${port} -u${db_user} -p${db_pass}`
 
-            var sql=`${shell.pwd()}/node_modules/rctf/test_db/${type}.sql`;
-            var tmp=`${sql}.tmp`;
+            var rctf_sql = `${shell.pwd()}/node_modules/rctf/test_db/${type}.sql`
+            var sql = framework ? rctf_sql : `${shell.pwd()}/test_db/${type}.sql`
+            var tmp = `${rctf_sql}.tmp`;
 
             //REPLACE ALL INSTANCES OF THE REDCAP_DB_NAME MAGIC CONSTANT
             var replace_db_name = sed_lite(`s/REDCAP_DB_NAME/${db_name}/g`);
