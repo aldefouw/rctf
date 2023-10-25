@@ -268,18 +268,54 @@ Given('I {enter_type} {string} into the input field labeled {string}{baseElement
  * @param {string} label - the label of the field
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
-Given('I enter {string} into the textarea field labeled {string}', (text, label) => {
-    //We locate the label element first.  This isn't always a label which is unfortunate, but this approach seems to work so far.
-    cy.contains(label).then(($label) => {
 
-        cy.wrap($label).parent().find('textarea').then(($textarea) => {
-            //If the textarea has a TinyMCE editor applied to it
-            if($textarea.hasClass('mceEditor')){
-                cy.setTinyMceContent($textarea[0]['id'], text)
-            //All other cases
-            } else {
-                cy.wrap($textarea).type(text)
-            }
+Given ('I {enter_type} {string} into the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
+    let sel = `:contains(${JSON.stringify(label)}):visible`
+    let element = `textarea:visible:first`
+
+    //Either the base element as specified or the default
+    let outer_element = base_element.length > 0 ?
+        cy.top_layer(sel, window.elementChoices[base_element]) :
+        cy.top_layer(sel)
+
+    outer_element.within(() => {
+        let elm = null
+
+        cy.contains(label).should('be.visible').then(($label) => {
+            cy.wrap($label).parent().then(($parent) =>{
+                if($parent.find(element).length){
+
+                    //If the textarea has a TinyMCE editor applied to it
+                    if($parent.find(element).hasClass('mceEditor')){
+                        cy.setTinyMceContent(cy.wrap($parent).find(element)[0]['id'], text)
+
+                        //All other cases
+                    } else {
+                        if(enter_type === "enter"){
+                            cy.wrap($parent).find(element).type(text)
+                        } else if (enter_type === "clear field and enter") {
+                            cy.wrap($parent).find(element).clear().type(text)
+                        }
+                    }
+
+
+                } else if ($parent.parent().find(element).length) {
+
+                    //If the textarea has a TinyMCE editor applied to it
+                    if($parent.parent().find(element).hasClass('mceEditor')){
+                        cy.setTinyMceContent(cy.wrap($parent).parent().find(element)[0]['id'], text)
+
+                        //All other cases
+                    } else {
+                        if(enter_type === "enter"){
+                            cy.wrap($parent).parent().find(element).type(text)
+                        } else if (enter_type === "clear field and enter") {
+                            cy.wrap($parent).parent().find(element).clear().type(text)
+                        }
+                    }
+
+                }
+            })
         })
     })
 })
