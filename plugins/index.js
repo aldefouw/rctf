@@ -139,7 +139,7 @@ module.exports = (on, config) => {
         },
 
         createInitialDbSeedLock(){
-            const file = shell.cat("").to(shell.pwd() + '/node_modules/rctf/test_db/initial_db_seed.lock')
+            const file = shell.ShellString("").to(shell.pwd() + '/node_modules/rctf/test_db/initial_db_seed.lock')
             return fs.existsSync(file)
         },
 
