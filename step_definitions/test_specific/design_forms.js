@@ -1,4 +1,4 @@
-
+import { Given } from "cypress-cucumber-preprocessor/steps";
 ///////////////
 //Instruments//
 ///////////////
@@ -77,37 +77,19 @@
 /**
  * @module DesignForms
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag the instrument named {string} to the position {int}
+ * @example I drag on the instrument named {string} to the position {int}
  * @param {string} instrument - the naame of the instrument being drag-n-dropped
- * @param {int} position - the position (index starting from 1) where the instrument should be placed
+ * @param {int} position - the position (index starting from 0) where the instrument should be placed
  * @description Interactions - Drag and drop the instrument to the int position
  */
- Given("I drag the instrument named {string} to the{ordinal} row", (instrument, position) => {
+ Given("I drag on the instrument named {string} to position {int}", (instrument, position) => {
+
     cy.get('table[id=table-forms_surveys]').find('tr').contains(instrument).parents('tr').then((row) => {
-        cy.get('table[id=table-forms_surveys]').find('tr').eq(window.ordinalChoices[position]).find('td[class=dragHandle]').as('target')
+        cy.get('table[id=table-forms_surveys]').find('tr').eq(position).find('td[class=dragHandle]').as('target')
         cy.wrap(row).find('td[class=dragHandle]').dragTo('@target')
     })
+
 })
-
-/**
- * @module DesignForms
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag the instrument named {string} to the position {int}
- * @param {string} instrument - the naame of the instrument being drag-n-dropped
- * @param {int} position - the position (index starting from 1) where the instrument should be placed
- * @description Interactions - Drag and drop the instrument to the int position
- */
-Given("I (should) see the instrument named {string} in the{ordinal} row", (instrument, position) => {
-    cy.get('table[id=table-forms_surveys]').find('tr').each((row, index) => {
-        if(index === window.ordinalChoices[position]){
-            cy.wrap(row).find('td').then(($td) => {
-                expect($td).to.contain(instrument)
-            })
-        }
-    })
-})
-
-
 
 ///////////
 // Forms //
@@ -204,11 +186,13 @@ Given("I move the field named {string} after the field named {string}", (field_n
  * @param {int} position - the position (index starting from 0) where the instrument should be placed
  * @description Interactions - Drag and drop the field to the int position
  */
- Given("I drag the field named {string} to the{ordinal} row", (field, position) => {
+ Given("I drag on the field named {string} to position {int}", (field, position) => {
+
     cy.get('table[id*=design-]').contains(field).parents('table[id*=design-]').then((row) => {
-        cy.get('table[id*=design-]').eq(window.ordinalChoices[position]).as('target')
+        cy.get('table[id*=design-]').eq(position).as('target')
         cy.wrap(row).dragTo('@target')
     })
+
  })
 
  /**
@@ -293,4 +277,34 @@ Given("I move the field named {string} after the field named {string}", (field_n
  */
  Given("the form should have a redcap_csrf_token", () => {
     cy.get('input[name=redcap_csrf_token]')
+})
+
+/**
+ * @module DesignForms
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @author Madilynn Peterson <mmpeterson24@wisc.edu>
+ * @example I add a new {fieldType} field labeled {string} with variable name {string}
+ * @param {string} field_type - <Text Box|Notes Box|Drop-down List|Radio Buttons|Checkboxes|Yes - No|True - False|Signature|File Upload|Slider|Descriptive Text|Begin New Section>
+ * @param {string} field_label - label for the field
+ * @param {string} variable_name - variable name
+ * @description Creates a new field in the Online Designer
+ */
+Given("I add a new {fieldType} field labeled {string} with variable name {string}", (field_type, field_text, variable_name) => {
+    cy.get('input#btn-last').click().then(() => {
+        cy.get('select#field_type')
+            .find('option')
+            .contains(field_type)
+            .then( ($option) => {
+                cy.get('select#field_type').select($option[0].innerText)
+            })
+
+        cy.get('input#field_name').type(variable_name)
+        cy.get('input#field_label_rich_text_checkbox').uncheck()
+        cy.get('textarea#field_label').type(field_text)
+        cy.get('button').contains('Save').click().then(() => {
+            cy.get('table#draggable').should(($t) => {
+                expect($t).to.contain('Variable: '+ variable_name)
+            })
+        })
+    })
 })
