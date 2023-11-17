@@ -295,7 +295,7 @@ Given('I {enter_type} {string} into the input field labeled {string}{baseElement
 
 Given ('I {enter_type} {string} into the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
-    let element = `textarea:visible:first`
+    let element = `textarea:first`
 
     //Either the base element as specified or the default
     let outer_element = base_element.length > 0 ?
@@ -311,7 +311,7 @@ Given ('I {enter_type} {string} into the textarea field labeled {string}{baseEle
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.find(element).hasClass('mceEditor')){
-                        cy.setTinyMceContent(cy.wrap($parent).find(element)[0]['id'], text)
+                        cy.setTinyMceContent($parent.find(element)[0]['id'], text)
 
                         //All other cases
                     } else {
@@ -327,9 +327,9 @@ Given ('I {enter_type} {string} into the textarea field labeled {string}{baseEle
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.parent().find(element).hasClass('mceEditor')){
-                        cy.setTinyMceContent(cy.wrap($parent).parent().find(element)[0]['id'], text)
+                        cy.setTinyMceContent($parent.parent().find(element)[0]['id'], text)
 
-                        //All other cases
+                    //All other cases
                     } else {
                         if(enter_type === "enter"){
                             cy.wrap($parent).parent().find(element).type(text)
