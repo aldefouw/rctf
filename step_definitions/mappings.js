@@ -62,7 +62,7 @@ window.projectModules = {
 
 //Make sure to keep the blank choice - we want to default to first option
 window.elementChoices = {
-    '' : 'div[role=dialog]:visible,html',
+    '' : 'html',
     ' on the tooltip' : 'div[class*=tooltip]:visible',
     ' in the tooltip' : 'div[class*=tooltip]:visible',
     ' on the role selector dropdown' : 'div[id=assignUserDropdownDiv]:visible',
