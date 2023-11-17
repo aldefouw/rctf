@@ -3,6 +3,15 @@
 // This should also make it easier to identify when refactoring/merging is appropriate.
 // Comments indicate where the parameter type is used.
 
+function transformKeysToRegExp(variable){
+    const keys = Object.keys(variable).filter(key => key !== '')
+    const escapedKeys = keys.map(key => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const pattern = new RegExp(`|${escapedKeys.join('|')}`);
+    //console.log(pattern)
+    return pattern
+}
+
+
 // visibility.js
 defineParameterType({
     name: 'LabeledElement',
@@ -196,7 +205,7 @@ defineParameterType({
 
 defineParameterType({
     name: 'tableTypes',
-    regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|/
+    regexp: transformKeysToRegExp(window.tableMappings)
 })
 
 defineParameterType({
@@ -221,7 +230,7 @@ defineParameterType({
 
 defineParameterType({
     name: 'baseElement',
-    regexp: /| on the tooltip| on the dialog box| on the role selector dropdown| on the popup| in the tooltip| in the dialog box| in the role selector dropdown| in the popup| within the data collection instrument list| on the action popup| in the action popup/
+    regexp: transformKeysToRegExp(window.elementChoices)
 })
 
 defineParameterType({

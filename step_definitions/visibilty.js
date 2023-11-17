@@ -15,9 +15,12 @@ function notLoading(){
  * @param {string} text the text visually seen on screen
  * @description Visually verifies that text exists within the HTML object. NOTE: "should" is optional for readability.
  */
-Given("I {see} {string}{iframeVisibility}", (see, text, iframe) => {
+Given("I (should )see {string}{iframeVisibility}{baseElement}", (text, iframe, base_element = '') => {
     notLoading()
-    const base = (iframe === " in the iframe") ? cy.frameLoaded().then(() => { cy.iframe() }) : cy.get(`body:has(:contains(${JSON.stringify(text)}):visible)`)
+    const base = (iframe === " in the iframe") ?
+        cy.frameLoaded().then(() => { cy.iframe() }) :
+        cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
+
     base.within(($elm) => { cy.wrap($elm).should('contain', text) })
 })
 
@@ -28,9 +31,9 @@ Given("I {see} {string}{iframeVisibility}", (see, text, iframe) => {
  * @param {string} text the text visually seen on screen
  * @description Visually verifies that text does NOT exist within the HTML object.
  */
-Given("I should NOT see {string}", (text) => {
+Given("I should NOT see {string}{baseElement}", (text, base_element = '') => {
     //If we don't detect it anywhere
-    if(Cypress.$(`html:contains(${JSON.stringify(text)})`).length === 0){
+    if(Cypress.$(`${window.elementChoices[base_element]}:contains(${JSON.stringify(text)})`).length === 0){
         expect('html').to.not.contain(text)
     //If we do detect the text, let us make sure it is not visible on-screen
     } else {
@@ -154,7 +157,7 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
  * @param {string} text - the label of the link that should be seen on screen (matches partially)
  * @description Verifies that a visible element of the specified type containing `text` exists
  */
-Given("I should see a {LabeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
+Given("I should see( a)( the) {LabeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
     let subsel = {'link':'a', 'button':'button'}[el]

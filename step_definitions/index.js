@@ -1,4 +1,5 @@
 //PARAMETER TYPES IMPORTED HERE
+require('./mappings') //this needs to come before all_types because we use some of this in all_types
 require('../parameter_types/all_types')
 
 //STANDARD
@@ -9,7 +10,6 @@ require('./download')
 require('./interactions')
 require('./login')
 require('./longitudinal_events')
-require('./mappings')
 require('./online_designer')
 require('./other_functionality')
 require('./project_setup')

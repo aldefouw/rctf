@@ -101,11 +101,26 @@ function after_click_monitor(type){
  * @param {string} text (optional) - < on the dialog box for the Repeatable Instruments and Events module>
  * @description Clicks on a button element with a specific text label.
  */
-Given("I click on the{ordinal} button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}", (ordinal, exactly, text, button_type, base_element, iframe, download) => {
+Given("I click on( a)( the){ordinal} button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}", (ordinal, exactly, text, button_type, base_element, iframe, download) => {
     let ord = 0
     if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
     before_click_monitor(button_type)
+
+    if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
+        }).as('enable_survey')
+    }
+
+    if(text === "Disable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
+        }).as('disable_survey')
+        window.survey_disable_attempt = true
+    }
 
     if(download === " to download a file") {
         const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>';
@@ -144,6 +159,15 @@ Given("I click on the{ordinal} button {labeledExactly} {string}{saveButtonRouteM
                 cy.get(sel).eq(ord).click()
             })
         }
+    }
+
+    if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+        cy.wait('@enable_survey')
+    }
+
+    if(text === "Disable" && base_element === ' in the dialog box' && window.survey_disable_attempt){
+        cy.wait('@disable_survey')
+        window.survey_disable_attempt = false
     }
 
     after_click_monitor(button_type)
