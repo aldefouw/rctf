@@ -15,13 +15,19 @@ function notLoading(){
  * @param {string} text the text visually seen on screen
  * @description Visually verifies that text exists within the HTML object. NOTE: "should" is optional for readability.
  */
-Given("I (should )see {string}{iframeVisibility}{baseElement}", (text, iframe, base_element = '') => {
+Given("I (should )see (the ){string}{iframeVisibility}{baseElement}", (text, iframe, base_element = '') => {
     notLoading()
-    const base = (iframe === " in the iframe") ?
-        cy.frameLoaded().then(() => { cy.iframe() }) :
-        cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
 
-    base.within(($elm) => { cy.wrap($elm).should('contain', text) })
+    if (window.icons.hasOwnProperty(text)) {
+        cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
+            should('be.visible').
+            should('have.descendants', window.icons[text])
+    } else {
+        const base = (iframe === " in the iframe") ?
+            cy.frameLoaded().then(() => { cy.iframe() }) :
+            cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
+        base.within(($elm) => { cy.wrap($elm).should('contain', text) })
+    }
 })
 
 /**

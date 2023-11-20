@@ -42,6 +42,46 @@ window.exportMappings = {
     'CDISC ODM (XML)'                   :    'odm'
 }
 
+window.validationTypes = {
+    'Code Postal 5 caracteres (France)'             : 'postalcode_french',
+    'Date (D-M-Y)'                                  : 'date_dmy',
+    'Date (M-D-Y)'                                  : 'date_mdy',
+    'Date (Y-M-D)'                                  : 'date_ymd',
+    'Datetime (D-M-Y H:M)'                          : 'datetime_dmy',
+    'Datetime (M-D-Y H:M)'                          : 'datetime_mdy',
+    'Datetime (Y-M-D H:M)'                          : 'datetime_ymd',
+    'Datetime w/ seconds (D-M-Y H:M:S)'             : 'datetime_seconds_dmy',
+    'Datetime w/ seconds (M-D-Y H:M:S)'             : 'datetime_seconds_mdy',
+    'Datetime w/ seconds (Y-M-D H:M:S)'             : 'datetime_seconds_ymd',
+    'Email'                                         : 'email',
+    'Integer'                                       : 'integer',
+    'Letters only'                                  : 'alpha_only',
+    'MRN (10 digits)'                               : 'mrn_10d',
+    'MRN (generic)'                                 : 'mrn_generic',
+    'Number'                                        : 'number',
+    'Number (1 decimal place - comma as decimal)'   : 'number_1dp_comma_decimal',
+    'Number (1 decimal place)'                      : 'number_1dp',
+    'Number (2 decimal places - comma as decimal)'  : 'number_2dp_comma_decimal',
+    'Number (2 decimal places)'                     : 'number_2dp',
+    'Number (3 decimal places - comma as decimal)'  : 'number_3dp_comma_decimal',
+    'Number (3 decimal places)'                     : 'number_3dp',
+    'Number (4 decimal places - comma as decimal)'  : 'number_4dp_comma_decimal',
+    'Number (4 decimal places)'                     : 'number_4dp',
+    'Number (comma as decimal)'                     : 'number_comma_decimal',
+    'Phone (Australia)'                             : 'phone_australia',
+    'Phone (North America)'                         : 'phone',
+    'Phone (UK)'                                    : 'phone_uk',
+    'Postal Code (Australia)'                       : 'postalcode_australia',
+    'Postal Code (Canada)'                          : 'postalcode_canada',
+    'Postal Code (Germany)'                         : 'postalcode_germany',
+    'Social Security Number (U.S.)'                 : 'ssn',
+    'Time (HH:MM:SS)'                               : 'time_hh_mm_ss',
+    'Time (HH:MM)'                                  : 'time',
+    'Time (MM:SS)'                                  : 'time_mm_ss',
+    'Vanderbilt MRN'                                : 'vmrn',
+    'Zipcode (U.S.)'                                : 'zipcode',
+}
+
 window.projectModules = {
     'Main project settings': [
                               'Use surveys in this project?',
@@ -83,6 +123,17 @@ for (const category in window.projectModules) {
             window.elementChoices[` in the "${element}" row in the "${category}" section`] = `div:contains("${element}"):visible`
         })
     }
+}
+
+window.icons = {
+    'disabled icon'      : `img[src*=delete]:visible`,
+    'checkmark icon'     : `img[src*=tick]:visible`,
+    'x icon'             : `img[src*=cross]:visible`
+}
+
+//IMPORTANT: Programmatically add the validationTypes as element choices
+for (const validation_desc in window.validationTypes) {
+    window.elementChoices[` in the validation row labeled "${validation_desc}"`] = `tr[id=${window.validationTypes[validation_desc]}]`
 }
 
 window.ordinalChoices = {
