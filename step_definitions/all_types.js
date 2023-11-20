@@ -200,7 +200,7 @@ defineParameterType({
 
 defineParameterType({
     name: 'linkNames',
-    regexp: /link|tab/
+    regexp: /link|tab|instrument/
 })
 
 defineParameterType({
