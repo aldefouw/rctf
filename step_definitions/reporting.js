@@ -98,21 +98,6 @@ Given("I should see the report with the column named {string} {ordering}", (name
 /**
  * @module Reporting
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should NOT see the buttons labeled Edit, Copy, and Delete
- *
- * @description Visibility - Visually verifies that permissions are not granted for reports
- */
-Given("I should NOT see the buttons labeled Edit, Copy, and Delete", () => {
-    cy.get('table[id="table-report_list"]').within(() => {
-        cy.get('button').contains("Edit").should('not.exist')
-        cy.get('button').contains("Copy").should('not.exist')
-        cy.get('button').contains("Delete").should('not.exist')
-    })
-})
-
-/**
- * @module Reporting
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I click on the button labeled {string} for the report named {string}
  * @param {string} button - the text on the button element you want to click
  * @param {string} report the name of the report you want to click buttons for
