@@ -1,17 +1,3 @@
-
-
-/**
- * @module Logging
- * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I select the {string} option identified by {string} from the Filter by event dropdown field
- * @param {string} option - the text value of data collection instrument you want to target
- * @param {string} label - the text value of the select option
- * @description Select logging option from the Filter by event dropdown field
- */
- Given('I select the {string} option identified by {string} from the Filter by event dropdown field', (label, option) => {
-    cy.get('select[id="logtype"]').select(label).should('have.value', option)
-})
-
 /**
  * @module Logging
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
@@ -21,17 +7,6 @@
  */
  Given('I select the {string} option from the Filter by username dropdown field', (text) => {
     cy.get('select[id="usr"]').select(text).should('have.value', text)
-})
-
-/**
- * @module Logging
- * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I select the {string} option from the Filter by record dropdown field
- * @param {string} text - dropdown option
- * @description Select logging option from the Filter by record dropdown field
- */
- Given('I select the {string} option from the Filter by record dropdown field', (text) => {
-    cy.get('select[id="record"]').select(text).should('have.value', text)
 })
 
 /**

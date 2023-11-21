@@ -381,42 +381,6 @@ Given("I add a new variable named {string} in the form named {string} with the f
 
 /**
  * @module OnlineDesigner
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I download the data dictionary and save the file as {string}
- * @param {string} name - name to save the data dictionary file
- * @description Utility - Download and save the data dictionary file
- */
-Given("I download the data dictionary and save the file as {string}", (name) => {
-    cy.intercept({
-        method: 'GET',
-        url: '/redcap_v' + Cypress.env('redcap_version') + '/' + '/Design/data_dictionary_download.php?*'
-    }).as("download")
-
-    cy.get('a').contains("Download the current Data Dictionary").then(($btn) => {
-        // work-around for timeout due cypress waiting for page to change when clicking an anchor
-        // {force: true} doesn't seem to ignore actionability
-        // https://github.com/cypress-io/cypress/issues/8089
-
-        let onclick = $btn.attr("onclick")
-        let func = "; setTimeout(function(){ location.reload() }, 2000);"
-        $btn.attr("onclick", onclick + func)
-        $btn.click()
-    })
-    //.click({force: true, timeout: 0})
-
-    cy.wait("@download").then((xhr) => {
-        let cd = xhr.response.headers['content-disposition']
-        let filename = cd.split('filename=')[1]
-
-        cy.readFile('cypress/downloads/' + filename).then((csv) => {
-            cy.writeFile('cypress/downloads/' + name, csv)
-        })
-    })
-
-})
-
-/**
- * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @author Madilynn Peterson <mmpeterson24@wisc.edu>
  * @example I add a new {fieldType} field labeled {string} with variable name {string}
