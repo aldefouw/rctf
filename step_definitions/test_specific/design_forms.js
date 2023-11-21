@@ -3,43 +3,6 @@
 //Instruments//
 ///////////////
 
-/**
- * @module DesignForms
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I add an instrument named {string} the event named {string}
- * @param {string} instrument - the name of the instrument you are adding to an event
- * @param {string} event - the name of the event you are adding an instrument to
- * @description Interactions - Checks a specfic checkbox for an  instrument and event name
- */
- Given("I add an instrument named {string} to the event named {string}", (instrument, event) => {
-    
-    cy.get('table[id=event_grid_table]').find('th').contains(event).parents('th').invoke('index').then((index) => {
-        cy.get('table[id=event_grid_table]')
-                .children('tbody')
-                .contains('tr', instrument)
-                .find('input').eq(index-1).check()
-    })
-    
-})
-
-/**
- * @module DesignForms
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I remove an instrument named {string} the event named {string}
- * @param {string} instrument - the name of the instrument you are adding to an event
- * @param {string} event - the name of the event you are adding an instrument to
- * @description Interactions - Unchecks a specfic checkbox for an  instrument and event name
- */
- Given("I remove an instrument named {string} to the event named {string}", (instrument, event) => {
-    
-    cy.get('table[id=event_grid_table]').find('th').contains(event).parents('th').invoke('index').then((index) => {
-        cy.get('table[id=event_grid_table]')
-                .children('tbody')
-                .contains('tr', instrument)
-                .find('input').eq(index-1).uncheck()
-    })
-    
-})
 
 /**
  * @module DesignForms

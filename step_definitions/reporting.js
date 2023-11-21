@@ -1,18 +1,3 @@
-
-
-/**
- * @module Reporting
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see the report with a column labeled {string}
- * @param {string} text the label of a column seen in a report
- * @description Visibility - Visually verifies that the report has the column name
- */
-Given("I should see the report with a column labeled {string}", (text) => {
-
-    cy.get('table[id="report_table"]').children('thead').find('th').should('contain', text)
-
-})
-
 /**
  * @module Reporting
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
@@ -21,9 +6,7 @@ Given("I should see the report with a column labeled {string}", (text) => {
  * @description Visibility - Visually verifies that the report has the correct number of rows
  */
 Given("I should see the report with {int} rows", (number) => {
-
     cy.get('table[id="report_table"]').children('tbody').find('tr').should('have.length', number)
-
 })
 
 /**
@@ -34,7 +17,6 @@ Given("I should see the report with {int} rows", (number) => {
  * @description Visibility - Visually verifies that the report has the correct number of distinct records
  */
 Given("I should see the report with {int} distinct records", (count) => {
-
     let records = []
     cy.wrap(records).as("records")
     cy.get('table[id="report_table"]').children('tbody').find('tr').each( (tr, index) => {
@@ -49,7 +31,6 @@ Given("I should see the report with {int} distinct records", (count) => {
     cy.get('@records').then(records => {
         expect(records.length).to.equal(count)
     })
-
 })
 
 /**
@@ -60,7 +41,6 @@ Given("I should see the report with {int} distinct records", (count) => {
  * @description Visibility - Visually verifies that the report has the correct number of repeating instrument rows
  */
 Given("I should see the report with {int} repeating instrument rows", (count) => {
-
     let rCount = 0
     cy.wrap(rCount).as("rCount")
     cy.get('table[id="report_table"]').children('tbody').find('tr').each( (tr, index) => {
@@ -75,7 +55,6 @@ Given("I should see the report with {int} repeating instrument rows", (count) =>
     cy.get('@rCount').then(rCount => {
         expect(rCount).to.equal(count)
     })
-
 })
 
 /**
@@ -87,7 +66,6 @@ Given("I should see the report with {int} repeating instrument rows", (count) =>
  * @description Visibility - Visually verifies that the report has record IDs in correct order
  */
 Given("I should see the report with the column named {string} {ordering}", (name, order) => {
-
     let column = null
     cy.get('table[id="report_table"]').children('thead').children('tr').find('th').each( (th, index) => {
         if(th.text().includes(name)){
@@ -125,28 +103,11 @@ Given("I should see the report with the column named {string} {ordering}", (name
  * @description Visibility - Visually verifies that permissions are not granted for reports
  */
 Given("I should NOT see the buttons labeled Edit, Copy, and Delete", () => {
-
     cy.get('table[id="table-report_list"]').within(() => {
-
         cy.get('button').contains("Edit").should('not.exist')
         cy.get('button').contains("Copy").should('not.exist')
         cy.get('button').contains("Delete").should('not.exist')
-
     })
-
-})
-
-/**
- * @module Reporting
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see the element identified by {string} have length {int}
- * @param {string} selector the selector that identifies a dropbox
- * @param {int} count the label of the row the selector belongs to
- * @description Visibility - Verifies the length of the report fields array to be count length
- */
-Given("I should see the element identified by {string} have length {int}", (selector, count) => {
-    //Really only added this to delay cypress cause sometimes it was moving forward without being checked
-    cy.get(selector).should("have.length", count)
 })
 
 /**
@@ -158,15 +119,11 @@ Given("I should see the element identified by {string} have length {int}", (sele
  * @description Interactions - Clicks on a button element with a specific text label for a specific report name
  */
 Given("I click on the button labeled {string} for the report named {string}", (button, report) => {
-
     cy.get('table[id="table-report_list"]').within(() => {
-
         cy.get('tr').contains(report).parents('tr').within(() => {
             cy.get('button').contains(button).click()
         })
-
     })
-
 })
 
 /**
@@ -178,7 +135,6 @@ Given("I click on the button labeled {string} for the report named {string}", (b
  * @description Interactions - Clicks on a button element with a specific text label for a specific report name
  */
 Given("I click on the record {string} link for the row containing {string}", (record, text) => {
-
     cy.get('table[id="report_table"]').find('tr').each( ($tr) => {
         if($tr.text().includes(text)){
             if($tr.find('a')[0].innerText.includes(record)){
@@ -187,7 +143,6 @@ Given("I click on the record {string} link for the row containing {string}", (re
             }
         }
     })
-
 })
 
 /**
@@ -351,12 +306,10 @@ Given(/^I should (see|have) (a|the latest downloaded) "(.*)" file (that contains
  * @description Interactions - Checks the number of rows (excluding header) the file should have
  */
 Given("I should have a {string} file that contains {int} rows", (format, count) => {
-
     cy.readFile("cypress/downloads" + '/test_file.' + format).then( ($text) => {
         let lines = $text.trim().split('\n')
         expect(lines.length - 1).to.equal(count)
     })
-
 })
 
 /**
@@ -368,7 +321,6 @@ Given("I should have a {string} file that contains {int} rows", (format, count) 
  * @description Interactions - Checks the number of distinct records the file should have
  */
 Given("I should have a {string} file that contains {int} distinct records", (format, count) => {
-
     cy.readFile("cypress/downloads" + '/test_file.' + format).then( ($text) => {
         let lines = $text.trim().split('\n')
         let records = []
@@ -379,11 +331,8 @@ Given("I should have a {string} file that contains {int} distinct records", (for
                 records.push(recordId)
             }
         }
-
         expect(records.length).to.equal(count)
-        
     })
-
 })
 
 /**
@@ -395,7 +344,6 @@ Given("I should have a {string} file that contains {int} distinct records", (for
  * @description Interactions - Checks the number of repeating instrument rows the file should have
  */
 Given("I should have a {string} file that contains {int} repeating instrument rows", (format, count) => {
-
     cy.readFile("cypress/downloads" + '/test_file.' + format).then( ($text) => {
         let lines = $text.trim().split('\n')
         let rCount = 0
@@ -406,9 +354,6 @@ Given("I should have a {string} file that contains {int} repeating instrument ro
                 rCount++
             }
         }
-
         expect(rCount).to.equal(count)
-        
     })
-
 })

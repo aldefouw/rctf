@@ -1,5 +1,3 @@
-
-
 require('./mappings.js')
 
 function notLoading(){
@@ -115,21 +113,6 @@ Given("I should see a checkbox labeled {string} that is {check}", (field_type, l
     cy.top_layer(label_selector).within(() => {
         cy.get_labeled_element(element_selector, label).should(check === "checked" ? "be.checked" : "not.be.checked")
     })
-})
-
-/**
- * @module Visibility
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see {string} in an alert box
- * @param {string} text - the text that should be displayed in an alert box
- * @description Visually verifies that the alert box contains text
- */
-Given("I should see {string} in an alert box", (text) => {
-    cy.on('window:alert',(txt)=>{
-        //Mocha assertions
-        expect(txt).to.contains(text);
-    })
-    cy.on('window:confirm', () => true)
 })
 
 /**
@@ -374,24 +357,4 @@ Given('I (should )see (a )table {headerOrNot}row(s) containing the following val
 
 Given("I {see} the pdf has loaded in the iframe", (see) => {
     cy.frameLoaded()
-})
-
-/**
- * @module Interactions
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I select the dropdown option {string} for the Data Collection Instrument field labeled {string}
- * @param {string} dropdown_option - option we want to select from the dropdown
- * @param {string} field_label - the label on the field we want to select
- * @description Clicks the dropdown option on the field specified
- */
-Given('I should see the following {dropdown_type} options for the Data Collection Instrument field labeled {string}', (type, field_label, dropdown_options) => {
-    let all_options = ['']
-
-    for(let i = 0; i < dropdown_options['rawTable'].length; i++){
-        all_options.push(dropdown_options['rawTable'][i][0])
-    }
-
-    cy.select_field_by_label(field_label).find('option').each(($option) => {
-        expect(all_options).to.include($option[0].innerText)
-    })
 })

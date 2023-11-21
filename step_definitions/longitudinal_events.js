@@ -1,17 +1,3 @@
-
-
-/**
- * @module LongitudinalEvents
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I change the current Event Name from {string} to {string}
- * @param {string} current_name - the name of the event when this step is reached
- * @param {string} proposed_name - the name of the event to change the current event name to
- * @description Changes the name of an event on the "Define My Events" page for a Longitudinal Project
- */
-Given("I change the current Event Name from {string} to {string}", (current_name, proposed_name) => {
-   cy.change_event_name(current_name, proposed_name, false, false)
-})
-
 /**
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
@@ -21,17 +7,6 @@ Given("I change the current Event Name from {string} to {string}", (current_name
  */
 Given("I verify I cannot change the Event Name of {string} while in production", (current_name) => {
    cy.change_event_name(current_name, current_name, true)
-})
-
-/**
- * @module LongitudinalEvents
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I delete the Event Name of {string}
- * @param {string} event_name - the name of the event to delete
- * @description Deletes a specific named event on the "Define My Events" page for a Longitudinal Project
- */
-Given("I delete the Event Name of {string}", (event_name) => {
-   cy.delete_event_name(event_name)
 })
 
 /**
@@ -137,72 +112,6 @@ Given("I verify the Data Collection Instrument named {string} is disabled for th
  */
 Given("I verify the Data Collection Instrument named {string} is unmodifiable for the Event named {string}", (instrument_name, event_name) => {
    cy.adjust_or_verify_instrument_event(instrument_name, event_name, false, true, true)
-})
-
-/**
- * @module LongitudinalEvents
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (clear field) and enter {string} into the Arm name field
- * @param {string} arm_name - the desired name for the arm
- * @description Enters text into the Arm name field on the Define My Events page
- */
-Given("I {enter_type} {string} into the Arm name field", (enter_type, arm_name) => {
-   if(enter_type === 'clear field and enter'){
-      cy.get('input[id=arm_name]').clear().type(arm_name)
-   } else {
-      cy.get('input[id=arm_name]').type(arm_name)
-   }
-})
-
-/**
- * @module LongitudinalEvents
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I should NOT see options to Edit or Delete events
- * @description Verifies that user cannot see options to Edit or Delete events
- */
-Given("I should NOT see options to Edit or Delete events", () => {
-   cy.get('table[id="event_table"]').within(() => {
-      cy.get('img[title=Delete]').should('not.exist')
-      cy.get('img[title=Edit]').should('not.exist')
-   })
-})
-
-/**
- * @module LongitudinalEvents
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I add an instrument named {string} to the event named {string}
- * @param {string} instrument - the name of the instrument you are adding to an event
- * @param {string} event - the name of the event you are adding an instrument to
- * @description Interactions - Checks a specfic checkbox for an  instrument and event name
- */
-Given("I add an instrument named {string} to the event named {string}", (instrument, event) => {
-
-   cy.get('table[id=event_grid_table]').find('th').contains(event).parents('th').invoke('index').then((index) => {
-      cy.get('table[id=event_grid_table]')
-          .children('tbody')
-          .contains('tr', instrument)
-          .find('input').eq(index-1).check()
-   })
-
-})
-
-/**
- * @module LongitudinalEvents
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I remove an instrument named {string} from the event named {string}
- * @param {string} instrument - the name of the instrument you are adding to an event
- * @param {string} event - the name of the event you are adding an instrument to
- * @description Interactions - Unchecks a specfic checkbox for an  instrument and event name
- */
-Given("I remove an instrument named {string} from the event named {string}", (instrument, event) => {
-
-   cy.get('table[id=event_grid_table]').find('th').contains(event).parents('th').invoke('index').then((index) => {
-      cy.get('table[id=event_grid_table]')
-          .children('tbody')
-          .contains('tr', instrument)
-          .find('input').eq(index-1).uncheck()
-   })
-
 })
 
 /**

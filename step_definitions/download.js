@@ -1,5 +1,3 @@
-
-
 /**
  * @module Download
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
