@@ -1,12 +1,14 @@
 /**
  * @module ControlCenter
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I < enable | disable > the Administrator Privilege {string} for the administrator {string}
+ * @example I {enableDisable} the Administrator Privilege {string} for the administrator {string}
+ * @param {string} enableDisable - ${enableDisable}
  * @param {string} privilege - the label of the privilege you want for the user
  * @param {string} admin_user - the name of the user you are setting the privilege for
  * @description Enables the privilege for the administrator based upon user
- */
-Given('I {toggle} the Administrator Privilege {string} for the administrator {string}', (action, privilege, admin_user) => {
+*/
+
+Given('I {enableDisable} the Administrator Privilege {string} for the administrator {string}', (action, privilege, admin_user) => {
     cy.intercept({ method: 'POST', url: '*saveAdminPriv*'}).as('admin_privileges')
 
     cy.get('table#admin-rights-table').within(($table) => {

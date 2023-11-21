@@ -1,10 +1,10 @@
 /**
  * @module UserRights
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I assign an expiration date to user {string} with username of {string} on project ID {int}
+ * @example I assign an expiration date to user {string} with username of {string}
  * @param {string} name - the proper name of the user (e.g. Jane Doe)
  * @param {string} username - the username assigned to the user (e.g. jdoe)
- * @description Assigns 'Expiration Date' user right to a given user when provided a valid Project ID.
+ * @description Assigns 'Expiration Date' user right to a given user
  *
  */
 Given("I assign an expired expiration date to user {string} with username of {string}", (proper_name, username) => {
@@ -14,7 +14,7 @@ Given("I assign an expired expiration date to user {string} with username of {st
 /**
  * @module UserRights
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I assign an expired expiration date to user {string} with username of {string} on project ID {int}
+ * @example I remove the expired expiration date to user {string} with username of {string}
  * @param {string} name - the proper name of the user (e.g. Jane Doe)
  * @param {string} username - the username assigned to the user (e.g. jdoe)
  * @description Removes 'Expiration Date' user right to a given user when provided a valid Project ID.
@@ -94,8 +94,9 @@ const data_export_mappings = {
 /**
  * @module UserRights
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I check the user right identified by {string} and check option {string}
- * @param {string} text - name of user right
+ * @example I select the User Right named {string} and choose {string}
+ * @param {string} user_right - name of user right
+ * @param {string} option - name of the option to select
  * @description Assign user right to role/user
  *
  */

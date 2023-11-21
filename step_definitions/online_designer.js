@@ -1,7 +1,7 @@
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I edit the Data Collection Instrument field labeled {string}
+ * @example I enter Choice(s) of {string} into the open "(Add New Field|Edit Field)" dialog box
  * @param {string} label - the label of the field to edit
  * @description Opens the edit window for the field with the specified label
  */
@@ -22,9 +22,9 @@ Given('I {enter_type} Choice(s) of {string} in(to) the open "{addEditField}" dia
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I edit the Data Collection Instrument field labeled {string}
+ * @example I enter {string} into the Field Label of the open "(Add New Field|Edit Field)" dialog box
  * @param {string} label - the label of the field to edit
- * @description Opens the edit window for the field with the specified label
+ * @description Edits the field label of the open dialog box
  */
 Given('I enter {string} into the Field Label of the open "{addEditField}" dialog box', (field_label) => {
     cy.get('textarea#field_label').clear().type(field_label)
@@ -33,9 +33,9 @@ Given('I enter {string} into the Field Label of the open "{addEditField}" dialog
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I edit the Data Collection Instrument field labeled {string}
- * @param {string} label - the label of the field to edit
- * @description Opens the edit window for the field with the specified label
+ * @example I enter {string} into the Variable Name of the open "(Add New Field|Edit Field)" dialog box
+ * @param {string} variable_name - the variable_name of the field to edit
+ * @description Edits the variable name of the open dialog box
  */
 Given('I enter {string} into the Variable Name of the open "{addEditField}" dialog box', (field_label) => {
     cy.get('input#field_name').clear().type(field_label)
@@ -79,17 +79,6 @@ Given('I select {string} from the Validation dropdown of the open "{addEditField
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I edit the field labeled {string}
- * @param {string} text - the text value of the label associated with a specific field
- * @description Edits a field in the Online Designer by its specified field label.
- */
-Given("I edit the field labeled {string}", (text) => {
-    cy.edit_field_by_label(text)
-})
-
-/**
- * @module OnlineDesigner
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I mark the field required
  * @description Marks a field as required within the Online Designer.
  */
@@ -109,100 +98,31 @@ Given("I mark the field as not required", () => {
 
 /**
  * @module OnlineDesigner
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I save the field
- * @description Saves a Field within the Online Designer.
- */
-Given("I save the field", () => {
-    cy.save_field()
-})
-
-/**
- * @module OnlineDesigner
- * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I enter draft mode
- * @description Enters draft mode
- */
-Given("I enter draft mode", () => {
-    cy.get('html').should('contain', 'Enter Draft Mode')
-
-    cy.button_or_input('Enter Draft Mode').click()
-
-    //Check to see that REDCap indicates we're in DRAFT mode
-    cy.get('div#actionMsg').should(($alert) => {
-        expect($alert).to.contain('The project is now in Draft Mode.')
-    })
-})
-
-/**
- * @module OnlineDesigner
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I add an instrument named {string} the event named {string}
- * @param {string} instrument - the name of the instrument you are adding to an event
- * @param {string} event - the name of the event you are adding an instrument to
- * @description Interactions - Checks a specfic checkbox for an  instrument and event name
- */
-Given("I add an instrument named {string} to the event named {string}", (instrument, event) => {
-
-    cy.get('table[id=event_grid_table]').find('th').contains(event).parents('th').invoke('index').then((index) => {
-        cy.get('table[id=event_grid_table]')
-            .children('tbody')
-            .contains('tr', instrument)
-            .find('input').eq(index-1).check()
-    })
-
-})
-
-/**
- * @module OnlineDesigner
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I remove an instrument named {string} the event named {string}
- * @param {string} instrument - the name of the instrument you are adding to an event
- * @param {string} event - the name of the event you are adding an instrument to
- * @description Interactions - Unchecks a specfic checkbox for an  instrument and event name
- */
-Given("I remove an instrument named {string} to the event named {string}", (instrument, event) => {
-
-    cy.get('table[id=event_grid_table]').find('th').contains(event).parents('th').invoke('index').then((index) => {
-        cy.get('table[id=event_grid_table]')
-            .children('tbody')
-            .contains('tr', instrument)
-            .find('input').eq(index-1).uncheck()
-    })
-
-})
-
-/**
- * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I add an instrument below the instrument named {string}
  * @param {string} instrument - the name of the instrument you are adding an instrument below
  * @description Interactions - Clicks the Add Instrument Here button below a specific Instrument name
  */
 Given("I add an instrument below the instrument named {string}", (instrument) => {
-
     cy.get('table[id=table-forms_surveys]')
         .find('tr').contains(instrument)
         .parents('tr')
         .next().find('button').contains("Add instrument here").click()
-
 })
 
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I add an instrument below the instrument named {string}
+ * @example I click on the Instrument Action {string} for the instrument named {string}
  * @param {string} action - the action label of the link that should be clicked
  * @param {string} instrument - the name of the instrument that a form should be added below
  * @description Interactions - Clicks the "choose action" button and clicks an anchor link
  */
 Given("I click on the Instrument Action {string} for the instrument named {string}", (action, instrument) => {
-
     cy.get('table[id=table-forms_surveys]')
         .find('tr').contains(instrument)
         .parents('tr').find('button').contains('Choose action').click()
     cy.get('ul[id=formActionDropdown]').find('a').contains(action).click({force: true})
-
 })
 
 /**
@@ -214,17 +134,11 @@ Given("I click on the Instrument Action {string} for the instrument named {strin
  * @description Interactions - Drag and drop the instrument to the int position
  */
 Given("I drag on the instrument named {string} to position {int}", (instrument, position) => {
-
     cy.get('table[id=table-forms_surveys]').find('tr').contains(instrument).parents('tr').then((row) => {
         cy.get('table[id=table-forms_surveys]').find('tr').eq(position).find('td[class=dragHandle]').as('target')
         cy.wrap(row).find('td[class=dragHandle]').dragTo('@target')
     })
-
 })
-
-///////////
-// Forms //
-///////////
 
 /**
  * @module OnlineDesigner
@@ -329,7 +243,7 @@ Given("I drag on the field named {string} to position {int}", (field, position) 
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see a the field named {string} before field named {string}
+ * @example I should see a/the field named {string}
  * @param {string} fieldBefore the field name that comes before
  * @param {string} fieldAfter the field name that comes after
  * @description Visually verifies that the fieldBefore is before fieldAfter
@@ -342,7 +256,7 @@ Given("I should see (a )(the )field named {string}", (field_name) => {
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see a the field named {string} before field named {string}
+ * @example I should see a/the field named {string} before field named {string}
  * @param {string} fieldBefore the field name that comes before
  * @param {string} fieldAfter the field name that comes after
  * @description Visually verifies that the fieldBefore is before fieldAfter

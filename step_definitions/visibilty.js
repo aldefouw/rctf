@@ -1,5 +1,3 @@
-require('./mappings.js')
-
 function notLoading(){
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
@@ -187,7 +185,7 @@ Given('I should see {string} in the data entry form field labeled {string}', (te
 /**
  * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (should) see (a(n)) {string} within the {string} row of the column labeled {string}(table_name)
+ * @example I (should) see a(n) {string} within the {string} row of the column labeled {string}(table_name)
  * @param {string} table_item - the item that you are searching for - includes "checkmark", "x", or any {string}
  * @param {string} row_label - the label of the table row
  * @param {string} column_label - the label of the table column
@@ -214,9 +212,10 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
  * @example I should see {string} in the < optional type > table
  * @param {string} text - text to look for
- * @param {string} type - options: < logging | browse users | file repository >
+ * @param {string} type - options: <  >
  * @description Identify specific text within a table
  */
+
 Given('I should see {string} in the {tableTypes} table', (text, table_type = 'a') => {
     notLoading()
     let selector = window.tableMappings[table_type]
