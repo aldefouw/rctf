@@ -1,9 +1,3 @@
-
-///////////////
-//Instruments//
-///////////////
-
-
 /**
  * @module DesignForms
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>

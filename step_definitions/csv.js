@@ -1,6 +1,3 @@
-//
-//Should this be in Visibility instead
-
 /**
  * @module CSV
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
@@ -10,7 +7,6 @@
  * @description Interactions - Checks the number of rows (excluding header) the file should have
  */
  Given("I should have a CSV file at path {string} that contains {int} rows", (path, headings) => {
-
     cy.readFile(path).then( ($text) => {
         let lines = $text.trim().split('\n')
         let header_line = headings.rawTable[0][0]
@@ -20,7 +16,6 @@
 
         expect(lines[0]).to.equal(header_line)
     })
-
 })
 
 /**
@@ -32,7 +27,6 @@
  * @description Interactions - Checks the number of rows (excluding header) the file should have
  */
  Given("the CSV file at path {string} has the headings below", (path, headings) => {
-
     cy.readFile(path).then( ($text) => {
         let lines = $text.trim().split('\n')
         let header_line = headings.rawTable[0][0]
@@ -42,7 +36,6 @@
 
         expect(lines[0]).to.equal(header_line)
     })
-
 })
 
 /**
@@ -55,12 +48,11 @@
  * @description Interactions - Checks the number of rows (excluding header) the file should have
  */
  Given("the CSV file at path {string} has a value {string} for column {string}", (path, value, column) => {
-
     cy.readFile(path).then( ($text) => {
         let lines = $text.trim().split('\n')
-
         let columns = lines[0].split(',')
         let index = columns.indexOf(column)
+
         expect(index).to.be.greaterThan(-1)
 
         let found = false
@@ -74,7 +66,6 @@
 
         expect(found).to.equal(true)
     })
-
 })
 
 /**
@@ -87,7 +78,6 @@
  * @description Interactions - Checks the number of rows (excluding header) the file should have
  */
  Given("I remove line {int} from a CSV file at path {string}", (line, path) => {
-
     cy.readFile(path).then( ($text) => {
         let lines = $text.trim().split('\n')
 
@@ -97,8 +87,6 @@
                 newLines.push(lines[i])
             }
         }
-
         cy.writeFile(path, newLines.join(',\n') + '\n')
     })
-
 })

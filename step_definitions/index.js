@@ -22,12 +22,12 @@ require('./visibilty')
 require('./visit_page')
 
 //FILE PROCESSING
-require('./file_processing/csv')
+require('./csv')
 
 //TEST SPECIFIC
-require('./test_specific/browse_projects')
-require('./test_specific/configuration_check')
-require('./test_specific/design_forms')
-require('./test_specific/logging')
+require('./browse_projects')
+require('./configuration_check')
+require('./design_forms')
+require('./logging')
 
 console.log('RCTF: Core Step Definitions Loaded')
