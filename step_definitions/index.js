@@ -6,6 +6,7 @@ require('./support/all_types')
 //STANDARD
 require('./control_center')
 require('./data_import')
+require('./data_access_groups')
 require('./development_only')
 require('./download')
 require('./interactions')
