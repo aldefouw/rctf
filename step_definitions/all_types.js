@@ -210,7 +210,7 @@ defineParameterType({
 
 defineParameterType({
     name: 'toDoTableTypes',
-    regexp: /Pending Requests|Low Priority Pending Requests|Completed & Achived Requests/
+    regexp: transformKeysToRegExp(window.to_do_list_tables)
 })
 
 defineParameterType({

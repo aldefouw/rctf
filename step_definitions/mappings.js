@@ -148,3 +148,9 @@ window.ordinalChoices = {
     ninth: 8,
     last: -1
 }
+
+window.to_do_list_tables = {
+    'Pending Requests' : 'pending-container',
+    'Low Priority Pending Requests' : 'complete-ignore-container',
+    'Completed & Archived Requests' : 'archived-container',
+}

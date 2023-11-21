@@ -384,3 +384,52 @@ Given("I add a new {fieldType} field labeled {string} with variable name {string
         })
     })
 })
+
+
+/**
+ * @module DesignForms
+ * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
+ * @example I drag the instrument named {string} to the position {int}
+ * @param {string} instrument - the naame of the instrument being drag-n-dropped
+ * @param {int} position - the position (index starting from 1) where the instrument should be placed
+ * @description Interactions - Drag and drop the instrument to the int position
+ */
+Given("I drag the instrument named {string} to the{ordinal} row", (instrument, position) => {
+    cy.get('table[id=table-forms_surveys]').find('tr').contains(instrument).parents('tr').then((row) => {
+        cy.get('table[id=table-forms_surveys]').find('tr').eq(window.ordinalChoices[position]).find('td[class=dragHandle]').as('target')
+        cy.wrap(row).find('td[class=dragHandle]').dragTo('@target')
+    })
+})
+
+/**
+ * @module DesignForms
+ * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
+ * @example I drag the instrument named {string} to the position {int}
+ * @param {string} instrument - the naame of the instrument being drag-n-dropped
+ * @param {int} position - the position (index starting from 1) where the instrument should be placed
+ * @description Interactions - Drag and drop the instrument to the int position
+ */
+Given("I (should) see the instrument named {string} in the{ordinal} row", (instrument, position) => {
+    cy.get('table[id=table-forms_surveys]').find('tr').each((row, index) => {
+        if(index === window.ordinalChoices[position]){
+            cy.wrap(row).find('td').then(($td) => {
+                expect($td).to.contain(instrument)
+            })
+        }
+    })
+})
+
+/**
+ * @module OnlineDesigner
+ * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
+ * @example I drag on the field named {string} to the position {int}
+ * @param {string} field - the name of the field being drag-n-dropped
+ * @param {int} position - the position (index starting from 0) where the instrument should be placed
+ * @description Interactions - Drag and drop the field to the int position
+ */
+Given("I drag the field named {string} to the{ordinal} row", (field, position) => {
+    cy.get('table[id*=design-]').contains(field).parents('table[id*=design-]').then((row) => {
+        cy.get('table[id*=design-]').eq(window.ordinalChoices[position]).as('target')
+        cy.wrap(row).dragTo('@target')
+    })
+})

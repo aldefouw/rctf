@@ -26,7 +26,6 @@ require('./csv')
 //TEST SPECIFIC
 require('./browse_projects')
 require('./configuration_check')
-require('./design_forms')
 require('./logging')
 
 console.log('RCTF: Core Step Definitions Loaded')
