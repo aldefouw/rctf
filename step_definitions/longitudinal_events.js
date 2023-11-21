@@ -1,6 +1,18 @@
 /**
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I change the current Event Name from {string} to {string}
+ * @param {string} current_name - the name of the event when this step is reached
+ * @param {string} proposed_name - the name of the event to change the current event name to
+ * @description Changes the name of an event on the "Define My Events" page for a Longitudinal Project
+ */
+Given("I change the current Event Name from {string} to {string}", (current_name, proposed_name) => {
+   cy.change_event_name(current_name, proposed_name, false, false)
+})
+
+/**
+ * @module LongitudinalEvents
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I verify I cannot change the Event Name of {string} while in production
  * @param {string} current_name - the name of the event when this step is reached
  * @description Verifies the event name cannot be changed in production mode
