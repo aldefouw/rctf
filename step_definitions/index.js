@@ -1,6 +1,7 @@
 //PARAMETER TYPES IMPORTED HERE
-require('./mappings') //this needs to come before all_types because we use some of this in all_types
-require('./all_types')
+require('./support/mappings') //this needs to come before all_types because we use some of this in all_types
+require('./support/all_mappings')
+require('./support/all_types')
 
 //STANDARD
 require('./control_center')
