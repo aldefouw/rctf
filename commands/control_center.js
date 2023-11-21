@@ -133,22 +133,3 @@ Cypress.Commands.add('contains_cc_link', (link, title = '') => {
     let t = Cypress.$("div#control_center_menu a:contains(" + JSON.stringify(link) + ")");
     t.length ? test_link(link, title) : test_link(link.split(' ')[0], title.split(' ')[0])
 })
-
-Cypress.Commands.add("toggle_field_validation_type", (field_validation_type, button_text = 'Enable') => {
-    cy.intercept({
-        method: 'POST',
-        url: '/redcap_v' + Cypress.env('redcap_version') + "/ControlCenter/validation_type_setup.php"
-    }).as('validation_type_setup')
-
-    cy.get('td').contains(field_validation_type).parents('tr').children('td').each((td, i) => {
-        //Get to third column
-        if(i === 2 && td.length){
-            if(td[0].innerText.includes(button_text)){
-                td.find('button')[0].click()
-                cy.wait('@validation_type_setup')
-            } else {
-                //Do nothing if we do not find the "button text" - it means we're already in the state we want to be!
-            }
-        }
-    })
-})

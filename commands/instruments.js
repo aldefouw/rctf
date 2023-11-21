@@ -2,27 +2,6 @@
 //# Commands       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z        #
 //#############################################################################
 
-//Corey
-//Creates a new instrument at the end of the instrument list
-Cypress.Commands.add('create_instrument', (instr_name) => {
-    cy.get('[onclick*="showAddForm()"]').click()
-    //If there is already at least 1 instrument,REDCap lets us choose position
-    //of new instrument in the list, so we choose last.
-
-    cy.get('body').then(($body) => {
-        //if at least 1 instrument already exists (true if table has more than 1 row),
-        //we need to click a button to add after the last instrument
-        if ($body.find('table#table-forms_surveys tr').length > 1) {
-            cy.get('button:contains("Add instrument here")').last().click()
-        }
-
-        cy.get('table#table-forms_surveys tr.addNewInstrRow').last().within(($tr) => {
-            cy.get(':text[id^="new_form"]').type(instr_name)
-            cy.get('input[onclick*="addNewForm("]').click()
-        })
-    })
-})
-
 Cypress.Commands.add('delete_instrument', (instrument_name) => {
     cy.intercept({  method: 'GET',
         url: '/redcap_v' + Cypress.env('redcap_version') + '/Design/delete_form.php?*'
