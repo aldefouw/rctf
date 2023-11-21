@@ -1,5 +1,3 @@
-
-
 /**
  * @module ConfigurationCheck
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
