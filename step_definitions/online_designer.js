@@ -355,30 +355,6 @@ Given("I should see (a )(the )field named {string} {beforeAfter} field named {st
     }
 })
 
-///////////////////
-//Data Dictionary//
-///////////////////
-
-/**
- * @module OnlineDesigner
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I add a new variable named {string} in the form named {string} with the field type {string} and the label {string} into the Data Dictionary file at {string}
- * @param {string} variable - the variable name being added to the data dictionary
- * @param {string} form_name - the form name of the variable being added to the data dictionary
- * @param {string} field_type - the field type of the variable being added to the data dictionary
- * @param {string} label - the label of the variable being added to the data dictionary
- * @param {string} path - the path of the data dictionary
- * @description Interactions - Add a variable, field type, form name to the data dictionary
- */
-Given("I add a new variable named {string} in the form named {string} with the field type {string} and the label {string} into the Data Dictionary file at {string}", (variable, form_name, field_type, label, path) => {
-
-    //variable,form_name,,text,label,,,,,,,,,,,,,
-    let input = variable + "," + form_name + ",,text," + label + ",,,,,,,,,,,,,\n"
-
-    cy.writeFile(path, input, {flag: 'a+'})
-
-})
-
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
