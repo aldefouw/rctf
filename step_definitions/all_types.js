@@ -272,3 +272,8 @@ defineParameterType({
     name: 'recordIDEvent',
     regexp: /|record ID|event|/
 })
+
+defineParameterType({
+    name: 'timeType',
+    regexp: /|seconds|second|minutes|minute/
+})

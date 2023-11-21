@@ -667,10 +667,10 @@ Given('I select {string} on the {dropdown_type} field labeled {string}{baseEleme
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I wait for {integer} minute(s)
- * @description Waits for specified number of minutes before allowing anything else to happen
+ * @example I wait for {integer} second(s)/minute(s)
+ * @description Waits for specified number of second(s)/minute(s) before allowing anything else to happen
  */
-Given("I wait for (another ){int} (seconds|minutes|second|minute)", (time, unit) => {
+Given("I wait for (another ){int} {timeType}", (time, unit) => {
     if(unit === "second" || unit === "seconds"){
         cy.wait(time * 1000)
     } else if (unit === "minute" || unit === "minutes"){
