@@ -2,8 +2,8 @@
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I enter Choice(s) of {string} into the open "(Add New Field|Edit Field)" dialog box
- * @param {string} label - the label of the field to edit
- * @description Opens the edit window for the field with the specified label
+ * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter'
+ * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  */
 Given('I {enterType} Choice(s) of {string} in(to) the open "{addEditField}" dialog box', (enter_type, choices) => {
     let field_choices = cy.select_field_choices()
@@ -24,6 +24,7 @@ Given('I {enterType} Choice(s) of {string} in(to) the open "{addEditField}" dial
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I enter {string} into the Field Label of the open "(Add New Field|Edit Field)" dialog box
  * @param {string} label - the label of the field to edit
+ * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Edits the field label of the open dialog box
  */
 Given('I enter {string} into the Field Label of the open "{addEditField}" dialog box', (field_label) => {
@@ -35,6 +36,7 @@ Given('I enter {string} into the Field Label of the open "{addEditField}" dialog
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I enter {string} into the Variable Name of the open "(Add New Field|Edit Field)" dialog box
  * @param {string} variable_name - the variable_name of the field to edit
+ * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Edits the variable name of the open dialog box
  */
 Given('I enter {string} into the Variable Name of the open "{addEditField}" dialog box', (field_label) => {
@@ -46,6 +48,7 @@ Given('I enter {string} into the Variable Name of the open "{addEditField}" dial
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I enter the equation {string} into Calculation Equation of the open "Edit Field" dialog box
  * @param {string} equation - the equation to enter
+ * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Enters specified equation into a Calculated Field within an open "Edit Field" dialog box
  */
 Given('I enter the equation {string} into Calculation Equation of the open "{addEditField}" dialog box', (equation) => {
@@ -59,6 +62,7 @@ Given('I enter the equation {string} into Calculation Equation of the open "{add
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I select {string} from the Field Type dropdown of the open "Edit Field" dialog box
  * @param {string} label - the label of the field to edit
+ * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Selects option from the Field Type dropdown in open "Edit Field" dialog box
  */
 Given('I select {string} from the Field Type dropdown of the open "{addEditField}" dialog box', (dropdown_option) => {
@@ -70,6 +74,7 @@ Given('I select {string} from the Field Type dropdown of the open "{addEditField
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I select {string} from the Validation dropdown of the open "Edit Field" dialog box
  * @param {string} label - the label of the field to edit
+ * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Selects option from the Validation dropdown in open "Edit Field" dialog box
  */
 Given('I select {string} from the Validation dropdown of the open "{addEditField}" dialog box', (dropdown_option) => {
@@ -144,7 +149,7 @@ Given("I drag on the instrument named {string} to position {int}", (instrument, 
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I click on the {addField} input button below the field named {string}
- * @param {addField} type - the type of addField action you want to perform
+ * @param {string} addField - available options: 'Add Field', 'Add Matrix of Fields', 'Import from Field Bank'
  * @param {string} target - the name of the field you want to add a field below
  * @description Clicks on one of the add field options below a specified field name
  */
@@ -159,7 +164,7 @@ Given("I click on the {addField} input button below the field named {string}", (
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I click on the {editField} image for the field named {string}
- * @param {string} type - the type of edit action you want to perform on a field
+ * @param {string} editField - available options: 'Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'
  * @param {string} field - the name of the field you want to edit
  * @description Clicks on the image link of the action you want to perform on a field
  */
@@ -256,9 +261,9 @@ Given("I should see (a )(the )field named {string}", (field_name) => {
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see a/the field named {string} before field named {string}
- * @param {string} fieldBefore the field name that comes before
- * @param {string} fieldAfter the field name that comes after
+ * @example I should see a/the field named {string} {beforeAfter} field named {string}
+ * @param {string} fieldBefore - the field name that comes before
+ * @param {string} beforeAfter - available options: 'before', 'after'
  * @description Visually verifies that the fieldBefore is before fieldAfter
  */
 Given("I should see (a )(the )field named {string} {beforeAfter} field named {string}", (fieldBefore, before_after, fieldAfter) => {
@@ -274,8 +279,7 @@ Given("I should see (a )(the )field named {string} {beforeAfter} field named {st
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @author Madilynn Peterson <mmpeterson24@wisc.edu>
  * @example I add a new {fieldType} field labeled {string} with variable name {string}
- * @param {string} field_type - <Text Box|Notes Box|Drop-down List|Radio Buttons|Checkboxes|Yes - No|True - False|Signature|File Upload|Slider|Descriptive Text|Begin New Section>
- * @param {string} field_label - label for the field
+ * @param {string} fieldType - available options: 'Text Box', 'Notes Box', 'Drop-down List', 'Radio Buttons', 'Checkboxes', 'Yes - No', 'True - False', 'Signature', 'File Upload', 'Slider', 'Descriptive Text', 'Begin New Section', 'Calculated Field'
  * @param {string} variable_name - variable name
  * @description Creates a new field in the Online Designer
  */
