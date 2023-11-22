@@ -51,7 +51,7 @@ Given(/^I click on (?:a|the) table cell containing the text "(.*?)"(?: in)?(?: t
  * @module DataAccessGroups
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I < click on | check | uncheck > {string} for user {string} in the DAG Switcher
- * @param {string} label - the label associated with the checkbox field
+ * @param {string} clickType - available options: 'click on', 'check', 'uncheck'
  * @description Selects a checkbox field by its label
  */
 Given("I {clickType} {string} for user {string} in the DAG Switcher{baseElement}", (click_type, dag, user, base_element) => {
