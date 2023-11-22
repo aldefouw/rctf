@@ -54,7 +54,7 @@ Given(/^I click on (?:a|the) table cell containing the text "(.*?)"(?: in)?(?: t
  * @param {string} label - the label associated with the checkbox field
  * @description Selects a checkbox field by its label
  */
-Given("I {click_type} {string} for user {string} in the DAG Switcher{baseElement}", (click_type, dag, user, base_element) => {
+Given("I {clickType} {string} for user {string} in the DAG Switcher{baseElement}", (click_type, dag, user, base_element) => {
     if(Cypress.$('img[src*="progress"]').length) cy.get('img[src*="progress"]').should('not.be.visible')
 
     cy.table_cell_by_column_and_row_label(user, dag, 'div.dataTables_scrollHead table', 'th', 'td', 0, 'div.dataTables_scrollBody table').then(($td) => {

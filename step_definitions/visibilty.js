@@ -62,7 +62,7 @@ Given("I should see {string} in the title", (title) => {
  * @param {string} option - the option selected
  * @description Selects a specific item from a dropdown
  */
-Given('I should see the {dropdown_type} field labeled {string} with the option {string} selected{baseElement}', (type, label, option, base_element) => {
+Given('I should see the {dropdownType} field labeled {string} with the option {string} selected{baseElement}', (type, label, option, base_element) => {
     let label_selector = `:contains("${label}"):visible`
     let element_selector = `select:has(option:contains("${option}")):visible`
 
@@ -79,13 +79,13 @@ Given('I should see the {dropdown_type} field labeled {string} with the option {
 /**
  * @module Reporting
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see the {dropdown_type} field labeled {string} with the options below
+ * @example I should see the {dropdownType} field labeled {string} with the options below
  * @param {string} selector the selector that identifies a dropbox
  * @param {string} label the label of the row the selector belongs to
  * @param {DataTable} options the Data Table of selectable options
  * @description Visibility - Visually verifies that the element selector labeled label has the options listed
  */
-Given("I should see the {dropdown_type} field labeled {string} with the options below", (type, label, options) => {
+Given("I should see the {dropdownType} field labeled {string} with the options below", (type, label, options) => {
     let label_selector = `:contains("${label}"):visible`
 
     cy.top_layer(label_selector).within(() => {
@@ -143,7 +143,7 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
  * @param {string} text - the label of the link that should be seen on screen (matches partially)
  * @description Verifies that a visible element of the specified type containing `text` exists
  */
-Given("I should see( a)( the) {LabeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
+Given("I should see( a)( the) {labeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
     let subsel = {'link':'a', 'button':'button'}[el]
@@ -158,7 +158,7 @@ Given("I should see( a)( the) {LabeledElement} labeled {string}{baseElement}", (
  * @param {string} text - the label of the link that should not be seen on screen (matches partially)
  * @description Verifies that there are no visible elements of the specified type with the label `text`
  */
-Given("I should NOT see a {LabeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
+Given("I should NOT see a {labeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
     let subsel = {'link':'a', 'button':'button'}[el]

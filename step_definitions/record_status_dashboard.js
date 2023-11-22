@@ -15,7 +15,7 @@ Given("I click on the bubble for the {string} data collection instrument for {re
 /**
  * @module RecordStatusDashboard
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I locate the bubble for the {string} instrument on event {string} for record ID {string} {cell_action}
+ * @example I locate the bubble for the {string} instrument on event {string} for record ID {string} {cellAction}
  * @param {string} instrument - the data collection instrument you want to target
  * @param {string} event - the event name you want to target
  * @param {string} record_id - the value of the record_id you want to target
@@ -23,7 +23,7 @@ Given("I click on the bubble for the {string} data collection instrument for {re
  * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.
  */
 
-Given("I locate the bubble for the {string} instrument on event {string} for record ID {string}{cell_action}", (instrument, event, record_id, cell_action) => {
+Given("I locate the bubble for the {string} instrument on event {string} for record ID {string}{cellAction}", (instrument, event, record_id, cell_action) => {
     let link_location = null
     let instrument_location = null
     let event_sections = {}

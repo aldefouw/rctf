@@ -6,22 +6,20 @@ window.parameterTypes = {
     tableTypes: transformKeysToRegExp(window.tableMappings),
     baseElement: transformKeysToRegExp(window.elementChoices),
     toDoTableTypes: transformKeysToRegExp(window.to_do_list_tables),
-    LabeledElement: ['button', 'link'],
-    project_type: [
+    labeledElement: ['button', 'link'],
+    projectType: [
         'Practice / Just for fun',
         'Operational Support',
         'Research',
         'Quality Improvement',
         'Other',
     ],
-    toggleAction: ['enable', 'disable'],
     enableDisable: ['enable', 'disable'],
     repeatability: ['enabled', 'disabled', 'modifiable', 'unchangeable'],
-    repeatability_click: ['enable', 'disable', 'modify'],
     confirmation: ['accept', 'cancel'],
     ordering: ['ascending', 'descending'],
-    data_viewing_rights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
-    edit_survey_rights: [
+    dataViewingRights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
+    editSurveyRights: [
         '',
         ' with Edit survey responses checked',
         ' with Edit survey responses unchecked',
@@ -31,8 +29,8 @@ window.parameterTypes = {
     check: ['checked', 'unchecked'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addEditField: ['Add New Field', 'Edit Field'],
-    add_or_select: ['add', 'select'],
-    user_right_action: ['add', 'remove'],
+    addOrSelect: ['add', 'select'],
+    userRightAction: ['add', 'remove'],
     editField: ['Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],
     editEvent: ['Edit', 'Delete'],
     fieldType: [
@@ -50,7 +48,7 @@ window.parameterTypes = {
         'Begin New Section',
         'Calculated Field',
     ],
-    cell_action: [
+    cellAction: [
         ' and click the new instance link',
         ' and click on the bubble',
         ' and click the repeating instrument bubble for the first instance',
@@ -59,7 +57,7 @@ window.parameterTypes = {
         '',
     ],
     select: ['selected', 'unselected'],
-    instrument_save_options: [
+    instrumentSaveOptions: [
         'Save & Stay',
         'Save & Exit Record',
         'Save & Go To Next Record',
@@ -68,11 +66,10 @@ window.parameterTypes = {
         'Save & Go To Next Instance',
         'Save & Add New Instance',
     ],
-    enter_type: ['verify', 'enter', 'clear field and enter'],
-    element_type: ['element', 'checkbox'],
-    click_type: ['click on', 'check', 'uncheck'],
-    elm_type: ['input', 'list item', 'checkbox', 'span'],
-    dropdown_type: ['dropdown', 'multiselect'],
+    enterType: ['verify', 'enter', 'clear field and enter'],
+    clickType: ['click on', 'check', 'uncheck'],
+    elmType: ['input', 'list item', 'checkbox', 'span'],
+    dropdownType: ['dropdown', 'multiselect'],
     labeledExactly: ['labeled', 'labeled exactly'],
     saveButtonRouteMonitoring: [
         '',

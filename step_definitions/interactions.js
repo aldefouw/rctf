@@ -67,7 +67,7 @@ function after_click_monitor(type){
  * @param {string} text - the text that appears on the option in the dropdown (options: Save & Stay, Save & Exit Record, Save & Go To Next Record, Save & Exit Form, Save & Go To Next Form)
  * @description Clicks on a "Save" option on a Data Collection instrument form
  */
- Given("I select the submit option labeled \"{instrument_save_options}\" on the Data Collection Instrument", (text) => {
+ Given("I select the submit option labeled \"{instrumentSaveOptions}\" on the Data Collection Instrument", (text) => {
 
      //REDCap does some crazy conditional display of buttons, so we try to handle that as we best can
      cy.get('tr#__SUBMITBUTTONS__-tr').within(() => {
@@ -253,7 +253,7 @@ Given("I click on the radio labeled {string} in the dialog box{iframeVisibility}
  * @param {string} label - the label of the field
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
-Given('I {enter_type} {string} into the input field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
+Given('I {enterType} {string} into the input field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
     let element = `input[type=text]:visible:first,input[type=password]:visible:first`
 
@@ -293,7 +293,7 @@ Given('I {enter_type} {string} into the input field labeled {string}{baseElement
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 
-Given ('I {enter_type} {string} into the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
+Given ('I {enterType} {string} into the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
     let element = `textarea:first`
 
@@ -352,7 +352,7 @@ Given ('I {enter_type} {string} into the textarea field labeled {string}{baseEle
  * @param {string} label - the label of the field
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
-Given('I {enter_type} {string} into the data entry form field labeled {string}', (enter_type, text, label) => {
+Given('I {enterType} {string} into the data entry form field labeled {string}', (enter_type, text, label) => {
     //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
     if(enter_type === "clear field and enter"){
         cy.get(`label:contains(${JSON.stringify(label)})`)
@@ -396,7 +396,7 @@ Given('I clear the field labeled {string}', (label) => {
  * @param {string} label - the label associated with the checkbox field
  * @description Selects a checkbox field by its label
  */
-Given("I {click_type} the {checkBoxRadio} labeled {string}{baseElement}", (check, type, label, base_element) => {
+Given("I {clickType} the {checkBoxRadio} labeled {string}{baseElement}", (check, type, label, base_element) => {
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains("${label}"):visible`
     let element_selector = `input[type=${type}]:visible:not([disabled])`
@@ -419,7 +419,7 @@ Given("I {click_type} the {checkBoxRadio} labeled {string}{baseElement}", (check
  * @param {string} label - the label associated with the checkbox field
  * @description Selects a checkbox field by its label
  */
-Given("I {click_type} the {elm_type} element labeled {string}", (click_type, element_type, label) => {
+Given("I {clickType} the {elmType} element labeled {string}", (click_type, element_type, label) => {
     cy.contains(label).then(($label) => {
         if(element_type === 'input'){
             cy.wrap($label).parent().find('input').click()
@@ -565,7 +565,7 @@ Given('I select the checkbox option {string} for the field labeled {string}', (c
  * @param {string} label - the label of the field
  * @description Selects a specific item from a dropdown
  */
-Given('I select {string} on the {dropdown_type} field labeled {string}{baseElement}', (option, type, label, base_element) => {
+Given('I select {string} on the {dropdownType} field labeled {string}{baseElement}', (option, type, label, base_element) => {
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains("${label}"):visible`
     let element_selector = `select:has(option:contains("${option}")):visible:enabled`
@@ -604,7 +604,7 @@ Given("I wait for (another ){int} {timeType}", (time, unit) => {
  * @param {string} placeholder - the text that is currently in the field as a placeholder
  * @description Enter text into a specific field
  */
-Given("I {enter_type} {string} into the field with the placeholder text of {string}", (enter_type, text, placeholder) => {
+Given("I {enterType} {string} into the field with the placeholder text of {string}", (enter_type, text, placeholder) => {
     const selector = 'input[placeholder="' + placeholder + '"]:visible,input[value="' + placeholder + '"]:visible'
 
     const elm = cy.get(selector)

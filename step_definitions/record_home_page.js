@@ -10,7 +10,7 @@
  * @description Clicks on an instrument / event pairing to add a record on the Record Home Page
  */
 
-Given("I click the bubble to {add_or_select} a record for the {string} longitudinal instrument on event {string}{cell_action}", (verb, instrument, event, cell_action = '') => {
+Given("I click the bubble to {addOrSelect} a record for the {string} longitudinal instrument on event {string}{cellAction}", (verb, instrument, event, cell_action = '') => {
     let repeating = false
 
     if(cell_action === " and click the repeating instrument bubble for the first instance" ||
