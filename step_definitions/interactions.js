@@ -64,7 +64,7 @@ function after_click_monitor(type){
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I select the submit option labeled {string} on the Data Collection Instrument
- * @param {string} text - the text that appears on the option in the dropdown (options: Save & Stay, Save & Exit Record, Save & Go To Next Record, Save & Exit Form, Save & Go To Next Form)
+ * @param {string} instrumentSaveOptions -
  * @description Clicks on a "Save" option on a Data Collection instrument form
  */
  Given("I select the submit option labeled \"{instrumentSaveOptions}\" on the Data Collection Instrument", (text) => {
@@ -237,6 +237,7 @@ Given("I click on the button labeled {string} for the row labeled {string}", (te
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I click on the radio labeled {string} in the dialog box
  * @param {string} text - the text on the button element you want to click
+ * @param {string} iframeVisibility -
  * @description Clicks on a radio element with a specific text label in a dialog box.
  */
 Given("I click on the radio labeled {string} in the dialog box{iframeVisibility}", (text, iframe) => {
@@ -248,9 +249,11 @@ Given("I click on the radio labeled {string} in the dialog box{iframeVisibility}
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (clear field and) enter {string} into the input field labeled {string}
+ * @example I {enterType} {string} into the input field labeled {string}
+ * @param {string} enterType -
  * @param {string} text - the text to enter into the field
  * @param {string} label - the label of the field
+ * @param {string} baseElement - 
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 Given('I {enterType} {string} into the input field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
@@ -288,8 +291,10 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I enter {string} into the textarea field labeled {string}
+ * @param {string} enterType -
  * @param {string} text - the text to enter into the field
  * @param {string} label - the label of the field
+ * @param {string} baseElement -
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 
