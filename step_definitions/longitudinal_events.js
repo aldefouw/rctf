@@ -70,8 +70,7 @@ Given("I add an event named {string} with offset of {int} day(s) into the curren
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I click on the {editField} image for the event named {string}
- * @param {string} type - the type of edit action you want to perform on a field
- * @param {string} event - the name of the event you want to edit
+ * @param {string} editEvent - available options: 'Edit', 'Delete'
  * @description Clicks on the image link of the action you want to perform on a event
  */
 
@@ -86,7 +85,7 @@ Given("I click on the {editEvent} image for the event named {string}", (type, ev
 /**
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (should) see a Data Collection Instrument named {string} for the Event named {string}
+ * @example I (should) (not) see a Data Collection Instrument named {string} for the Event named {string}
  * @param {string} instrument - the name of the instrument
  * @param {string} event - the name of the event
  * @description Verifies an instrument exists within an event on a longitudinal project
