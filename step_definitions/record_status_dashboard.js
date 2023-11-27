@@ -19,7 +19,7 @@ Given("I click on the bubble for the {string} data collection instrument for {re
  * @param {string} instrument - the data collection instrument you want to target
  * @param {string} event - the event name you want to target
  * @param {string} record_id - the value of the record_id you want to target
- * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance'
+ * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance', ''
  * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.
  */
 
