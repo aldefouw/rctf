@@ -90,7 +90,6 @@ window.parameterTypes = {
         ' in the "Edit Field" dialog box',
         '',
     ],
-    see: ['should see', 'see'],
     select: ['selected', 'unselected'],
     tableName: ['', ' of the User Rights table', ' of the Reports table'],
     timeType: ['seconds', 'second', 'minutes', 'minute'],
