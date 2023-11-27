@@ -1,8 +1,9 @@
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I enter Choice(s) of {string} into the open "(Add New Field|Edit Field)" dialog box
+ * @example I {enterType} Choice(s) of {string} in(to) the open "{addEditField}" dialog box
  * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter'
+ * @param {string} choices - the choices in string format
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  */
 Given('I {enterType} Choice(s) of {string} in(to) the open "{addEditField}" dialog box', (enter_type, choices) => {
@@ -305,11 +306,11 @@ Given("I add a new {fieldType} field labeled {string} with variable name {string
 
 
 /**
- * @module DesignForms
+ * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag the instrument named {string} to the position {int}
+ * @example I drag the instrument named {string} to the{ordinal} row
  * @param {string} instrument - the naame of the instrument being drag-n-dropped
- * @param {int} position - the position (index starting from 1) where the instrument should be placed
+ * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @description Interactions - Drag and drop the instrument to the int position
  */
 Given("I drag the instrument named {string} to the{ordinal} row", (instrument, position) => {
@@ -320,11 +321,11 @@ Given("I drag the instrument named {string} to the{ordinal} row", (instrument, p
 })
 
 /**
- * @module DesignForms
+ * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag the instrument named {string} to the position {int}
+ * @example I (should) see the instrument named {string} in the{ordinal} row
  * @param {string} instrument - the naame of the instrument being drag-n-dropped
- * @param {int} position - the position (index starting from 1) where the instrument should be placed
+ * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @description Interactions - Drag and drop the instrument to the int position
  */
 Given("I (should) see the instrument named {string} in the{ordinal} row", (instrument, position) => {
@@ -340,9 +341,9 @@ Given("I (should) see the instrument named {string} in the{ordinal} row", (instr
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag on the field named {string} to the position {int}
+ * @example I drag the field named {string} to the{ordinal} row
  * @param {string} field - the name of the field being drag-n-dropped
- * @param {int} position - the position (index starting from 0) where the instrument should be placed
+ * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @description Interactions - Drag and drop the field to the int position
  */
 Given("I drag the field named {string} to the{ordinal} row", (field, position) => {
