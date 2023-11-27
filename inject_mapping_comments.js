@@ -22,7 +22,7 @@ function injectDocumentation() {
 
 // Function to get a list of step definition files (implement or replace with your own logic)
 function getStepDefinitionFiles() {
-    const stepDefinitionsDir = path.join(__dirname, 'step_definitions/test');
+    const stepDefinitionsDir = path.join(__dirname, 'step_definitions');
     return fs.readdirSync(stepDefinitionsDir)
         .filter(file => file.endsWith('.js'))
         .map(file => path.join(stepDefinitionsDir, file));
