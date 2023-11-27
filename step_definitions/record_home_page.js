@@ -1,12 +1,11 @@
-
-
-
 /**
  * @module RecordHomePage
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click the bubble to < add | select > a record for the {string} longitudinal instrument on event {string}
+ * @example I click the bubble to {addOrSelect} a record for the {string} longitudinal instrument on event {string}{cellAction}
+ * @param {string} addOrSelect - available options: 'add', 'select'
  * @param {string} instrument - the name of the instrument you want to add a record to
  * @param {string} event - the name of the event you want to add a record to
+ * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance', ''
  * @description Clicks on an instrument / event pairing to add a record on the Record Home Page
  */
 
