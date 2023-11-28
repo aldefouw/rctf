@@ -2,7 +2,7 @@
  * @module DevelopmentOnly
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I want to pause
- * @description Pauses the Cypress session. NOTE: Should only be used during development of tests.
+ * @description Pauses the Cypress session.
  */
 Given("I want to pause", () => {
     cy.pause()
@@ -12,7 +12,7 @@ Given("I want to pause", () => {
  * @module DevelopmentOnly
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I want to export a snapshot of this feature here
- * @description Exports a snapshot of the current database structure at that point in the test and pauses. On subsequent runs, the test will attempt to login with the same user on the same page.
+ * @description Exports a snapshot of the current database structure at that point in the test and pauses. On subsequent runs, feature will attempt to login with the same user on the same page.
  */
 Given("I want to export a snapshot of this feature here", (selector, label, options) => {
     //Snapshot of the DB
