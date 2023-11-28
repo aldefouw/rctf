@@ -64,7 +64,7 @@ window.parameterTypes = {
     labeledElement: ['button', 'link'],
     labeledExactly: ['labeled', 'labeled exactly'],
     linkNames: ['link', 'tab', 'instrument'],
-    moveToProductionButton: ['Create Project', 'Send Request'],
+    projectRequestLabel: ['Create Project', 'Send Request'],
     notSee: ['not '],
     ordering: ['ascending', 'descending'],
     projectStatus: ['Production', 'Development', 'Analysis/Cleanup'],

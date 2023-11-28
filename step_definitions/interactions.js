@@ -63,8 +63,9 @@ function after_click_monitor(type){
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I select the submit option labeled {string} on the Data Collection Instrument
+ * @example I select the submit option labeled "{instrumentSaveOptions}" on the Data Collection Instrument
  * @param {string} instrumentSaveOptions - available options: 'Save & Stay', 'Save & Exit Record', 'Save & Go To Next Record', 'Save & Exit Form', 'Save & Go To Next Form', 'Save & Go To Next Instance', 'Save & Add New Instance'
+ * @description Clicks a specific submit option to save a record on a Data Collection Instrument
  */
  Given("I select the submit option labeled \"{instrumentSaveOptions}\" on the Data Collection Instrument", (text) => {
 
@@ -495,7 +496,7 @@ Given('I enter {string} into the field identified by {string} labeled {string}',
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example for this scenario, I will < accept | cancel > a confirmation window containing the text {string}
+ * @example for this scenario, I will {confirmation} a confirmation window containing the text {string}
  * @param {string} confirmation - available options: 'accept', 'cancel'
  * @param {string} window_text - text that is expected to appear in the confirmation window
  * @description Pre-emptively tell Cypress what to do about a confirmation window.  NOTE: This step must come BEFORE step that clicks button.

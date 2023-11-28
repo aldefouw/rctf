@@ -4,7 +4,7 @@
  * @example I {enableDisable} the Administrator Privilege {string} for the administrator {string}
  * @param {string} enableDisable - available options: 'enable', 'disable'
  * @param {string} admin_user - the name of the user you are setting the privilege for
- * @description Enables the privilege for the administrator based upon user
+ * @description Enables the privilege for the administrator based upon user.
  */
 
 Given('I {enableDisable} the Administrator Privilege {string} for the administrator {string}', (action, privilege, admin_user) => {
@@ -49,7 +49,7 @@ Given('I {enableDisable} the Administrator Privilege {string} for the administra
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I enable the Administrator Privilege {string} for a new administrator
  * @param {string} privilege - the label of the privilege you want for the user
- * @description Enables the privilege for the administrator based upon user
+ * @description Enables the privilege for the administrator based upon user.
  */
 Given('I enable the Administrator Privilege {string} for a new administrator', (privilege) => {
     cy.get('table#admin-rights-table').within(($table) => {
@@ -76,7 +76,7 @@ Given('I enable the Administrator Privilege {string} for a new administrator', (
 /**
  * @module ControlCenter
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example And I click on the {icon} icon for the {string} request created for the project named {string} within the {string} table
+ * @example I click on the {toDoTableIcons} icon for the {toDoRequestTypes} request created for the project named {string} within the {toDoTableTypes} table
  * @param {string} toDoTableIcons - available options: 'process request', 'get more information', 'add or edit a comment', 'Move to low priority section', 'archive request notification'
  * @param {string} toDoRequestTypes - available options: 'Move to prod', 'Approve draft changes', 'Copy project'
  * @param {string} project_name - the text value of project name you want to target
@@ -94,13 +94,13 @@ Given('I click on the "{toDoTableIcons}" icon for the "{toDoRequestTypes}" reque
 /**
  * @module ControlCenter
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example And I should see the {string} request created for the project named {string} within the {string} table
+ * @example I (should) see the {toDoRequestTypes} request created for the project named {string} within the {toDoTableTypes} table
  * @param {string} toDoRequestTypes - available options: 'Move to prod', 'Approve draft changes', 'Copy project'
  * @param {string} project_name - the text value of project name you want to target
- * @param {string} table_name - the text value of table you want to target
+ * @param {string} toDoTableTypes - available options: 'Pending Requests', 'Low Priority Pending Requests', 'Completed & Archived Requests'
  * @description Identifies Request Type within the To-Do-List page based upon Project Name, and Table Name specified.
  */
-Given('I should see the "{toDoRequestTypes}" request created for the project named {string} within the {string} table', (request_type, project_name, table_name) => {
+Given('I (should )see the "{toDoRequestTypes}" request created for the project named {string} within the {toDoTableTypes} table', (request_type, project_name, table_name) => {
     cy.get(`.${window.to_do_list_tables[table_name]}`).within(() => {
         cy.get(`.request-container:contains("${project_name}"):has(.type:contains("${request_type}"))`)
     })

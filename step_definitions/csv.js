@@ -1,12 +1,12 @@
 /**
  * @module CSV
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should have a CSV file located at path {string} that contains {int} rows
+ * @example I (should) have a CSV file located at path {string} that contains {int} row(s)
  * @param {string} path - the text path of the CSV location
  * @param {DataTable} headings - the DataTable of headings this file should have
- * @description Interactions - Checks the number of rows (excluding header) the file should have
+ * @description Verifies number of rows (excluding header) the CSV file should have.
  */
- Given("I should have a CSV file at path {string} that contains {int} rows", (path, headings) => {
+ Given("I (should )have a CSV file at path {string} that contains {int} row(s)", (path, headings) => {
     cy.readFile(path).then( ($text) => {
         let lines = $text.trim().split('\n')
         let header_line = headings.rawTable[0][0]
@@ -21,10 +21,10 @@
 /**
  * @module CSV
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should have a CSV file at the path {string} that contains the headings below
+ * @example the CSV file at path {string} has the headings below {DataTable}
  * @param {string} path - the text path of the CSV location
  * @param {DataTable} headings the DataTable of headings this file should have
- * @description Interactions - Checks the number of rows (excluding header) the file should have
+ * @description Verifies headings of the CSV file.
  */
  Given("the CSV file at path {string} has the headings below", (path, headings) => {
     cy.readFile(path).then( ($text) => {
@@ -41,11 +41,11 @@
 /**
  * @module CSV
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should have a CSV file at path {string} with a value {string} for column {string}
+ * @example the CSV file at path {string} has a value {string} for column {string}
  * @param {string} path - the text path of the CSV location
  * @param {string} value - the value of the column data we are verifying
  * @param {string} column - the text name of the column data we are verifying
- * @description Interactions - Checks the number of rows (excluding header) the file should have
+ * @description Verifies a row value exists for a given column within a CSV file.
  */
  Given("the CSV file at path {string} has a value {string} for column {string}", (path, value, column) => {
     cy.readFile(path).then( ($text) => {
@@ -75,7 +75,7 @@
  * @param {string} path - the text path of the CSV location
  * @param {string} value - the value of the column data we are verifying
  * @param {string} column - the text name of the column data we are verifying
- * @description Interactions - Checks the number of rows (excluding header) the file should have
+ * @description Removes a line from the CSV file at the path specified.
  */
  Given("I remove line {int} from a CSV file at path {string}", (line, path) => {
     cy.readFile(path).then( ($text) => {
