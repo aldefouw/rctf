@@ -308,7 +308,7 @@ Given("I add a new {fieldType} field labeled {string} with variable name {string
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag the instrument named {string} to the{ordinal} row
+ * @example I drag the instrument named {string} to the {ordinal} row
  * @param {string} instrument - the naame of the instrument being drag-n-dropped
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @description Interactions - Drag and drop the instrument to the int position
@@ -323,7 +323,7 @@ Given("I drag the instrument named {string} to the{ordinal} row", (instrument, p
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I (should) see the instrument named {string} in the{ordinal} row
+ * @example I (should) see the instrument named {string} in the {ordinal} row
  * @param {string} instrument - the naame of the instrument being drag-n-dropped
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @description Interactions - Drag and drop the instrument to the int position
@@ -341,7 +341,7 @@ Given("I (should) see the instrument named {string} in the{ordinal} row", (instr
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag the field named {string} to the{ordinal} row
+ * @example I drag the field named {string} to the {ordinal} row
  * @param {string} field - the name of the field being drag-n-dropped
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @description Interactions - Drag and drop the field to the int position
