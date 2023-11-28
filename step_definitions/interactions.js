@@ -605,7 +605,7 @@ Given('I select {string} on the {dropdownType} field labeled {string}{baseElemen
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I wait for (another ){int} {timeType}
+ * @example I wait for (another) {int} {timeType}
  * @param {string} timeType - available options: 'seconds', 'second', 'minutes', 'minute'
  * @description Waits for specified number of second(s)/minute(s) before allowing anything else to happen
  */

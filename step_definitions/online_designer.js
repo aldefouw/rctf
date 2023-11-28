@@ -23,7 +23,7 @@ Given('I {enterType} Choice(s) of {string} in(to) the open "{addEditField}" dial
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I enter {string} into the Field Label of the open "(Add New Field|Edit Field)" dialog box
+ * @example I enter {string} into the Field Label of the open "{addEditField}" dialog box
  * @param {string} label - the label of the field to edit
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Edits the field label of the open dialog box
@@ -35,7 +35,7 @@ Given('I enter {string} into the Field Label of the open "{addEditField}" dialog
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I enter {string} into the Variable Name of the open "(Add New Field|Edit Field)" dialog box
+ * @example I enter {string} into the Variable Name of the open "{addEditField}" dialog box
  * @param {string} variable_name - the variable_name of the field to edit
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Edits the variable name of the open dialog box
@@ -47,7 +47,7 @@ Given('I enter {string} into the Variable Name of the open "{addEditField}" dial
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I enter the equation {string} into Calculation Equation of the open "Edit Field" dialog box
+ * @example I enter the equation {string} into Calculation Equation of the open "{addEditField}" dialog box
  * @param {string} equation - the equation to enter
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Enters specified equation into a Calculated Field within an open "Edit Field" dialog box
@@ -249,7 +249,7 @@ Given("I drag on the field named {string} to position {int}", (field, position) 
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see a/the field named {string}
+ * @example I should see a field named {string}
  * @param {string} fieldBefore the field name that comes before
  * @param {string} fieldAfter the field name that comes after
  * @description Visually verifies that the fieldBefore is before fieldAfter
@@ -262,7 +262,7 @@ Given("I should see (a )(the )field named {string}", (field_name) => {
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see a/the field named {string} {beforeAfter} field named {string}
+ * @example I should see a field named {string} {beforeAfter} field named {string}
  * @param {string} fieldBefore - the field name that comes before
  * @param {string} beforeAfter - available options: 'before', 'after'
  * @description Visually verifies that the fieldBefore is before fieldAfter

@@ -24,7 +24,7 @@ Given("I verify I cannot change the Event Name of {string} while in production",
 /**
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I add an event named {string} into the currently selected arm
+ * @example I add an event named {string} with offset of {int} day(s) into the currently selected arm
  * @param {string} event_name - the name of the event
  * @description Adds an event via the "Define My Events" page for a Longitudinal Project
  */
