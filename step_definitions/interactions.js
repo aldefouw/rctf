@@ -96,7 +96,7 @@ function after_click_monitor(type){
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on (the) {ordinal} button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}
+ * @example I click on (the) {ordinal} button {labeledExactly} {string} {saveButtonRouteMonitoring} {baseElement} {iframeVisibility} {toDownloadFile}
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @param {string} labeledExactly - available options: 'labeled', 'labeled exactly'
  * @param {string} saveButtonRouteMonitoring - available options: '', ' on the dialog box for the Repeatable Instruments and Events module', ' on the Designate Instruments for My Events page', ' on the Online Designer page', ' and cancel the confirmation window', ' and accept the confirmation window', ' in the dialog box to request a change in project status', ' to rename an instrument', ' in the "Add New Field" dialog box', ' in the "Edit Field" dialog box', ''
@@ -180,7 +180,7 @@ Given("I click on( a)( the){ordinal} button {labeledExactly} {string}{saveButton
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on the {linkNames} {labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}
+ * @example I click on the {linkNames} {labeledExactly} {string} {saveButtonRouteMonitoring} {toDownloadFile} {baseElement}
  * @param {string} linkNames - available options: 'link', 'tab', 'instrument'
  * @param {string} labeledExactly - available options: 'labeled', 'labeled exactly'
  * @param {string} text - the text on the anchor element you want to click
@@ -244,7 +244,7 @@ Given("I click on the button labeled {string} for the row labeled {string}", (te
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on the radio labeled {string} in the dialog box{iframeVisibility}
+ * @example I click on the radio labeled {string} in the dialog box {iframeVisibility}
  * @param {string} text - the text on the button element you want to click
  * @param {string} iframeVisibility - available options: '', ' in the iframe'
  */
@@ -257,7 +257,7 @@ Given("I click on the radio labeled {string} in the dialog box{iframeVisibility}
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I {enterType} {string} into the input field labeled {string}{baseElement}
+ * @example I {enterType} {string} into the input field labeled {string} {baseElement}
  * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter'
  * @param {string} label - the label of the field
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
@@ -296,7 +296,7 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I {enterType} {string} into the textarea field labeled {string}{baseElement}
+ * @example I {enterType} {string} into the textarea field labeled {string} {baseElement}
  * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter'
  * @param {string} text - the text to enter into the field
  * @param {string} label - the label of the field
@@ -404,7 +404,7 @@ Given('I clear the field labeled {string}', (label) => {
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I {clickType} the {checkBoxRadio} labeled {string}{baseElement}
+ * @example I {clickType} the {checkBoxRadio} labeled {string} {baseElement}
  * @param {string} clickType - available options: 'click on', 'check', 'uncheck'
  * @param {string} checkBoxRadio - available options: 'checkbox', 'radio'
  * @param {string} label - the label associated with the checkbox field
@@ -578,7 +578,7 @@ Given('I select the checkbox option {string} for the field labeled {string}', (c
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I select {string} on the {dropdownType} field labeled {string}{baseElement}
+ * @example I select {string} on the {dropdownType} field labeled {string} {baseElement}
  * @param {string} text - the text to enter into the field
  * @param {string} dropdownType - available options: 'dropdown', 'multiselect'
  * @param {string} label - the label of the field
@@ -620,7 +620,7 @@ Given("I wait for (another ){int} {timeType}", (time, unit) => {
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I enter {string} into the field with the placeholder text of {string}
+ * @example I {enterType} {string} into the field with the placeholder text of {string}
  * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter'
  * @param {string} text - the text to enter into the field
  * @param {string} placeholder - the text that is currently in the field as a placeholder

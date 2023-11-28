@@ -61,7 +61,7 @@ Given('I enter the equation {string} into Calculation Equation of the open "{add
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I select {string} from the Field Type dropdown of the open "Edit Field" dialog box
+ * @example I select {string} from the Field Type dropdown of the open "{addEditField}" dialog box
  * @param {string} label - the label of the field to edit
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Selects option from the Field Type dropdown in open "Edit Field" dialog box
@@ -73,7 +73,7 @@ Given('I select {string} from the Field Type dropdown of the open "{addEditField
 /**
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I select {string} from the Validation dropdown of the open "Edit Field" dialog box
+ * @example I select {string} from the Validation dropdown of the open "{addEditField}" dialog box
  * @param {string} label - the label of the field to edit
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  * @description Selects option from the Validation dropdown in open "Edit Field" dialog box
