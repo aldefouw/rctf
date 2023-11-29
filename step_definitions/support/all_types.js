@@ -8,10 +8,10 @@ function transformToRegExp(keys){
     return new RegExp(`|${escapedKeys.join('|')}`)
 }
 
-defineParameterType({
-    name: 'ordinal',
-    regexp: /(?: (first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|last||))?/,
-})
+// defineParameterType({
+//     name: 'ordinal',
+//     regexp: /(?: (first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|last||))?/,
+// })
 
 for (const key in window.parameterTypes) {
     defineParameterType({
