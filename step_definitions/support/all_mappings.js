@@ -7,6 +7,7 @@ window.parameterTypes = {
     baseElement: transformKeysToRegExp(window.elementChoices),
     toDoTableTypes: transformKeysToRegExp(window.toDoListTables),
     userRightsChecks: transformKeysToRegExp(window.userRightChecks),
+    ordinal: transformKeysToRegExp(window.ordinalChoices),
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
