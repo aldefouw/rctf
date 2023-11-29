@@ -5,7 +5,8 @@ function transformKeysToRegExp(variable){
 window.parameterTypes = {
     tableTypes: transformKeysToRegExp(window.tableMappings),
     baseElement: transformKeysToRegExp(window.elementChoices),
-    toDoTableTypes: transformKeysToRegExp(window.to_do_list_tables),
+    toDoTableTypes: transformKeysToRegExp(window.toDoListTables),
+    userRightsChecks: transformKeysToRegExp(window.userRightChecks),
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
@@ -16,7 +17,6 @@ window.parameterTypes = {
         ' and click the repeating instrument bubble for the first instance',
         ' and click the repeating instrument bubble for the second instance',
         ' and click the repeating instrument bubble for the third instance',
-        '',
     ],
     check: ['checked', 'unchecked'],
     checkBoxRadio: ['checkbox', 'radio'],
@@ -27,10 +27,8 @@ window.parameterTypes = {
     editEvent: ['Edit', 'Delete'],
     editField: ['Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],
     editSurveyRights: [
-        '',
         ' with Edit survey responses checked',
         ' with Edit survey responses unchecked',
-        '',
     ],
     enableDisable: ['enable', 'disable'],
     elmType: ['input', 'list item', 'checkbox', 'span'],
@@ -78,7 +76,6 @@ window.parameterTypes = {
     recordIDEvent: ['record ID', 'event'],
     repeatability: ['enabled', 'disabled', 'modifiable', 'unchangeable'],
     saveButtonRouteMonitoring: [
-        '',
         ' on the dialog box for the Repeatable Instruments and Events module',
         ' on the Designate Instruments for My Events page',
         ' on the Online Designer page',
@@ -87,8 +84,7 @@ window.parameterTypes = {
         ' in the dialog box to request a change in project status',
         ' to rename an instrument',
         ' in the "Add New Field" dialog box',
-        ' in the "Edit Field" dialog box',
-        '',
+        ' in the "Edit Field" dialog box'
     ],
     select: ['selected', 'unselected'],
     tableName: ['', ' of the User Rights table', ' of the Reports table'],

@@ -164,7 +164,7 @@ Given("I click on the {string} button for the {string} report in the My Reports 
 /**
  * @module Reporting
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should receive a download to a {string} file
+ * @example I click on the download icon(s) to receive the file(s) for the {string} format in the dialog box
  * @param {string} format the text format of the data export you are looking to receive
  * @description Interactions - Checks the hyperlinks and download formats for the data export
  */
@@ -244,7 +244,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
 /**
  * @module Reporting
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should have a {string} file that contains the headings below
+ * @example I should (see) (have) (a) (latest downloaded) {string} file (that contains) (containing) (including) the (headings) (headings and rows) below
  * @param {string} format the text format of the data export you are looking to receive
  * @param {DataTable} headings the DataTable of headings this file should have
  * @description Interactions - Checks the number of rows (excluding header) the file should have

@@ -24,72 +24,18 @@ Given("I remove the expiration date to user {string} with username of {string}",
     cy.remove_expiration_date_from_user(username, proper_name)
 })
 
-const user_right_check_mappings = {
-    'Project Setup & Design' : 'design',
-    'User Rights' : 'user_rights',
-    'Data Access Groups' : 'data_access_groups',
-    'Stats & Charts' : 'graphical',
-    'Create Records' : 'record_create',
-    'Survey Distribution Tools' : 'participants',
-    'Add/Edit/Organize Reports': 'reports',
-    'Alerts & Notifications' : 'alerts',
-    'Rename Records' : 'record_rename',
-    'Delete Records' : 'record_delete',
-    'Calendar' : 'calendar',
-    'Data Import Tool'  : 'data_import_tool',
-    'Data Comparison Tool' : 'data_comparison_tool',
-    'Logging'  : 'data_logging',
-    'File Repository' : 'file_repository',
-    'Record Locking Customization' : 'lock_record_customize',
-    'Lock/Unlock *Entire* Records' : 'lock_record_multiform',
-    'Lock/Unlock *Entire* Records (record level)' : 'lock_record_multiform',
-    'Data Quality - Create & edit rules' : 'data_quality_design',
-    'Data Quality - Execute rules' : 'data_quality_execute',
-    'API Export' : 'api_export',
-    'API Import/Update' : 'api_import',
-    'REDCap Mobile App - Allow users to collect data offline in the mobile app' : 'mobile_app',
-    'REDCap Mobile App - Allow user to download data for all records to the app?' : 'mobile_app_download_data'
-}
-
 /**
  * @module UserRights
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I check the User Right named {string}
+ * @example I {clickType} the User Right named "{userRightsChecks}"
  * @param {string} text - name of User Right
  * @description Assign the user right
  *
  */
-Given("I check the User Right named {string}", (text) => {
+Given('I {clickType} the User Right named "{userRightsChecks}"', (text) => {
     cy.get('div[role=dialog]').should('be.visible')
-    cy.get('input[name="' + user_right_check_mappings[text] + '"]').scrollIntoView().should('be.visible').check()
+    cy.get('input[name="' + window.userRightChecks[text] + '"]').scrollIntoView().should('be.visible').check()
 })
-
-/**
- * @module UserRights
- * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I uncheck the User Right named {string}
- * @param {string} text - name of User Right
- * @description Unassign the user right
- *
- */
-Given("I uncheck the User Right named {string}", (text) => {
-    cy.get('div[role=dialog]').should('be.visible')
-    cy.get('input[name="' + user_right_check_mappings[text] + '"]').scrollIntoView().should('be.visible').uncheck()
-})
-
-const single_choice_mappings = {
-    'Data Exports' : 'data_export_tool',
-    'API' : 'data_access_groups',
-    'Lock/Unlock Records' : 'lock_record'
-}
-
-//These apply to REDCap v12+
-const data_export_mappings = {
-    'No Access' : '0',
-    'De-Identified' : '2',
-    'Remove All Identifier Fields' : '3',
-    'Full Data Set' : '1'
-}
 
 /**
  * @module UserRights
@@ -110,7 +56,7 @@ Given("I select the User Right named {string} and choose {string}", (text, optio
         //For now, we are going to select every form to have the same option
         cy.get(`input[type=radio][name*="export-form-"]`).then(($e) => {
             $e.each((i) => {
-                if($e[i].value === data_export_mappings[option]) {
+                if($e[i].value === window.dataExportMappings[option]) {
                     cy.wrap($e[i]).click()
                 }
             })
@@ -118,7 +64,7 @@ Given("I select the User Right named {string} and choose {string}", (text, optio
 
     } else {
 
-        cy.get('input[name="' + single_choice_mappings[text] + '"]').
+        cy.get('input[name="' + window.singleChoiceMappings[text] + '"]').
             parent().
             parent().
             within(() => {
@@ -172,8 +118,8 @@ Given('I {userRightAction} all Basic Rights within the open User Rights dialog b
             cy.get('input[name=data_export_tool]').should('be.visible').check('0')
         }
 
-        for(var key in user_right_check_mappings) {
-            const input = cy.get('input[name="' + user_right_check_mappings[key] + '"]').scrollIntoView().should('be.visible')
+        for(var key in window.userRightChecks) {
+            const input = cy.get('input[name="' + window.userRightChecks[key] + '"]').scrollIntoView().should('be.visible')
 
             if(action === "add"){
                 input.check()
@@ -193,7 +139,7 @@ Given('I {userRightAction} all Basic Rights within the open User Rights dialog b
 /**
  * @module UserRights
  * @author Corey DeBacker <debacker@wisc.edu>
- * @example I set Data Viewing Rights to {dataViewingRights}{editSurveyRights} for the instrument {string}
+ * @example I set Data Viewing Rights to {dataViewingRights} {editSurveyRights} for the instrument {string}
  * @param {string} dataViewingRights - available options: 'No Access', 'Read Only', 'View & Edit', 'Edit survey responses'
  * @param {string} editSurveyRights - available options: '', ' with Edit survey responses checked', ' with Edit survey responses unchecked', ''
  * @param {string} instrument - the label of the instrument for which to configure data entry rights

@@ -1,3 +1,44 @@
+window.userRightChecks = {
+    'Project Setup & Design' : 'design',
+    'User Rights' : 'user_rights',
+    'Data Access Groups' : 'data_access_groups',
+    'Stats & Charts' : 'graphical',
+    'Create Records' : 'record_create',
+    'Survey Distribution Tools' : 'participants',
+    'Add/Edit/Organize Reports': 'reports',
+    'Alerts & Notifications' : 'alerts',
+    'Rename Records' : 'record_rename',
+    'Delete Records' : 'record_delete',
+    'Calendar' : 'calendar',
+    'Data Import Tool'  : 'data_import_tool',
+    'Data Comparison Tool' : 'data_comparison_tool',
+    'Logging'  : 'data_logging',
+    'File Repository' : 'file_repository',
+    'Record Locking Customization' : 'lock_record_customize',
+    'Lock/Unlock *Entire* Records' : 'lock_record_multiform',
+    'Lock/Unlock *Entire* Records (record level)' : 'lock_record_multiform',
+    'Data Quality - Create & edit rules' : 'data_quality_design',
+    'Data Quality - Execute rules' : 'data_quality_execute',
+    'API Export' : 'api_export',
+    'API Import/Update' : 'api_import',
+    'REDCap Mobile App - Allow users to collect data offline in the mobile app' : 'mobile_app',
+    'REDCap Mobile App - Allow user to download data for all records to the app?' : 'mobile_app_download_data'
+}
+
+window.singleChoiceMappings = {
+    'Data Exports' : 'data_export_tool',
+    'API' : 'data_access_groups',
+    'Lock/Unlock Records' : 'lock_record'
+}
+
+//These apply to REDCap v12+
+window.dataExportMappings = {
+    'No Access' : '0',
+    'De-Identified' : '2',
+    'Remove All Identifier Fields' : '3',
+    'Full Data Set' : '1'
+}
+
 window.tableMappings = {
     'a' :'table',
     'logging' : 'table.form_border',
@@ -149,7 +190,7 @@ window.ordinalChoices = {
     last: -1
 }
 
-window.to_do_list_tables = {
+window.toDoListTables = {
     'Pending Requests' : 'pending-container',
     'Low Priority Pending Requests' : 'complete-ignore-container',
     'Completed & Archived Requests' : 'archived-container',

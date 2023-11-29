@@ -1,7 +1,7 @@
 /**
  * @module ProjectSetup
  * @author Corey Debacker <debacker@wisc.edu>
- * @example I (should )see that repeatable instruments are {repeatability}
+ * @example I (should) see that repeatable instruments are {repeatability}
  * @param {string} repeatability - available options: 'enabled', 'disabled', 'modifiable', 'unchangeable'
  * @description Visually verifies Repeatable Instrument functionality is enabled or disabled in the project.
  */

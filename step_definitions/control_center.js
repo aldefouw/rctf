@@ -84,7 +84,7 @@ Given('I enable the Administrator Privilege {string} for a new administrator', (
  * @description Clicks on an icon within the To-Do-List page based upon Icon, Request Type, Project Name, and Table Name specified.
  */
 Given('I click on the "{toDoTableIcons}" icon for the "{toDoRequestTypes}" request created for the project named {string} within the "{toDoTableTypes}" table', (icon, request_type, project_name, table_name) => {
-    cy.get(`.${window.to_do_list_tables[table_name]}`).within(() => {
+    cy.get(`.${window.toDoListTables[table_name]}`).within(() => {
         cy.get(`.request-container:contains("${project_name}"):has(.type:contains("${request_type}"))`).within(() => {
             cy.get(`button[data-tooltip="${icon}"]`).click()
         })
@@ -102,7 +102,7 @@ Given('I click on the "{toDoTableIcons}" icon for the "{toDoRequestTypes}" reque
  */
 
 Given('I (should )see the "{toDoRequestTypes}" request created for the project named {string} within the "{toDoTableTypes}" table', (request_type, project_name, table_name) => {
-    cy.get(`.${window.to_do_list_tables[table_name]}`).within(() => {
+    cy.get(`.${window.toDoListTables[table_name]}`).within(() => {
         cy.get(`.request-container:contains("${project_name}"):has(.type:contains("${request_type}"))`)
     })
 })
