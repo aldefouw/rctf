@@ -76,7 +76,7 @@ Given('I enable the Administrator Privilege {string} for a new administrator', (
 /**
  * @module ControlCenter
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on the {toDoTableIcons} icon for the {toDoRequestTypes} request created for the project named {string} within the {toDoTableTypes} table
+ * @example I click on the "{toDoTableIcons}" icon for the {toDoRequestTypes} request created for the project named {string} within the "{toDoTableTypes}" table
  * @param {string} toDoTableIcons - available options: 'process request', 'get more information', 'add or edit a comment', 'Move to low priority section', 'archive request notification'
  * @param {string} toDoRequestTypes - available options: 'Move to prod', 'Approve draft changes', 'Copy project'
  * @param {string} project_name - the text value of project name you want to target
@@ -94,13 +94,14 @@ Given('I click on the "{toDoTableIcons}" icon for the "{toDoRequestTypes}" reque
 /**
  * @module ControlCenter
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (should) see the {toDoRequestTypes} request created for the project named {string} within the {toDoTableTypes} table
+ * @example I (should) see the "{toDoRequestTypes}" request created for the project named {string} within the "{toDoTableTypes}" table
  * @param {string} toDoRequestTypes - available options: 'Move to prod', 'Approve draft changes', 'Copy project'
  * @param {string} project_name - the text value of project name you want to target
  * @param {string} toDoTableTypes - available options: 'Pending Requests', 'Low Priority Pending Requests', 'Completed & Archived Requests'
  * @description Identifies Request Type within the To-Do-List page based upon Project Name, and Table Name specified.
  */
-Given('I (should )see the "{toDoRequestTypes}" request created for the project named {string} within the {toDoTableTypes} table', (request_type, project_name, table_name) => {
+
+Given('I (should )see the "{toDoRequestTypes}" request created for the project named {string} within the "{toDoTableTypes}" table', (request_type, project_name, table_name) => {
     cy.get(`.${window.to_do_list_tables[table_name]}`).within(() => {
         cy.get(`.request-container:contains("${project_name}"):has(.type:contains("${request_type}"))`)
     })
