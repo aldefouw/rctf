@@ -10,7 +10,7 @@ function transformToRegExp(keys){
 
 function optionalRegExp(keys){
     const escapedKeys = keys.map(key => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    return new RegExp(`(?: (|${escapedKeys.join('|')}) )?`)
+    return new RegExp(`(?: (${escapedKeys.join('|')}||))?`)
 }
 
 //Add any parameterTypes that are optional to this array
