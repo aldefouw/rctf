@@ -8,14 +8,25 @@ function transformToRegExp(keys){
     return new RegExp(`|${escapedKeys.join('|')}`)
 }
 
-// defineParameterType({
-//     name: 'ordinal',
-//     regexp: /(?: (first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|last||))?/,
-// })
+function optionalRegExp(keys){
+    const escapedKeys = keys.map(key => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    return new RegExp(`(?: (|${escapedKeys.join('|')}) )?`)
+}
+
+//Add any parameterTypes that are optional to this array
+const optional_parameters = [ 'ordinal' ]
 
 for (const key in window.parameterTypes) {
-    defineParameterType({
-        name: key,
-        regexp: transformToRegExp(window.parameterTypes[key]),
-    })
+
+    if(optional_parameters.includes(key)) {
+        defineParameterType({
+            name: key,
+            regexp: optionalRegExp(window.parameterTypes[key]),
+        })
+    } else {
+        defineParameterType({
+            name: key,
+            regexp: transformToRegExp(window.parameterTypes[key]),
+        })
+    }
 }

@@ -32,9 +32,16 @@ Given("I remove the expiration date to user {string} with username of {string}",
  * @description Assign the user right
  *
  */
-Given('I {clickType} the User Right named "{userRightsChecks}"', (text) => {
+Given('I {clickType} the User Right named "{userRightsChecks}"', (click_type, text) => {
     cy.get('div[role=dialog]').should('be.visible')
-    cy.get('input[name="' + window.userRightChecks[text] + '"]').scrollIntoView().should('be.visible').check()
+
+    const elm = cy.get('input[name="' + window.userRightChecks[text] + '"]')
+
+    if(click_type === "uncheck"){
+        elm.scrollIntoView().should('be.visible').uncheck()
+    } else {
+        elm.scrollIntoView().should('be.visible').check()
+    }
 })
 
 /**
