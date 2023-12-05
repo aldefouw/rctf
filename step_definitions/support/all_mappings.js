@@ -61,7 +61,7 @@ window.parameterTypes = {
         'Save & Add New Instance',
     ],
     labeledElement: ['button', 'link'],
-    labeledExactly: ['labeled', 'labeled exactly'],
+    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled'],
     linkNames: ['link', 'tab', 'instrument'],
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSee: ['not '],
