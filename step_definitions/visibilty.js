@@ -245,12 +245,14 @@ Given('I (should )see Project status: "{projectStatus}"', (status) => {
 /**
  * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (should) see (a) table {headerOrNot} row(s) containing the following values in (the) {tableTypes} table:
+ * @example I (should) see (a) table {headerOrNot} row(s) containing the following values in (the) {tableTypes} table {baseElement}:
  * @param {string} headerOrNot - available options: 'header and '
  * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook'
+ * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
+ * @param {dataTable} options the Data Table of values specified
  * @description Allows us to check tabular data rows within REDCap
  */
-Given('I (should )see (a )table {headerOrNot}row(s) containing the following values in (the ){tableTypes} table:', (header, table_type = 'a', dataTable) => {
+Given('I (should )see (a )table {headerOrNot}row(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
     notLoading()
 
     if(Cypress.$('div#working:visible').length) cy.get('div#working').should('not.be.visible')
@@ -275,9 +277,14 @@ Given('I (should )see (a )table {headerOrNot}row(s) containing the following val
         let columns = {}
         let header = tabular_data[0]
 
-        cy.top_layer(`${header_table}:visible tr:visible:first td:visible,th:visible`).within(() => {
+        let selector = `${header_table}:visible tr:visible:first td:visible,th:visible`
 
-            cy.get(`${header_table}:visible tr:visible:first td:visible,th:visible`).then(($cells) => {
+        let outer_element = base_element.length > 0 ?
+            cy.top_layer(selector, window.elementChoices[base_element]) :
+            cy.top_layer(selector)
+
+        outer_element.within(() => {
+            outer_element.then(($cells) => {
                 header.forEach((heading) => {
                     columns[heading] = null
                     for(let i = 0; i < $cells.length; i++){
@@ -347,7 +354,13 @@ Given('I (should )see (a )table {headerOrNot}row(s) containing the following val
     //Only matching on whether this row exists in the table.  Cells are in no particular order because we have no header to match on.
     } else {
 
-        cy.top_layer(`${header_table}:visible tr:first td,th`).within(() => {
+        let selector = `${header_table}:visible tr:first td,th`
+
+        let outer_element = base_element.length > 0 ?
+            cy.top_layer(selector, window.elementChoices[base_element]) :
+            cy.top_layer(selector)
+
+        outer_element.within(() => {
             cy.get(`${selector}:visible`).within(() => {
                 tabular_data.forEach((row) => {
                     row_selector = 'tr:visible'
