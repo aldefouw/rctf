@@ -277,7 +277,7 @@ Given('I (should )see (a )table {headerOrNot}row(s) containing the following val
         let columns = {}
         let header = tabular_data[0]
 
-        let selector = `${header_table}:visible tr:visible:first td:visible,th:visible`
+        let selector = `${header_table}:visible`
 
         let outer_element = base_element.length > 0 ?
             cy.top_layer(selector, window.elementChoices[base_element]) :
@@ -354,7 +354,7 @@ Given('I (should )see (a )table {headerOrNot}row(s) containing the following val
     //Only matching on whether this row exists in the table.  Cells are in no particular order because we have no header to match on.
     } else {
 
-        let selector = `${header_table}:visible tr:first td,th`
+        let selector = `${header_table}:visible`
 
         let outer_element = base_element.length > 0 ?
             cy.top_layer(selector, window.elementChoices[base_element]) :
