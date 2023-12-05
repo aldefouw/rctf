@@ -20,6 +20,10 @@
  * @description Clicks on a survey option label.  Track it via an optional tag.
  */
 Given(/^I click on the survey option label containing "(.*)" label(?: and want to track the response with a tag of "(.*)")?$/, (survey_option_label, tag = 'default_survey_option') => {
+    cy.url().then((url) => {
+        window.redcap_url_pre_survey = url
+    })
+
     // Handle the beforeunload event to suppress the pop-up that says "Leave Site?"
     cy.on('beforeunload', (e) => {
         // Prevent the default behavior, which shows the pop-up
@@ -57,4 +61,14 @@ Given(/^I click on the survey option label containing "(.*)" label(?: and want t
     })
 
     cy.on('beforeunload', () => {});
+})
+
+/**
+ * @module Survey
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I return to the REDCap page I opened the survey from
+ * @description Returns user to the REDCap page they were on before they exited to take a survey
+ */
+Given("I return to the REDCap page I opened the survey from", () => {
+    cy.visit(window.redcap_url_pre_survey)
 })
