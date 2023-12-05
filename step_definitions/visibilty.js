@@ -361,16 +361,14 @@ Given('I (should )see (a )table {headerOrNot}row(s) containing the following val
             cy.top_layer(selector)
 
         outer_element.within(() => {
-            cy.get(`${selector}:visible`).within(() => {
-                tabular_data.forEach((row) => {
-                    row_selector = 'tr:visible'
-                    row.forEach((element) => {
-                        if(!window.dateFormats.hasOwnProperty(element)) {
-                            row_selector += `:has(td:contains(${JSON.stringify(element)}))`
-                        }
-                    })
-                    cy.get(row_selector).should('have.length.greaterThan', 0)
+            tabular_data.forEach((row) => {
+                row_selector = 'tr:visible'
+                row.forEach((element) => {
+                    if(!window.dateFormats.hasOwnProperty(element)) {
+                        row_selector += `:has(td:contains(${JSON.stringify(element)}))`
+                    }
                 })
+                cy.get(row_selector).should('have.length.greaterThan', 0)
             })
         })
     }
