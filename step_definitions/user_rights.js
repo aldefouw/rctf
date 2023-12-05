@@ -91,7 +91,7 @@ Given("I select the User Right named {string} and choose {string}", (text, optio
  * @module UserRights
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
  * @example I save changes within the context of User Rights
- * @description Click on the create add user button and add user
+ * @description Click on the create add user button or save changes
  *
  */
 Given("I save changes within the context of User Rights", () => {
