@@ -2,7 +2,7 @@
 //# Commands       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z        #
 //#############################################################################
 
-Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_id, repeating) => {
+Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_id, cell_action, click = true, icon) => {
 
     // TODO: This is badly in need a refactor using pseudo-selectors but haven't had time yet
 
@@ -10,6 +10,13 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
     let instrument_location = null
     let event_sections = {}
     let event_counter = 0
+    let repeating = false
+
+    if(cell_action === " and click the repeating instrument bubble for the first instance" ||
+        cell_action === " and click the repeating instrument bubble for the second instance" ||
+        cell_action === " and click the repeating instrument bubble for the third instance"){
+        repeating = true
+    }
 
     cy.get('table#record_status_table').within(() => {
         cy.get('thead').within(() => {
@@ -18,7 +25,7 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
                     if(tri_row === 0){
                         Cypress.$(tri_html).children().each(($thi, $th) => {
                             if($thi > 0) { //exclude Record ID
-                                event_sections[$th.innerText] = { colspan: $th.colSpan, start: event_counter + 1, end: event_counter + $th.colSpan }
+                                event_sections[$th.innerText] = { colspan: $th.colSpan, start: event_counter, end: event_counter + $th.colSpan - 1 }
                                 event_counter += $th.colSpan
                             }
                         })
@@ -80,11 +87,11 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
 
                                                 cy.wrap($td).within(() => {
 
-                                                    if(cell_action === "and click on the bubble" || repeating){
+                                                    if(cell_action === " and click on the bubble" || repeating || !click){
                                                         cy.get('a').then(($a) => {
                                                             link_location = $a
                                                         })
-                                                    } else if (cell_action === "and click the new instance link") {
+                                                    } else if (cell_action === " and click the new instance link") {
                                                         cy.get('button').then(($button) => {
                                                             link_location = $button
                                                         })
@@ -102,6 +109,37 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
                 })
             })
         })
+    }).then(() => {
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + '/index.php?*'
+        }).as('instance_table')
+
+        if(click){
+            cy.wrap(link_location).click()
+        } else {
+            expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
+        }
+
+        if(repeating){
+            cy.wait('@instance_table')
+
+            cy.get('#instancesTablePopup').within(() => {
+                let instance = null
+
+                if(cell_action === " and click the repeating instrument bubble for the first instance"){
+                    instance = 1
+                } else if (cell_action === " and click the repeating instrument bubble for the second instance"){
+                    instance = 2
+                } else if (cell_action === " and click the repeating instrument bubble for the third instance"){
+                    instance = 3
+                }
+
+                cy.get('td').contains(instance).parent('tr').within(() => {
+                    cy.get('a').click()
+                })
+            })
+        }
     })
 
 })

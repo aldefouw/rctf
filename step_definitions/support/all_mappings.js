@@ -8,6 +8,7 @@ window.parameterTypes = {
     toDoTableTypes: transformKeysToRegExp(window.toDoListTables),
     userRightsChecks: transformKeysToRegExp(window.userRightChecks),
     ordinal: transformKeysToRegExp(window.ordinalChoices),
+    recordStatusIcons: transformKeysToRegExp(window.recordStatusIcons),
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],

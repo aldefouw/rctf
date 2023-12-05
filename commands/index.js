@@ -13,6 +13,7 @@ require('./survey')
 require('./user_interface')
 require('./user_rights')
 require('./visit_urls')
+require('./record_status_dashboard')
 
 // //Base requirements
 require('./base')
