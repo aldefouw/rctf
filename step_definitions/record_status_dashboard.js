@@ -43,7 +43,7 @@ Given("I locate the bubble for the {string} instrument on event {string} for rec
                     if(tri_row === 0){
                         Cypress.$(tri_html).children().each(($thi, $th) => {
                             if($thi > 0) { //exclude Record ID
-                                event_sections[$th.innerText] = { colspan: $th.colSpan, start: event_counter + 1, end: event_counter + $th.colSpan }
+                                event_sections[$th.innerText] = { colspan: $th.colSpan, start: event_counter, end: event_counter + $th.colSpan - 1 }
                                 event_counter += $th.colSpan
                             }
                         })
