@@ -207,3 +207,8 @@ window.recordStatusIcons = {
     'Completed Survey Response' : `img[src*=circle_green_tick]`,
     'Many statuses (all same)' : `img[src*=_stack]`
 }
+
+window.fileRepoIcons = {
+    'File Share' : `i[class*=fa-arrow-up]`,
+    'Delete' : `i[class*=fa-times]`
+}
