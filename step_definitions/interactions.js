@@ -96,7 +96,9 @@ function after_click_monitor(type){
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on (the) {ordinal} button {labeledExactly} {string} {saveButtonRouteMonitoring} {baseElement} {iframeVisibility} {toDownloadFile}
+ * @example I click on {articleType} "{onlineDesigner}" {ordinal} button {labeledExactly} {string} {saveButtonRouteMonitoring} {baseElement} {iframeVisibility} {toDownloadFile}
+ * @param {string} articleType - available options: 'a', 'the'
+ * @param {string} onlineDesignerButtons - available options: 'Enable', 'Disable', 'Choose action', 'Survey settings', 'Automated Invitations'
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
  * @param {string} labeledExactly - available options: 'labeled', 'labeled exactly', 'in the row labeled'
  * @param {string} saveButtonRouteMonitoring - available options: '', ' on the dialog box for the Repeatable Instruments and Events module', ' on the Designate Instruments for My Events page', ' on the Online Designer page', ' and cancel the confirmation window', ' and accept the confirmation window', ' in the dialog box to request a change in project status', ' to rename an instrument', ' in the "Add New Field" dialog box', ' in the "Edit Field" dialog box', ''
@@ -105,7 +107,7 @@ function after_click_monitor(type){
  * @param {string} toDownloadFile - available options: ' to download a file'
  * @description Clicks on a button element with a specific text label.
  */
-Given("I click on( a)( the){ordinal} button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}", (ordinal, exactly, text, button_type, base_element, iframe, download) => {
+Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}", (article_type, online_designer_button, ordinal, exactly, text, button_type, base_element, iframe, download) => {
     let ord = 0
     if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
@@ -149,6 +151,13 @@ Given("I click on( a)( the){ordinal} button {labeledExactly} {string}{saveButton
         }
 
     } else {
+
+        //This is the key to the Online Designer buttons being identified!
+        if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button)){
+            outer_element = `table#table-forms_surveys:visible:has(tr:contains(${text}):visible)`
+            text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
+        }
+
         if(exactly === 'labeled exactly'){
             let sel = `button:contains("${text}"):visible,input[value*=""]:visible`
 
@@ -412,12 +421,12 @@ Given('I clear the field labeled {string}', (label) => {
 Given("I {clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}", (check, type, labeled_exactly, label, base_element) => {
     let outer_element = window.elementChoices[base_element]
 
-    let label_selector = `:contains("${label}"):visible`
+    let label_selector = `:contains(${JSON.stringify(label)}):visible`
     let element_selector = `input[type=${type}]:visible:not([disabled])`
 
     if(labeled_exactly === "in the row labeled"){
-        label_selector = `tr td:contains("${label}"):visible`
-        element_selector = `tr:contains("${label}") td input[type=${type}]:visible:not([disabled])`
+        label_selector = `tr:contains(${JSON.stringify(label)}):visible`
+        element_selector = `tr:contains(${JSON.stringify(label)}):visible td input[type=${type}]:visible:not([disabled])`
     }
 
     cy.top_layer(label_selector, outer_element).within(() => {

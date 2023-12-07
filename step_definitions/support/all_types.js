@@ -14,7 +14,7 @@ function optionalRegExp(keys){
 }
 
 //Add any parameterTypes that are optional to this array
-const optional_parameters = [ 'ordinal' ]
+const optional_parameters = [ 'ordinal', 'onlineDesignerButtons' ]
 
 for (const key in window.parameterTypes) {
 

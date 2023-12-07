@@ -12,6 +12,7 @@ window.parameterTypes = {
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
+    articleType: ['a', 'the'],
     beforeAfter: ['before', 'after'],
     cellAction: [
         ' and click the new instance link',
@@ -62,11 +63,12 @@ window.parameterTypes = {
         'Save & Add New Instance',
     ],
     labeledElement: ['button', 'link'],
-    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled'],
+    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled'],
     linkNames: ['link', 'tab', 'instrument'],
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSee: ['not '],
     ordering: ['ascending', 'descending'],
+    onlineDesignerButtons: ['"Enable"', '"Disable"', '"Choose action"', '"Survey settings"', '"Automated Invitations"'],
     projectStatus: ['Production', 'Development', 'Analysis/Cleanup'],
     projectType: [
         'Practice / Just for fun',

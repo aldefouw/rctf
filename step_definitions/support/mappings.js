@@ -153,7 +153,7 @@ window.elementChoices = {
     ' within the data collection instrument list' : 'table#table-forms_surveys',
     ' on the action popup' : '[id=formActionDropdown]',
     ' in the action popup' : '[id=formActionDropdown]',
-    ' in the Edit survey responses column' : 'table#form_rights'
+    ' in the Edit survey responses column' : 'table#form_rights:visible'
 }
 
 //IMPORTANT: Programmatically add the projectModules as element choices
