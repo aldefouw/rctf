@@ -164,13 +164,18 @@ Cypress.Commands.add('upload_file', (fileName, fileType = ' ', selector = '', bu
     })
 })
 
-Cypress.Commands.add('file_repo_upload', (fileName) => {
+Cypress.Commands.add('file_repo_upload', (fileNames) => {
     //Make sure the page is not loading
     cy.get('#file-repository-table_processing').should('have.css', 'display', 'none');
 
-    //Specify Fixture
-    cy.fixture(fileName).as('fileUploadFixture')
+    let selected_files = []
 
-    //Select the Fixture within the Upload Input Button - no need to do anything else because JavaScript is automatically fired within REDCap
-    cy.get('input#file-repository-file-input').selectFile('@fileUploadFixture')
+    //Look for all files
+    fileNames.forEach((file, index) => {
+        cy.fixture(`${file}`).as(`fileRepo_${index}`) //Set as a fixture alias
+        selected_files.push(`@fileRepo_${index}`) //Push aliases to an array for use later
+    })
+
+    //Select the Fixture within the Upload Input Button - no need to do anything else because JavaScript automatically fired within REDCap
+    cy.get('input#file-repository-file-input').selectFile(selected_files)
 })

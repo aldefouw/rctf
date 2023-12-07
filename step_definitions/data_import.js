@@ -15,14 +15,14 @@ Given("I upload a {string} format file located at {string}, by clicking the butt
 /**
  * @module DataImport
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I upload a file located at {string} to the File Repository
- * @param {string} file_location - the location of the file being uploaded (e.g. import_files/core/filename.csv)
- * @description Imports file (of specific type) to the File Repository.
+ * @example I click the button labeled {string} to select and upload the following file(s) to the File Repository:
+ * @param {string} button_label - the name on the button we click
+ * @param {dataTable} - options - the filenames from the /fixtures/ directory that we want to upload
+ * @description Imports file(s) to the File Repository.
  */
-Given("I upload a file located at {string} to the File Repository", (file_location) => {
-    cy.file_repo_upload(file_location).then(() => {
-        cy.get(`button:contains("Select files to upload"):visible`).invoke('attr', 'onclick', "").click()
-    })
+Given("I click the button labeled {string} to select and upload the following file(s) to the File Repository:", (button_label, dataTable) => {
+    cy.file_repo_upload(dataTable['rawTable'])
+    cy.get(`button:contains(${JSON.stringify(button_label)}):visible`).invoke('attr', 'onclick', "")
 })
 
 /**
