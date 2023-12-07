@@ -96,7 +96,7 @@ function after_click_monitor(type){
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on {articleType} "{onlineDesigner}" {ordinal} button {labeledExactly} {string} {saveButtonRouteMonitoring} {baseElement} {iframeVisibility} {toDownloadFile}
+ * @example I click on {articleType} {onlineDesignerButtons} {ordinal} button {labeledExactly} {string} {saveButtonRouteMonitoring} {baseElement} {iframeVisibility} {toDownloadFile}
  * @param {string} articleType - available options: 'a', 'the'
  * @param {string} onlineDesignerButtons - available options: 'Enable', 'Disable', 'Choose action', 'Survey settings', 'Automated Invitations'
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'

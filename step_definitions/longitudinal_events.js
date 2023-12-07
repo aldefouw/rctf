@@ -176,10 +176,10 @@ Given("I verify the Data Collection Instrument named {string} is disabled for th
 /**
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I verify the Data Collection Instrument named {string} is disabled for the Event named {string}
+ * @example I verify the Data Collection Instrument named {string} is unmodifiable for the Event named {string}
  * @param {string} instrument_name - the name of the Data Collection Instrument we are disabling for a specific event
  * @param {string} event_name - the name of the event to disable the Data Collection Instrument for
- * @description Verifies a Data Collection Instrument is disabled for a specific Event within a Longitudinal Project. (Assumption: User is on "Designate Instruments for My Events" page.)
+ * @description Verifies a Data Collection Instrument is unmodifiable for a specific Event within a Longitudinal Project. (Assumption: User is on "Designate Instruments for My Events" page.)
  */
 Given("I verify the Data Collection Instrument named {string} is unmodifiable for the Event named {string}", (instrument_name, event_name) => {
    cy.adjust_or_verify_instrument_event(instrument_name, event_name, false, true, true)
