@@ -169,7 +169,13 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
             let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
 
             cy.top_layer(sel, outer_element).within(() => {
-                cy.get(sel).eq(ord).click()
+                cy.get(sel).eq(ord).then(($button) => {
+                    if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
+                        cy.open_survey_in_same_tab($button)
+                    } else {
+                        $button[0].click()
+                    }
+                })
             })
         }
     }

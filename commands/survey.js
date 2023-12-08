@@ -11,3 +11,19 @@ Cypress.Commands.add('enable_surveys', (instrument_name) => {
 
     cy.get('html').should('contain', 'Your survey settings were successfully saved!')
 })
+
+Cypress.Commands.add('open_survey_in_same_tab', (element) => {
+    //Set the Pre Survey URL so we can return to the page we were on later
+    cy.url().then((existing_url) => {
+        window.redcap_url_pre_survey = existing_url
+    })
+
+    //Stub the surveyOpen method to prevent from opening new window
+    cy.window().then((win) => {
+        cy.stub(win, 'surveyOpen').callsFake((url, target) => {
+            return win.open(url, '_self')
+        })
+
+        cy.wrap(element).click()
+    })
+})
