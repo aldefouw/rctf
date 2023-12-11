@@ -52,7 +52,7 @@ window.parameterTypes = {
         'Begin New Section',
         'Calculated Field',
     ],
-    headerOrNot: ['header and '],
+    headerOrNot: ['header and', 'header'],
     iframeVisibility: ['', ' in the iframe'],
     instrumentSaveOptions: [
         'Save & Stay',
