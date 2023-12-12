@@ -30,3 +30,8 @@ for (const key in window.parameterTypes) {
         })
     }
 }
+
+defineParameterType({
+    name: 'optionalString',
+    regexp: /(.*?)/
+})

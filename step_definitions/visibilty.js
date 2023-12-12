@@ -159,16 +159,25 @@ Given("I (should) see( ){articleType}( ){onlineDesignerButtons}( ){labeledElemen
     let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible:not([disabled])` : '')
 
     if(window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
-        online_buttons = online_buttons.replaceAll('"', '')
-        sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:not([disabled])` : '')
+        if (!window.icons.hasOwnProperty(online_buttons)) {
+            online_buttons = online_buttons.replaceAll('"', '')
+            sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:not([disabled])` : '')
+        }
     }
 
     if(labeled_exactly === "in the row labeled" ) {
         sel = `td:visible ${sel}`
         element_selector = `table:visible tr:contains(${JSON.stringify(text)}):visible`
     } else if (labeled_exactly === "for the instrument row labeled") {
-        sel = `td:visible ${sel}`
-        element_selector = `${window.tableMappings['data collection instruments']}:visible tr:contains(${JSON.stringify(text)}):visible`
+        if (window.icons.hasOwnProperty(online_buttons)) {
+            sel = `td:visible :has(${window.icons[online_buttons]})`
+        } else {
+            sel = `td:visible ${sel}`
+        }
+
+        //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
+        let selector = `tr:has(td:contains(${JSON.stringify(text.toLowerCase())}):first:visible)`
+        element_selector = `${window.tableMappings['data collection instruments']}:visible ${selector}`
     }
 
     cy.top_layer(sel, element_selector)
