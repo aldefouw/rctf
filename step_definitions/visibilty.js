@@ -347,10 +347,10 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
                             //We can get around this by finding column index and looking for specific column value within a row
                             if(window.dateFormats.hasOwnProperty(value)){
-                                row_selector += `:visible:has(td)`
+                                row_selector += `:visible:has(td,th)`
                                 filter_selector.push({ column: index + 1, value: value, regex: true  })
                             } else {
-                                row_selector += `:visible:has(td:contains(${JSON.stringify(value)}))`
+                                row_selector += `:visible:has(:contains(${JSON.stringify(value)}))`
                                 filter_selector.push({ column: index + 1, value: value, regex: false  })
                             }
                         }
@@ -364,9 +364,11 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         //console.log($row)
 
                         filter_selector.forEach((item) => {
-                            cy.wrap($row).find(`td:nth-child(${item['column']})`).each(($cell) => {
+                            cy.wrap($row).find(`:nth-child(${item['column']})`).each(($cell, index) => {
 
                                 const value =  item['value']
+
+                                //console.log(item['column'])
 
                                 //Special case for RegEx on date / time formats
                                 if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
