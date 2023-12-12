@@ -46,7 +46,7 @@ window.tableMappings = {
     'file repository' : 'table#file-repository-table',
     'administrators' : 'table#admin-rights-table',
     'reports' : 'table#table-report_list',
-    'report data' : ['div.dataTables_scrollHeadInner table', 'table#report_table'],
+    'report data' : ['table.dataTable', 'table#report_table'],
     'define events' : 'table#event_table',
     'data access groups' : 'table#table-dags_table',
     'DAGs Switcher' : 'div#dag-switcher-config-container-parent table',

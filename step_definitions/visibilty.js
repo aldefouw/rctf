@@ -304,9 +304,11 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         let selector = `${header_table}:visible`
 
-        let outer_element = base_element.length > 0 ?
-            cy.top_layer(selector, window.elementChoices[base_element]) :
-            cy.top_layer(selector)
+        // console.log(selector)
+
+        let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
+
+        // console.log(window.elementChoices[base_element])
 
         outer_element.within(() => {
             outer_element.then(($cells) => {
@@ -319,7 +321,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         // console.log(heading)
                         // console.log(i)
                         // console.log(current_cell.text())
-                        //console.log(current_cell.text().includes(heading))
+                        // console.log(current_cell.text().includes(heading))
 
                         if (current_cell.text().includes(heading) && columns[heading] === null) {
                             columns[heading] = i + 1
@@ -333,8 +335,11 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                     row_selector = `${main_table}:visible tr:visible`
                     let filter_selector = []
 
-                    for (const key in row) {
-                        const value = row[key]
+                    for (const [index, key] of Object.keys(row).entries()) {
+                        // console.log(index)
+                        // console.log(key)
+                        // console.log(row)
+                        let value = row[key]
                         const column = columns[key]
                         //console.log(key)
                         //console.log(column)
@@ -342,11 +347,11 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
                             //We can get around this by finding column index and looking for specific column value within a row
                             if(window.dateFormats.hasOwnProperty(value)){
-                                row_selector += `:has(td)`
-                                filter_selector.push({ column: column, value: value, regex: true  })
+                                row_selector += `:visible:has(td)`
+                                filter_selector.push({ column: index + 1, value: value, regex: true  })
                             } else {
-                                row_selector += `:has(td:contains(${JSON.stringify(value)}))`
-                                filter_selector.push({ column: column, value: value, regex: false  })
+                                row_selector += `:visible:has(td:contains(${JSON.stringify(value)}))`
+                                filter_selector.push({ column: index + 1, value: value, regex: false  })
                             }
                         }
                     }
@@ -355,6 +360,9 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
                     //See if at least one row matches the criteria we are suggesting
                     cy.get(row_selector).should('have.length.greaterThan', 0).then(($row) => {
+
+                        //console.log($row)
+
                         filter_selector.forEach((item) => {
                             cy.wrap($row).find(`td:nth-child(${item['column']})`).each(($cell) => {
 
