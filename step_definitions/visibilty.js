@@ -176,7 +176,7 @@ Given("I (should) see( ){articleType}( ){onlineDesignerButtons}( ){labeledElemen
         }
 
         //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
-        let selector = `tr:has(td:contains(${JSON.stringify(text.toLowerCase())}):first:visible)`
+        let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
         element_selector = `${window.tableMappings['data collection instruments']}:visible ${selector}`
     }
 
