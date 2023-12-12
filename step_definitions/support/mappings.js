@@ -52,7 +52,8 @@ window.tableMappings = {
     'DAGs Switcher' : 'div#dag-switcher-config-container-parent table',
     'record status dashboard': 'table#record_status_table',
     'data collection instruments': 'table#table-forms_surveys',
-    'codebook' : 'table#codebook-table'
+    'codebook' : 'table#codebook-table',
+    'import data display' : 'table#comptable',
 }
 
 window.dateFormats = {
