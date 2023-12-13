@@ -304,8 +304,6 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         let selector = `${header_table}:visible`
 
-        // console.log(selector)
-
         let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
 
         // console.log(window.elementChoices[base_element])
@@ -368,17 +366,14 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
                                 const value =  item['value']
 
-                                //console.log(item['column'])
-
                                 //Special case for RegEx on date / time formats
                                 if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
                                     expect($cell.text()).to.match(window.dateFormats[value])
 
                                 //All other cases are straight up text matches
                                 } else if ( $cell.text().includes(item['value']) ) {
-                                    expect($cell).to.contain(item['value'])
+                                    expect($cell.text()).to.contain(value)
                                 }
-
                             })
                         })
                     })
