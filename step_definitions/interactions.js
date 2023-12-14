@@ -137,7 +137,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 
     let outer_element = window.elementChoices[base_element]
 
-    if (iframe === " in the iframe"){
+    if (iframe === " in the iframe" || outer_element === 'iframe'){
         const base = cy.frameLoaded().then(() => { cy.iframe() })
 
         if(exactly === 'labeled exactly'){

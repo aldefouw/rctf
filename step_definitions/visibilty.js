@@ -21,10 +21,12 @@ Given("I (should )see (the ){string}{iframeVisibility}{baseElement}", (text, ifr
             should('be.visible').
             should('have.descendants', window.icons[text])
     } else {
-        const base = (iframe === " in the iframe") ?
+        const base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
             cy.frameLoaded().then(() => { cy.iframe() }) :
             cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
-        base.within(($elm) => { cy.wrap($elm).should('contain', text) })
+        base.within(($elm) => {
+            cy.wrap($elm).should('contain', text)
+        })
     }
 })
 

@@ -19,9 +19,9 @@
  * @param {string} tag - (optional) the value of the tag specified
  * @description Clicks on a survey option label.  Track it via an optional tag.
  */
-Given("I click on the survey option label containing {string} label", (survey_option_label) => {
+Given("I click on the survey option label containing {string} label{optionalString}", (survey_option_label, optionalStr) => {
     cy.get('ul li').contains(survey_option_label).then(($li) => {
-        cy.open_survey_in_same_tab($li)
+        cy.open_survey_in_same_tab($li, (optionalStr !== " and will leave the tab open when I return to the REDCap project"))
     })
 })
 
@@ -32,5 +32,14 @@ Given("I click on the survey option label containing {string} label", (survey_op
  * @description Returns user to the REDCap page they were on before they exited to take a survey
  */
 Given("I return to the REDCap page I opened the survey from", () => {
-    cy.visit(window.redcap_url_pre_survey)
+    if(window.elementChoices[''] === 'iframe'){
+        window.elementChoices[''] = 'html'
+        cy.window().then((win) => {
+            //Go back to regular baseElement choice
+            let survey = win.document.getElementById('SURVEY_SIMULATED_NEW_TAB')
+            survey.style.display = 'none'
+        })
+    } else {
+       cy.visit(window.redcap_url_pre_survey)
+    }
 })
