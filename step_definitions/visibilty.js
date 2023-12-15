@@ -1,6 +1,16 @@
 function notLoading(){
-    //Let us make sure that we arrived here via a clicked link
-    cy.window().its('performance.navigation.type').should('eq', 0)
+
+    // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
+    // This prevents us from looking at stuff before a reload is done (hopefully!)
+    cy.window().its('performance.navigation.type').then((type) => {
+        if (type === 0 && window.about_to_unload){
+            cy.wait('@interceptedRequest').then((interception) => {
+                if(interception.response.statusCode === 302){
+                    cy.window().its('performance.navigation.type').should('eq', 1)
+                }
+            })
+        }
+    })
 
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')

@@ -22,6 +22,7 @@ function intercept_vanderbilt_requests(){
     cy.intercept({ method: 'GET', url: '*/consortium/collect_stats.php?*'}, []).as('Stats')
     cy.intercept({ method: 'GET', url: '*/ControlCenter/check_server_ping.php'}, []).as('Ping')
     cy.intercept({ method: 'GET', url: '*/ControlCenter/report_site_stats.php'}, []).as('Control Center Stats')
+    cy.intercept('GET', '**/*').as('interceptedRequest')
 }
 
 function set_user_info(){
