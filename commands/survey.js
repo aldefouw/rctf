@@ -12,7 +12,7 @@ Cypress.Commands.add('enable_surveys', (instrument_name) => {
     cy.get('html').should('contain', 'Your survey settings were successfully saved!')
 })
 
-Cypress.Commands.add('open_survey_in_same_tab', (element, same_tab = true) => {
+Cypress.Commands.add('open_survey_in_same_tab', (element, same_tab = true, logout = false) => {
     //Set the Pre Survey URL so we can return to the page we were on later
     cy.url().then((existing_url) => {
         window.redcap_url_pre_survey = existing_url
@@ -55,6 +55,19 @@ Cypress.Commands.add('open_survey_in_same_tab', (element, same_tab = true) => {
         }
     })
 
-    cy.wrap(element).click()
+    if(logout){
+        //This removes the logout portion of the click event
+        cy.wrap(element).invoke('attr', 'onclick')
+            .then((onclickValue) => {
+                const modifiedOnclick = onclickValue.replace("window.location.href=window.location.href+'&logout=1'", '');
+                cy.wrap(element).invoke('attr', 'onclick', modifiedOnclick);
+            }).click()
+
+        //This will log us out instead
+        cy.clearCookie('PHPSESSID')
+
+    } else {
+        cy.wrap(element).click()
+    }
 
 })
