@@ -1,4 +1,7 @@
 function notLoading(){
+    //Let us make sure that we arrived here via a clicked link
+    cy.window().its('performance.navigation.type').should('eq', 0)
+
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
     if(Cypress.$('div#working').length) cy.get('div#working').should('not.be.visible')
@@ -281,10 +284,6 @@ Given('I (should )see Project status: "{projectStatus}"', (status) => {
  */
 Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
     notLoading()
-
-    if(Cypress.$('div#working:visible').length) cy.get('div#working').should('not.be.visible')
-    if(Cypress.$('span#progress_img_user:visible').length) cy.get('span#progress_img_user').should('not.be.visible')
-    if(Cypress.$('img[src*="progress_circle"]:visible').length) cy.get('img[src*="progress_circle"]').should('not.be.visible')
 
     let selector = window.tableMappings[table_type]
     let tabular_data = dataTable['rawTable']
