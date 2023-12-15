@@ -22,7 +22,9 @@ function intercept_vanderbilt_requests(){
     cy.intercept({ method: 'GET', url: '*/consortium/collect_stats.php?*'}, []).as('Stats')
     cy.intercept({ method: 'GET', url: '*/ControlCenter/check_server_ping.php'}, []).as('Ping')
     cy.intercept({ method: 'GET', url: '*/ControlCenter/report_site_stats.php'}, []).as('Control Center Stats')
-    cy.intercept('GET', '**/*').as('interceptedRequest')
+    cy.intercept('GET', '**/*').as('interceptedRequest').then(() => {
+        window.registeredAlias = true // this is useful to know whether we can actually call a cy.wait
+    })
 }
 
 function set_user_info(){
@@ -60,6 +62,10 @@ load_support_files()
 //This is where we initialize the stuff we need in a basic install
 before(() => {
     rctf_initialize()
+})
+
+beforeEach(() => {
+    window.registeredAlias = false
 })
 
 // // This is what makes these functions available to outside scripts

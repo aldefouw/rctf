@@ -3,9 +3,9 @@ function notLoading(){
     // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
     // This prevents us from looking at stuff before a reload is done (hopefully!)
     cy.window().its('performance.navigation.type').then((type) => {
-        if (type === 0 && window.about_to_unload){
-            cy.wait('@interceptedRequest').then((interception) => {
-                if(interception.response.statusCode === 302){
+        if (type === 0 && window.about_to_unload && window.registeredAlias){
+            cy.wait('@interceptedRequest', { timeout: 1000 }).then((interception) => {
+                if (interception && interception.response.statusCode === 302) {
                     cy.window().its('performance.navigation.type').should('eq', 1)
                 }
             })
