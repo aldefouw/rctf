@@ -1,5 +1,5 @@
 cy.on('window:before:unload', () => {
-    window.about_to_unload = true
+    window.aboutToUnload = true
 })
 
 Cypress.Commands.add("top_layer", (label_selector, base_element = 'div[role=dialog]:visible,html') => {
@@ -142,7 +142,7 @@ Cypress.Commands.overwrite(
     'click',
     (originalFn, subject, options) => {
 
-        window.about_to_unload = true
+        window.aboutToUnload = true
 
         //If we say no CSRF check, then skip it ...
         if(options !== undefined && options['no_csrf_check']){
