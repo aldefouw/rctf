@@ -4,9 +4,9 @@
 
 Cypress.Commands.add("dragTo", { prevSubject: 'element'}, (subject, target) => {
     let rect = cy.get(target).then((element) => {
-        let rect = element[0].getBoundingClientRect()
-        return rect
+        return element[0].getBoundingClientRect()
     })
+
     //click on element
     cy.wrap(subject).trigger('mousedown')
 
@@ -17,6 +17,12 @@ Cypress.Commands.add("dragTo", { prevSubject: 'element'}, (subject, target) => {
     // target position changed, mouseup on original element
     cy.wrap(subject).trigger('mouseup')
 
+})
+
+Cypress.Commands.add("dragToTarget", { prevSubject: 'element'}, (subject, target) => {
+    cy.wrap(subject).drag(target, {force: true}).then((success) => {
+        cy.get(target).click({force: true})
+    })
 })
 
 Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_label, table_selector= 'table', header_row_type = 'th', row_cell_type = 'td', row_number = 0, body_table = 'table') => {

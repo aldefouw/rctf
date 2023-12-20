@@ -2,16 +2,41 @@ cy.on('window:before:unload', () => {
     window.aboutToUnload = true
 })
 
+Cypress.Commands.add('not_loading', () => {
+    // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
+    // This prevents us from looking at stuff before a reload is done (hopefully!)
+    cy.window().its('performance.navigation.type').then((type) => {
+        if (type === 0 && window.aboutToUnload && window.registeredAlias){
+            cy.wait('@interceptedRequest', { timeout: 1000 }).then((interception) => {
+                if (interception && interception.response.statusCode === 302) {
+                    cy.window().its('performance.navigation.type').should('eq', 1)
+                }
+            })
+        }
+    })
+
+    if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
+    if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
+    if(Cypress.$('div#working').length) cy.get('div#working').should('not.be.visible')
+})
+
 Cypress.Commands.add("top_layer", (label_selector, base_element = 'div[role=dialog]:visible,html') => {
     cy.get_top_layer(base_element, ($el) => {
         expect($el.find(label_selector)).length.to.be.above(0)}
     ).then((el) => { return el })
 })
 
-Cypress.Commands.add("get_labeled_element", (element_selector, label, value = null) => {
-    cy.contains(label).then(($label) => {
-        cy.get_element_by_label($label, element_selector, value)
-    })
+Cypress.Commands.add("get_labeled_element", (element_selector, label, value = null, labeled_exactly = false) => {
+    if(labeled_exactly){
+        cy.contains(new RegExp("^" + label + "$", "g")).then(($label) => {
+            cy.get_element_by_label($label, element_selector, value)
+        })
+    } else {
+        cy.contains(label).then(($label) => {
+            cy.get_element_by_label($label, element_selector, value)
+        })
+    }
+
 })
 
 Cypress.Commands.add('filter_elements', (elements, selector, value) => {

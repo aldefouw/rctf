@@ -115,6 +115,13 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 
     before_click_monitor(button_type)
 
+    // if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
+    //     cy.intercept({
+    //         method: 'POST',
+    //         url: '/redcap_v' + Cypress.env('redcap_version') + '/Design/branching_logic_builder.php?pid=*'
+    //     }).as('branching_logic')
+    // }
+
     if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
         cy.intercept({
             method: 'POST',
@@ -173,7 +180,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
             cy.top_layer(sel, outer_element).within(() => {
                 cy.get(sel).eq(ord).then(($button) => {
                     if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
-                        cy.open_survey_in_same_tab($button)
+                        cy.open_survey_in_same_tab($button, !(button_type !== undefined && button_type === " and will leave the tab open when I return to the REDCap project"), (text === 'Log out+ Open survey'))
                     } else {
                         cy.wrap($button).click()
                     }
@@ -191,6 +198,10 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
         window.survey_disable_attempt = false
     }
 
+    if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
+        cy.wait(2000)
+    }
+
     after_click_monitor(button_type)
 })
 
@@ -204,8 +215,10 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Clicks on an anchor element with a specific text label.
  */
-Given("I click on the( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
+Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
     before_click_monitor(link_type)
+
+    cy.not_loading()
 
     if(base_element === undefined){
         base_element = ''
@@ -217,7 +230,12 @@ Given("I click on the( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string
         cy.get('body').invoke('append', loadScript);
     }
 
-    if(exactly === "for the File Repository file named"){
+    if(exactly === "for the variable") {
+        outer_element = `table:visible tr:has(:contains(${JSON.stringify(`Variable: ${text}`)})):visible`
+        cy.top_layer(`a:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        })
+    } else if(exactly === "for the File Repository file named"){
         outer_element = `${window.tableMappings['file repository']}:visible tr:has(:contains(${JSON.stringify(text)}))`
         cy.top_layer(`a:contains(${JSON.stringify(text)})`, outer_element).within(() => {
             cy.get(`${window.fileRepoIcons[file_repo_icons]}`).click()
@@ -324,9 +342,15 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 
-Given ('I {enterType} {string} into the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
+Given ('I {enterType} {string} in(to) the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
+
     let element = `textarea:first`
+
+    //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
+    if(label === "Logic Editor") {
+        element = `div#rc-ace-editor div.ace_line`
+    }
 
     //Either the base element as specified or the default
     let outer_element = base_element.length > 0 ?
@@ -350,6 +374,8 @@ Given ('I {enterType} {string} into the textarea field labeled {string}{baseElem
                             cy.wrap($parent).find(element).type(text)
                         } else if (enter_type === "clear field and enter") {
                             cy.wrap($parent).find(element).clear().type(text)
+                        } else if(enter_type === "click on"){
+                            cy.wrap($parent).find(element).click()
                         }
                     }
 
@@ -365,10 +391,21 @@ Given ('I {enterType} {string} into the textarea field labeled {string}{baseElem
                         if(enter_type === "enter"){
                             cy.wrap($parent).parent().find(element).type(text)
                         } else if (enter_type === "clear field and enter") {
-                            cy.wrap($parent).parent().find(element).clear().type(text)
+
+                            //Logic editor does not use an actual textarea; we need to invoke the text instead!
+                            if(label === "Logic Editor"){
+                              cy.wrap($parent).parent().find(element).
+                                click({force: true}).
+                                invoke('attr', 'contenteditable', 'true').
+                                type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
+                            } else {
+                                cy.wrap($parent).parent().find(element).clear().type(text)
+                            }
+
+                        } else if(enter_type === "click on"){
+                            cy.wrap($parent).parent().find(element).click()
                         }
                     }
-
                 }
             })
         })
@@ -442,7 +479,6 @@ Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {check
         label_selector = `tr:contains(${JSON.stringify(label)}):visible`
         element_selector = `tr:contains(${JSON.stringify(label)}):visible td input[type=${type}]:visible:not([disabled])`
     }
-
     //Special case: "Repeating Instruments and events" popup to select instruments by checkbox
     if(event_name.length > 0){
         label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
@@ -450,7 +486,7 @@ Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {check
     }
 
     cy.top_layer(label_selector, outer_element).within(() => {
-        let selector = cy.get_labeled_element(element_selector, label)
+        let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
         if (type === "radio" || check === "click on") {
             selector.scrollIntoView().click()
         } else if (check === "check") {
@@ -697,3 +733,20 @@ Given('I click on the table heading column labeled {string}', (column) => {
         cy.wrap($th).find(`:contains("${column}"):visible:first`).click()
     })
 })
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I click on the table heading column labeled {string}
+ * @param {string} column - the text to enter into the field
+ * @description Clicks on a specific table column
+ */
+Given('I drag the field choice labeled {string} to the box labeled "Show the field ONLY if..."', (field_choice) => {
+    let field_choice_escaped = field_choice.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    let selector = `ul:visible:has(li:contains(${field_choice_escaped}))`
+    cy.get(selector).then(($elm) => {
+        let elm = cy.wrap($elm).find(`li:contains(${field_choice_escaped})`)
+        elm.scrollIntoView().dragToTarget('div#dropZone1:visible')
+    })
+})
+

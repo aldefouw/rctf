@@ -5,7 +5,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'baseElement',
-            regexp: /| on the tooltip| in the tooltip| on the role selector dropdown| in the role selector dropdown| on the dialog box| in the dialog box| within the data collection instrument list| on the action popup| in the action popup| in the Edit survey responses column| in the "Main project settings" section| in the "Use surveys in this project\?" row in the "Main project settings" section| in the "Use longitudinal data collection with defined events\?" row in the "Main project settings" section| in the "Use the MyCap participant-facing mobile app\?" row in the "Main project settings" section| in the "Enable optional modules and customizations" section| in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section| in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section| in the "Scheduling module \(longitudinal only\)" row in the "Enable optional modules and customizations" section| in the "Randomization module" row in the "Enable optional modules and customizations" section| in the "Designate an email field for communications \(including survey invitations and alerts\)" row in the "Enable optional modules and customizations" section| in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section| in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section| in the validation row labeled "Code Postal 5 caracteres \(France\)"| in the validation row labeled "Date \(D-M-Y\)"| in the validation row labeled "Date \(M-D-Y\)"| in the validation row labeled "Date \(Y-M-D\)"| in the validation row labeled "Datetime \(D-M-Y H:M\)"| in the validation row labeled "Datetime \(M-D-Y H:M\)"| in the validation row labeled "Datetime \(Y-M-D H:M\)"| in the validation row labeled "Datetime w\/ seconds \(D-M-Y H:M:S\)"| in the validation row labeled "Datetime w\/ seconds \(M-D-Y H:M:S\)"| in the validation row labeled "Datetime w\/ seconds \(Y-M-D H:M:S\)"| in the validation row labeled "Email"| in the validation row labeled "Integer"| in the validation row labeled "Letters only"| in the validation row labeled "MRN \(10 digits\)"| in the validation row labeled "MRN \(generic\)"| in the validation row labeled "Number"| in the validation row labeled "Number \(1 decimal place - comma as decimal\)"| in the validation row labeled "Number \(1 decimal place\)"| in the validation row labeled "Number \(2 decimal places - comma as decimal\)"| in the validation row labeled "Number \(2 decimal places\)"| in the validation row labeled "Number \(3 decimal places - comma as decimal\)"| in the validation row labeled "Number \(3 decimal places\)"| in the validation row labeled "Number \(4 decimal places - comma as decimal\)"| in the validation row labeled "Number \(4 decimal places\)"| in the validation row labeled "Number \(comma as decimal\)"| in the validation row labeled "Phone \(Australia\)"| in the validation row labeled "Phone \(North America\)"| in the validation row labeled "Phone \(UK\)"| in the validation row labeled "Postal Code \(Australia\)"| in the validation row labeled "Postal Code \(Canada\)"| in the validation row labeled "Postal Code \(Germany\)"| in the validation row labeled "Social Security Number \(U\.S\.\)"| in the validation row labeled "Time \(HH:MM:SS\)"| in the validation row labeled "Time \(HH:MM\)"| in the validation row labeled "Time \(MM:SS\)"| in the validation row labeled "Vanderbilt MRN"| in the validation row labeled "Zipcode \(U\.S\.\)"/,
+            regexp: /| on the tooltip| in the tooltip| on the role selector dropdown| in the role selector dropdown| on the dialog box| in the dialog box| on the Add\/Edit Branching Logic dialog box| in the Add\/Edit Branching Logic dialog box| within the data collection instrument list| on the action popup| in the action popup| in the Edit survey responses column| in the "Main project settings" section| in the "Use surveys in this project\?" row in the "Main project settings" section| in the "Use longitudinal data collection with defined events\?" row in the "Main project settings" section| in the "Use the MyCap participant-facing mobile app\?" row in the "Main project settings" section| in the "Enable optional modules and customizations" section| in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section| in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section| in the "Scheduling module \(longitudinal only\)" row in the "Enable optional modules and customizations" section| in the "Randomization module" row in the "Enable optional modules and customizations" section| in the "Designate an email field for communications \(including survey invitations and alerts\)" row in the "Enable optional modules and customizations" section| in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section| in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section| in the validation row labeled "Code Postal 5 caracteres \(France\)"| in the validation row labeled "Date \(D-M-Y\)"| in the validation row labeled "Date \(M-D-Y\)"| in the validation row labeled "Date \(Y-M-D\)"| in the validation row labeled "Datetime \(D-M-Y H:M\)"| in the validation row labeled "Datetime \(M-D-Y H:M\)"| in the validation row labeled "Datetime \(Y-M-D H:M\)"| in the validation row labeled "Datetime w\/ seconds \(D-M-Y H:M:S\)"| in the validation row labeled "Datetime w\/ seconds \(M-D-Y H:M:S\)"| in the validation row labeled "Datetime w\/ seconds \(Y-M-D H:M:S\)"| in the validation row labeled "Email"| in the validation row labeled "Integer"| in the validation row labeled "Letters only"| in the validation row labeled "MRN \(10 digits\)"| in the validation row labeled "MRN \(generic\)"| in the validation row labeled "Number"| in the validation row labeled "Number \(1 decimal place - comma as decimal\)"| in the validation row labeled "Number \(1 decimal place\)"| in the validation row labeled "Number \(2 decimal places - comma as decimal\)"| in the validation row labeled "Number \(2 decimal places\)"| in the validation row labeled "Number \(3 decimal places - comma as decimal\)"| in the validation row labeled "Number \(3 decimal places\)"| in the validation row labeled "Number \(4 decimal places - comma as decimal\)"| in the validation row labeled "Number \(4 decimal places\)"| in the validation row labeled "Number \(comma as decimal\)"| in the validation row labeled "Phone \(Australia\)"| in the validation row labeled "Phone \(North America\)"| in the validation row labeled "Phone \(UK\)"| in the validation row labeled "Postal Code \(Australia\)"| in the validation row labeled "Postal Code \(Canada\)"| in the validation row labeled "Postal Code \(Germany\)"| in the validation row labeled "Social Security Number \(U\.S\.\)"| in the validation row labeled "Time \(HH:MM:SS\)"| in the validation row labeled "Time \(HH:MM\)"| in the validation row labeled "Time \(MM:SS\)"| in the validation row labeled "Vanderbilt MRN"| in the validation row labeled "Zipcode \(U\.S\.\)"/,
         })
 
 defineParameterType({
@@ -31,6 +31,11 @@ defineParameterType({
 defineParameterType({
             name: 'fileRepoIcons',
             regexp: /(?: (File Share|Delete||))?/,
+        })
+
+defineParameterType({
+            name: 'onlineDesignerFieldIcons',
+            regexp: /|Edit|Branching Logic|Copy|Move|Stop|Delete Field/,
         })
 
 defineParameterType({
@@ -120,7 +125,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'enterType',
-            regexp: /|verify|enter|clear field and enter/,
+            regexp: /|verify|enter|clear field and enter|click on/,
         })
 
 defineParameterType({
@@ -145,12 +150,12 @@ defineParameterType({
 
 defineParameterType({
             name: 'labeledElement',
-            regexp: /|button|link/,
+            regexp: /|button|link|field/,
         })
 
 defineParameterType({
             name: 'labeledExactly',
-            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the File Repository file named/,
+            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named/,
         })
 
 defineParameterType({
@@ -200,7 +205,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'saveButtonRouteMonitoring',
-            regexp: /| on the dialog box for the Repeatable Instruments and Events module| on the Designate Instruments for My Events page| on the Online Designer page| and cancel the confirmation window| and accept the confirmation window| in the dialog box to request a change in project status| to rename an instrument| in the "Add New Field" dialog box| in the "Edit Field" dialog box/,
+            regexp: /| on the dialog box for the Repeatable Instruments and Events module| on the Designate Instruments for My Events page| on the Online Designer page| and cancel the confirmation window| and accept the confirmation window| in the dialog box to request a change in project status| to rename an instrument| in the "Add New Field" dialog box| in the "Edit Field" dialog box| and will leave the tab open when I return to the REDCap project/,
         })
 
 defineParameterType({

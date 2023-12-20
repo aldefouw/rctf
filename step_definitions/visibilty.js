@@ -1,22 +1,3 @@
-function notLoading(){
-
-    // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
-    // This prevents us from looking at stuff before a reload is done (hopefully!)
-    cy.window().its('performance.navigation.type').then((type) => {
-        if (type === 0 && window.aboutToUnload && window.registeredAlias){
-            cy.wait('@interceptedRequest', { timeout: 1000 }).then((interception) => {
-                if (interception && interception.response.statusCode === 302) {
-                    cy.window().its('performance.navigation.type').should('eq', 1)
-                }
-            })
-        }
-    })
-
-    if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
-    if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
-    if(Cypress.$('div#working').length) cy.get('div#working').should('not.be.visible')
-}
-
 /**
  * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
@@ -27,7 +8,7 @@ function notLoading(){
  * @description Visually verifies that text exists within the HTML object. NOTE: "should" is optional for readability.
  */
 Given("I (should )see (the ){string}{iframeVisibility}{baseElement}", (text, iframe, base_element = '') => {
-    notLoading()
+    cy.not_loading()
 
     if (window.icons.hasOwnProperty(text)) {
         cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
@@ -165,37 +146,64 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Verifies that a visible element of the specified type containing `text` exists
  */
-Given("I (should) see( ){articleType}( ){onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{baseElement}", (article_type, online_buttons, el, labeled_exactly, text, base_element) => {
-    // double quotes need to be re-escaped before inserting into :contains() selector
-    text = text.replaceAll('\"', '\\\"')
-    let subsel = {'link':'a', 'button':'button'}[el]
+Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{baseElement}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, base_element) => {
 
-    let element_selector = window.elementChoices[base_element]
-    let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible:not([disabled])` : '')
+    //Special case of Project status
+    if(opt_str === "Project status:" && window.parameterTypes['projectStatus'].includes(text)){
+        cy.get('div.menubox:contains("Project status:")').should('contain', text)
+    } else {
 
-    if(window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
-        if (!window.icons.hasOwnProperty(online_buttons)) {
-            online_buttons = online_buttons.replaceAll('"', '')
-            sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:not([disabled])` : '')
+        // double quotes need to be re-escaped before inserting into :contains() selector
+        text = text.replaceAll('\"', '\\\"')
+        let subsel = {'link':'a', 'button':'button', 'field': 'tr'}[el]
+
+        let element_selector = window.elementChoices[base_element]
+        let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible:not([disabled])` : '')
+
+        if(window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
+            if (!window.icons.hasOwnProperty(online_buttons)) {
+                online_buttons = online_buttons.replaceAll('"', '')
+                sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:not([disabled])` : '')
+            }
         }
-    }
 
-    if(labeled_exactly === "in the row labeled" ) {
-        sel = `td:visible ${sel}`
-        element_selector = `table:visible tr:contains(${JSON.stringify(text)}):visible`
-    } else if (labeled_exactly === "for the instrument row labeled") {
-        if (window.icons.hasOwnProperty(online_buttons)) {
-            sel = `td:visible :has(${window.icons[online_buttons]})`
-        } else {
+        if(labeled_exactly === "for the variable" ) {
+            if(!window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
+                //Trim off the quotes
+                opt_str = opt_str.slice(1, -1)
+
+                sel = `:contains("${opt_str}")`
+
+                //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
+                let selector = `tr:contains(${JSON.stringify(`Variable: ${text}`)}):visible`
+                element_selector = `${element_selector}:visible table:visible ${selector}`
+            }
+
+        } else if(labeled_exactly === "in the row labeled" ) {
             sel = `td:visible ${sel}`
+            element_selector = `${element_selector}:visible table:visible tr:contains(${JSON.stringify(text)}):visible`
+        } else if (labeled_exactly === "for the instrument row labeled") {
+            if (window.icons.hasOwnProperty(online_buttons)) {
+                sel = `td:visible :has(${window.icons[online_buttons]})`
+            } else {
+                sel = `td:visible ${sel}`
+            }
+
+            //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
+            let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
+            element_selector = `${element_selector}:visible ${window.tableMappings['data collection instruments']}:visible ${selector}`
         }
 
-        //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
-        let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
-        element_selector = `${window.tableMappings['data collection instruments']}:visible ${selector}`
-    }
+        if(window.elementChoices[base_element] === 'iframe'){
+            const base = cy.frameLoaded().then(() => { cy.iframe() })
+            base.within(($elm) => {
+                cy.wrap($elm).find(sel).should('contain', text)
+            })
+        } else {
+            cy.top_layer(sel, element_selector)
+        }
 
-    cy.top_layer(sel, element_selector)
+    }
 })
 
 /**
@@ -207,11 +215,12 @@ Given("I (should) see( ){articleType}( ){onlineDesignerButtons}( ){labeledElemen
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Verifies that there are no visible elements of the specified type with the label `text`
  */
-Given("I should NOT see a {labeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
+Given("I should NOT see( ){articleType}( ){labeledElement} labeled {string}{baseElement}", (el, text, base_element) => {
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
-    let subsel = {'link':'a', 'button':'button'}[el]
+    let subsel = {'link':'a', 'button':'button', 'field': 'tr'}[el]
     let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,button[value="${text}"]:visible` : '')
+    cy.wait(2000)
     cy.get_top_layer(window.elementChoices[base_element], ($e) => {console.log(sel);expect($e.find(sel)).to.have.lengthOf(0)})
 })
 
@@ -266,7 +275,7 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
  */
 
 Given('I should see {string} in (the ){tableTypes} table', (text, table_type = 'a') => {
-    notLoading()
+    cy.not_loading()
     let selector = window.tableMappings[table_type]
     cy.get(`${selector}:visible`).contains('td', text, { matchCase: false })
 })
@@ -278,9 +287,8 @@ Given('I should see {string} in (the ){tableTypes} table', (text, table_type = '
  * @param {string} projectStatus - available options: 'Production', 'Development', 'Analysis/Cleanup'
  * @description Identify project status
  */
-Given('I (should )see Project status: "{projectStatus}"', (status) => {
-    cy.get('div.menubox:contains("Project status:")').should('contain', status);
-})
+
+/* This method is defined inside "I should see (a)(the) {labeledElement} labeled {string} {baseElement}" */
 
 /**
  * @module Visibility
@@ -293,7 +301,7 @@ Given('I (should )see Project status: "{projectStatus}"', (status) => {
  * @description Allows us to check tabular data rows within REDCap
  */
 Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
-    notLoading()
+    cy.not_loading()
 
     let selector = window.tableMappings[table_type]
     let tabular_data = dataTable['rawTable']

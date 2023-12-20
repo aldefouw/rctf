@@ -151,6 +151,8 @@ window.elementChoices = {
     ' in the role selector dropdown' : 'div[id=assignUserDropdownDiv]:visible',
     ' on the dialog box' : 'div[role=dialog]:visible',
     ' in the dialog box' : 'div[role=dialog]:visible',
+    ' on the Add/Edit Branching Logic dialog box' : 'div[role=dialog]:visible',
+    ' in the Add/Edit Branching Logic dialog box' : 'div[role=dialog]:visible',
     ' within the data collection instrument list' : 'table#table-forms_surveys',
     ' on the action popup' : '[id=formActionDropdown]',
     ' in the action popup' : '[id=formActionDropdown]',
@@ -213,4 +215,13 @@ window.recordStatusIcons = {
 window.fileRepoIcons = {
     'File Share' : `i[class*=fa-arrow-up]`,
     'Delete' : `i[class*=fa-times]`
+}
+
+window.onlineDesignerFieldIcons = {
+    'Edit' : `img[src*=pencil]`,
+    'Branching Logic': `img[src*=branch]`,
+    'Copy' : `img[src*=copy]`,
+    'Move' : `img[src*=move]`,
+    'Stop' : 'img[src*=stop]',
+    'Delete Field': `img[src*=cross]`
 }

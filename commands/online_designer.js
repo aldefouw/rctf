@@ -60,6 +60,7 @@ Cypress.Commands.add('set_field_value_by_label', ($name, $value, $type, $prefix 
     then(($tr) => {
 
         let selector = $type + '[name="' + $prefix + $tr[0]['attributes']['sq_id']['value'] + $suffix + '"]'
+
         cy.get(selector, { force: true}).then(($a) => {
             return $a[0]
         })
@@ -88,10 +89,9 @@ Cypress.Commands.add('select_field_choices', (timeout = 10000) => {
 })
 
 Cypress.Commands.add('select_radio_by_label', ($name, $value, $click = true, $selected = true ) => {
-    const radio_labels = cy.set_field_value_by_label($name, $value, 'input', '', '___radio')
+    //const radio_labels = cy.set_field_value_by_label($name, $value, 'input', '', '___radio')
 
-    radio_labels.first().parents('tr').first().within(() => {
-
+    cy.get(`tr:visible:has(:contains(${$name}))`).within(() => {
         if($click){
             cy.get('label[class=mc]').contains($value).click()
         } else {

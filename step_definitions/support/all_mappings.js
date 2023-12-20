@@ -10,6 +10,7 @@ window.parameterTypes = {
     ordinal: transformKeysToRegExp(window.ordinalChoices),
     recordStatusIcons: transformKeysToRegExp(window.recordStatusIcons),
     fileRepoIcons: transformKeysToRegExp(window.fileRepoIcons),
+    onlineDesignerFieldIcons: transformKeysToRegExp(window.onlineDesignerFieldIcons),
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
@@ -36,7 +37,7 @@ window.parameterTypes = {
     ],
     enableDisable: ['enable', 'disable'],
     elmType: ['input', 'list item', 'checkbox', 'span'],
-    enterType: ['verify', 'enter', 'clear field and enter'],
+    enterType: ['verify', 'enter', 'clear field and enter', 'click on'],
     fieldType: [
         'Text Box',
         'Notes Box',
@@ -63,8 +64,8 @@ window.parameterTypes = {
         'Save & Go To Next Instance',
         'Save & Add New Instance',
     ],
-    labeledElement: ['button', 'link'],
-    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the File Repository file named'],
+    labeledElement: ['button', 'link', 'field'],
+    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named'],
     linkNames: ['link', 'tab', 'instrument', 'icon'],
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSee: ['not '],
@@ -89,7 +90,8 @@ window.parameterTypes = {
         ' in the dialog box to request a change in project status',
         ' to rename an instrument',
         ' in the "Add New Field" dialog box',
-        ' in the "Edit Field" dialog box'
+        ' in the "Edit Field" dialog box',
+        ' and will leave the tab open when I return to the REDCap project'
     ],
     select: ['selected', 'unselected'],
     tableName: ['', ' of the User Rights table', ' of the Reports table'],
