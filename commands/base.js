@@ -2,18 +2,24 @@ cy.on('window:before:unload', () => {
     window.aboutToUnload = true
 })
 
+cy.on('window:load', () => {
+    window.aboutToUnload = false
+})
+
 Cypress.Commands.add('not_loading', () => {
     // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
     // This prevents us from looking at stuff before a reload is done (hopefully!)
-    cy.window().its('performance.navigation.type').then((type) => {
-        if (type === 0 && window.aboutToUnload && window.registeredAlias){
-            cy.wait('@interceptedRequest', { timeout: 1000 }).then((interception) => {
-                if (interception && interception.response.statusCode === 302) {
-                    cy.window().its('performance.navigation.type').should('eq', 1)
-                }
-            })
-        }
-    })
+    if (window.aboutToUnload && window.registeredAlias){
+        cy.window().its('performance.navigation.type').then((type) => {
+            if (type === 0) {
+                cy.wait('@interceptedRequest', {timeout: 1000}).then((interception) => {
+                    if (interception && interception.response.statusCode === 302) {
+                        cy.window().its('performance.navigation.type').should('eq', 1)
+                    }
+                })
+            }
+        })
+    }
 
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
