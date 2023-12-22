@@ -91,7 +91,7 @@ Given("I should see the {dropdownType} field labeled {string} with the options b
 
     cy.top_layer(label_selector).within(() => {
         for(let i = 0; i < options.rawTable.length; i++){
-            let element_selector = `select:has(option:contains("${options.rawTable[i][0]}")):visible`
+            let element_selector = `select:has(option:contains(${JSON.stringify(options.rawTable[i][0])})):visible`
             let dropdown = cy.get_labeled_element(element_selector, label)
             dropdown.should('contain', options.rawTable[i][0])
         }
@@ -363,12 +363,15 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         if(!isNaN(column)){
                             //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
                             //We can get around this by finding column index and looking for specific column value within a row
-                            if(window.dateFormats.hasOwnProperty(value)){
+                            if(value === "[icon]") {
+                                row_selector += `:visible:has(td:has(img),th:has(img))`
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true })
+                            } else if(window.dateFormats.hasOwnProperty(value)){
                                 row_selector += `:visible:has(td,th)`
-                                filter_selector.push({ column: index + 1, value: value, regex: true  })
+                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false })
                             } else {
                                 row_selector += `:visible:has(:contains(${JSON.stringify(value)}))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false  })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false })
                             }
                         }
                     }
@@ -383,10 +386,13 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         filter_selector.forEach((item) => {
                             cy.wrap($row).find(`:nth-child(${item['column']})`).each(($cell, index) => {
 
-                                const value =  item['value']
+                                const value = item['value']
 
+                                //Special case for icons
+                                if(item['icon']){
+                                    cy.wrap($cell).find('img').should('exist')
                                 //Special case for RegEx on date / time formats
-                                if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
+                                } else if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
                                     expect($cell.text()).to.match(window.dateFormats[value])
 
                                 //All other cases are straight up text matches
