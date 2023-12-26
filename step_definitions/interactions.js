@@ -657,8 +657,8 @@ Given('I select the checkbox option {string} for the field labeled {string}', (c
  */
 Given('I select {string} on the {dropdownType} field labeled {string}{baseElement}', (option, type, label, base_element) => {
     let outer_element = window.elementChoices[base_element]
-    let label_selector = `:contains("${label}"):visible`
-    let element_selector = `select:has(option:contains("${option}")):visible:enabled`
+    let label_selector = `:contains(${JSON.stringify(label)}):visible`
+    let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
     cy.top_layer(label_selector, outer_element).within(() => {
         cy.get_labeled_element(element_selector, label, option).then(($select) => {
             cy.wrap($select).scrollIntoView().
