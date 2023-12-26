@@ -54,6 +54,7 @@ window.tableMappings = {
     'data collection instruments': 'table#table-forms_surveys',
     'codebook' : 'table#codebook-table',
     'import data display' : 'table#comptable',
+    'participant list' : ['div#partlist_outerdiv table', 'table#table-participant_table']
 }
 
 window.dateFormats = {
