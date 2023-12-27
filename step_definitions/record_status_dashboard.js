@@ -51,7 +51,7 @@ Given('I (should) see the "{recordStatusIcons}" icon for the {string} longitudin
  * @description Selects a specific record from the Add / Edit record page
  */
 
-Given(/I select record ID "(.*)" from arm name "(.*)" on the Add \/ Edit record page$/, (record_id, arm_name) => {
+Given(/I select record ID "(.*)" from arm name "(.*)" on the (Add|View) \/ Edit record page$/, (record_id, arm_name) => {
     cy.get('select#arm_name').select(arm_name)
     cy.get('select#record').select(record_id)
 })
