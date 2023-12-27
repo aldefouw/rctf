@@ -11,7 +11,7 @@ window.parameterTypes = {
     recordStatusIcons: transformKeysToRegExp(window.recordStatusIcons),
     fileRepoIcons: transformKeysToRegExp(window.fileRepoIcons),
     onlineDesignerFieldIcons: transformKeysToRegExp(window.onlineDesignerFieldIcons),
-    participantListIcons: transformKeysToRegExp(window.window.participantListIcons),
+    participantListIcons: transformKeysToRegExp(window.participantListIcons),
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],

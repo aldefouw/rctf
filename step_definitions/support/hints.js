@@ -1,6 +1,6 @@
 defineParameterType({
             name: 'tableTypes',
-            regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|import data display/,
+            regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|import data display|participant list/,
         })
 
 defineParameterType({
@@ -36,6 +36,11 @@ defineParameterType({
 defineParameterType({
             name: 'onlineDesignerFieldIcons',
             regexp: /|Edit|Branching Logic|Copy|Move|Stop|Delete Field/,
+        })
+
+defineParameterType({
+            name: 'participantListIcons',
+            regexp: /(?: (green checkmark|gray bubble||))?/,
         })
 
 defineParameterType({
@@ -215,7 +220,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'tableName',
-            regexp: /|| of the User Rights table| of the Reports table/,
+            regexp: /|| of the User Rights table| of the Reports table| of the Participant List table/,
         })
 
 defineParameterType({
