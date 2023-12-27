@@ -352,3 +352,16 @@ Given("I drag the field named {string} to the{ordinal} row", (field, position) =
         cy.wrap(row).dragTo('@target')
     })
 })
+
+/**
+ * @module OnlineDesigner
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I click the "reset" link for the field labeled {string}
+ * @param {string} field_label - the label of the field
+ * @description Interactions - Clicks the reset link for a specific field label
+ */
+Given('I click the "reset" link for the field labeled {string}', (label) => {
+    cy.get(`tr:has(label:contains(${JSON.stringify(label)}))`).
+        find('a:contains("reset"):visible').
+        eq(0).click()
+})
