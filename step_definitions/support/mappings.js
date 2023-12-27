@@ -226,3 +226,8 @@ window.onlineDesignerFieldIcons = {
     'Stop' : 'img[src*=stop]',
     'Delete Field': `img[src*=cross]`
 }
+
+window.participantListIcons = {
+    'green checkmark' : `img[src*=circle_green_tick]`,
+    'gray bubble': `img[src*=stop_gray]`
+}

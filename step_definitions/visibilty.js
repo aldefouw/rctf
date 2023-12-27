@@ -256,9 +256,21 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
 
     const user_rights = { "checkmark" : `img[src*="tick"]`, "x" : `img[src*="cross"]` }
 
-    cy.table_cell_by_column_and_row_label(column_label, row_label).then(($td) => {
-        if(table === " of the User Rights table" && item.toLowerCase() in user_rights){
-            expect($td.find(user_rights[item.toLowerCase()]).length).to.be.eq(1)
+    let table_selector = 'table'
+    let table_body = 'table'
+    let no_col_match = false
+
+    if(table === " of the Participant List table"){
+        table_selector = window.tableMappings['participant list'][0]
+        table_body = window.tableMappings['participant list'][1]
+        no_col_match = true
+    }
+
+    cy.table_cell_by_column_and_row_label(column_label, row_label, table_selector, 'th', 'td', 0, table_body, no_col_match).then(($td) => {
+        if(table === " of the User Rights table" && item.toLowerCase() in user_rights) {
+            cy.wrap($td.find(user_rights[item.toLowerCase()]).length).should('have.length', 1)
+        } else if(table === " of the Participant List table" && item.toLowerCase() in window.participantListIcons){
+            cy.wrap($td.find(window.participantListIcons[item.toLowerCase()])).should('have.length', '1')
         } else {
             expect($td).to.contain(item)
         }

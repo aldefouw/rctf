@@ -11,6 +11,7 @@ window.parameterTypes = {
     recordStatusIcons: transformKeysToRegExp(window.recordStatusIcons),
     fileRepoIcons: transformKeysToRegExp(window.fileRepoIcons),
     onlineDesignerFieldIcons: transformKeysToRegExp(window.onlineDesignerFieldIcons),
+    participantListIcons: transformKeysToRegExp(window.window.participantListIcons),
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
@@ -94,7 +95,7 @@ window.parameterTypes = {
         ' and will leave the tab open when I return to the REDCap project'
     ],
     select: ['selected', 'unselected'],
-    tableName: ['', ' of the User Rights table', ' of the Reports table'],
+    tableName: ['', ' of the User Rights table', ' of the Reports table', ' of the Participant List table'],
     timeType: ['seconds', 'second', 'minutes', 'minute'],
     toDoRequestTypes: ['Move to prod', 'Approve draft changes', 'Copy project'],
     toDoTableIcons: [

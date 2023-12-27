@@ -25,35 +25,50 @@ Cypress.Commands.add("dragToTarget", { prevSubject: 'element'}, (subject, target
     })
 })
 
-Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_label, table_selector= 'table', header_row_type = 'th', row_cell_type = 'td', row_number = 0, body_table = 'table') => {
+Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_label, table_selector= 'table', header_row_type = 'th', row_cell_type = 'td', row_number = 0, body_table = 'table', no_col_match_body = false) => {
     let column_num = 0
     let table_cell = null
-    let selector = `${table_selector}:has(${header_row_type}:contains(${JSON.stringify(column_label)}):visible):visible`
+
+    function escapeCssSelector(str) {
+        // Escape special characters in CSS selectors
+        return str.replace(/([!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g, "\\$1");
+    }
+
+    const orig_column_label = column_label
+
+    column_label = escapeCssSelector(column_label)
+    row_label = escapeCssSelector(row_label)
+
+    let selector = `${table_selector}:has(${header_row_type}:contains('${column_label}'):visible):visible`
     let td_selector = `tr:has(${row_cell_type}:visible):visible`
 
     if(row_number === 0) {
         if(table_selector !== body_table){
-            selector = `${table_selector}:has(${header_row_type}:contains(${JSON.stringify(column_label)}):visible):visible`
+            selector = `${table_selector}:has(${header_row_type}:contains('${column_label}'):visible):visible`
         } else {
-            selector = `${table_selector}:has(${row_cell_type}:contains(${JSON.stringify(row_label)}):visible,${header_row_type}:contains(${JSON.stringify(column_label)}):visible):visible`
+            selector = `${table_selector}:has(${row_cell_type}:contains('${row_label}'):visible,${header_row_type}:contains('${column_label}'):visible):visible`
         }
 
-        td_selector = `tr:has(${row_cell_type}:contains(${JSON.stringify(row_label)}):visible):visible`
+        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):visible`
     }
 
     cy.get(selector).within(() => {
-        cy.get(`${header_row_type}:contains(${JSON.stringify(column_label)}):visible`).parent('tr').then(($tr) => {
+        cy.get(`${header_row_type}:contains('${column_label}'):visible`).parent('tr').then(($tr) => {
             $tr.find(header_row_type).each((thi, th) => {
-                // console.log(Cypress.$(th).text().trim().includes(column_label))
+                // console.log(Cypress.$(th).text().trim().includes(orig_column_label))
                 // console.log(thi)
-                if (Cypress.$(th).text().trim().includes(column_label) && column_num === 0) column_num = thi
+                if (Cypress.$(th).text().trim().includes(orig_column_label) && column_num === 0) column_num = thi
                 //if (Cypress.$(th).text().trim().includes(column_label) && column_num === 0) console.log(thi)
             })
         })
     }).then(() => {
 
         if(body_table !== 'table'){
-            selector = `${body_table}:has(${header_row_type}:contains(${JSON.stringify(column_label)}):visible):visible`
+            if(no_col_match_body) {
+                selector = `${body_table}:visible`
+            } else {
+                selector = `${body_table}:has(${header_row_type}:contains('${column_label}'):visible):visible`
+            }
         }
 
         cy.get(selector).within(() => {
