@@ -656,6 +656,7 @@ Given('I select the checkbox option {string} for the field labeled {string}', (c
  * @description Selects a specific item from a dropdown
  */
 Given('I select {string} on the {dropdownType} field labeled {string}{baseElement}', (option, type, label, base_element) => {
+    cy.not_loading()
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains(${JSON.stringify(label)}):visible`
     let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
