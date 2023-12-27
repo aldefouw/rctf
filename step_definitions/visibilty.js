@@ -201,7 +201,7 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
             })
         } else {
             cy.top_layer(sel, element_selector).within(($elm) =>{
-                cy.wrap($elm).should('contain', text)
+                cy.wrap($elm).find(sel).should('contain', text)
             })
         }
 
@@ -363,7 +363,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             }).then(() => {
                 //console.log(columns)
                 dataTable.hashes().forEach((row) => {
-                    row_selector = `${main_table}:visible tr:visible`
+                    row_selector = `${main_table}:visible tr`
                     let filter_selector = []
 
                     for (const [index, key] of Object.keys(row).entries()) {
@@ -378,13 +378,13 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
                             //We can get around this by finding column index and looking for specific column value within a row
                             if(value === "[icon]") {
-                                row_selector += `:visible:has(td:has(img),th:has(img))`
+                                row_selector += `:has(td:has(img),th:has(img))`
                                 filter_selector.push({ column: index + 1, value: value, regex: false, icon: true })
                             } else if(window.dateFormats.hasOwnProperty(value)){
-                                row_selector += `:visible:has(td,th)`
+                                row_selector += `:has(td,th)`
                                 filter_selector.push({ column: index + 1, value: value, regex: true, icon: false })
                             } else {
-                                row_selector += `:visible:has(:contains(${JSON.stringify(value)}))`
+                                row_selector += `:has(:contains(${JSON.stringify(value)}))`
                                 filter_selector.push({ column: index + 1, value: value, regex: false, icon: false })
                             }
                         }
@@ -431,7 +431,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         outer_element.within(() => {
             tabular_data.forEach((row) => {
-                row_selector = 'tr:visible'
+                row_selector = 'tr'
                 row.forEach((element) => {
                     const containsStatements = element.split(/\n/) //This handles splitting values for us
                     containsStatements.forEach((statement) => {
@@ -454,7 +454,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         outer_element.within(() => {
             tabular_data.forEach((row) => {
-                row_selector = 'tr:visible'
+                row_selector = 'tr'
                 row.forEach((element) => {
                     if(!window.dateFormats.hasOwnProperty(element)) {
                         row_selector += `:has(td:contains(${JSON.stringify(element)}))`
