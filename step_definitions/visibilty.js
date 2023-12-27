@@ -200,7 +200,9 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
                 cy.wrap($elm).find(sel).should('contain', text)
             })
         } else {
-            cy.top_layer(sel, element_selector)
+            cy.top_layer(sel, element_selector).within(($elm) =>{
+                cy.wrap($elm).should('contain', text)
+            })
         }
 
     }
