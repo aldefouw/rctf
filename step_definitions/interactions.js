@@ -751,3 +751,65 @@ Given('I drag the field choice labeled {string} to the box labeled "Show the fie
     })
 })
 
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I enter a signature into the signature field
+ * @param {string} column - the text to enter into the field
+ * @description Clicks on a specific table column
+ */
+Given('I draw a signature in the signature field area', () => {
+    cy.get('div#signature-div').click()
+})
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I move the slider field labeled {string} to the position of {int}
+ * @param {string} label - the label of the field
+ * @param {string} position - the desired position we want to move the slider to
+ * @description Moves the slider to a specific position
+ */
+Given('I move the slider field labeled {string} to the position of {int}', (label, position) => {
+    cy.get(`label:contains(${JSON.stringify(label)})`)
+        .invoke('attr', 'id')
+        .then(($id) => {
+            let id = $id.split('label-')[1]
+            cy.get(`div[id="${id}-slider"]`).then((subject) => {
+
+                cy.wrap(subject).find('span').trigger('mousedown', {force: true})
+
+                const max = subject.attr('data-max')
+                const min = subject.attr('data-min')
+
+                let move_str = ''
+
+                //Get the current position of the slider and then increment up or down respectively
+                cy.get(`input[aria-labelledby="${$id}"]`).then(($input) => {
+
+                    const cur_pos = $input.val()
+                    let new_pos = position - cur_pos
+
+                    //If Gherkin integer is out of bounds, we'll go the maximum we can in the direction they wanted
+                    if(position >= max || position <= min){
+                        new_pos = (new_pos > 0) ?
+                            max - cur_pos :
+                            min - cur_pos
+                        alert(`Warning! The value requested for slider field labeled "${label}" is outside of bounds!  Max: ${max} Min: ${min}`)
+                    }
+
+                    //Move slider right if new_pos is positive; left if negative
+                    for(let i = 0; i < Math.abs(new_pos); i++){
+                        move_str += new_pos > 0 ? `{rightArrow}` : `{leftArrow}`
+                    }
+
+                    //Type right or left arrow, respectively ...
+                    cy.get(subject).find('span').type(move_str)
+
+                    //Target position changed, mouseup on original element
+                    cy.wrap(subject).find('span').trigger('mouseup', {force: true})
+                })
+            })
+        })
+})
+
