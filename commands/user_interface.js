@@ -96,7 +96,7 @@ Cypress.Commands.add("fetch_bubble_record_homepage", (table_selector = '#event_g
 
 Cypress.Commands.add("move_slider", (subject, cur_pos, max, min, position, label , nudge_factor = 1, move_str = '') => {
     let new_pos = position - cur_pos
-    
+
     //If Gherkin integer is out of bounds, we'll go the maximum we can in the direction they wanted
     if(position > max || position < min){
         new_pos = (new_pos > 0) ?
@@ -105,15 +105,17 @@ Cypress.Commands.add("move_slider", (subject, cur_pos, max, min, position, label
         alert(`Warning! The value requested for slider field labeled "${label}" is outside of bounds!  Max: ${max} Min: ${min}`)
     }
 
-    console.log(new_pos)
-
     //Move slider right if new_pos is positive; left if negative
-    for(let i = 0; i < Math.abs(new_pos) * nudge_factor; i++){
-        move_str += new_pos > 0 ? `{rightArrow}` : `{leftArrow}`
+    if(new_pos !== 0) {
+        for (let i = 0; i < Math.abs(new_pos) * nudge_factor; i++) {
+            move_str += new_pos > 0 ? `{rightArrow}` : `{leftArrow}`
+        }
     }
 
     //Type right or left arrow, respectively ...
-    cy.get(subject).find('span').type(move_str)
+    if(move_str.length > 0) {
+        cy.get(subject).find('span').type(move_str)
+    }
 
     //Target position changed, mouseup on original element
     cy.wrap(subject).find('span').trigger('mouseup', {force: true})

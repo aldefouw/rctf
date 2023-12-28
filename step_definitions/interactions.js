@@ -795,22 +795,6 @@ Given('I move the slider field labeled {string} to the position of {int}', (labe
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I open the date picker widget on the field labeled {string}
- * @param {string} label - the label of the field
- * @description Open the date picker widget
- */
-Given('I click on the date picker widget on the field labeled {string}', (label, position) => {
-    cy.get(`label:contains(${JSON.stringify(label)})`)
-        .invoke('attr', 'id')
-        .then(($id) => {
-            let id = $id.split('label-')[1]
-            cy.get(`input[aria-labelledby="${$id}"]`).parent().find('img.ui-datepicker-trigger').click()
-        })
-})
-
-/**
- * @module Interactions
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I move the Hour slider for the open date picker widget to {int}
  * @param {int} hour - the desired hour position we want
  * @description Moves the slider to a specific position for the Hour slider
@@ -845,5 +829,34 @@ Given('I move the Minute slider for the open date picker widget to {int}', (min)
             let $min = time[1]
             cy.move_slider(subject, $min, 59, 0, min, "Minute", 20)
         })
+    })
+})
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I open the date picker widget on the field labeled {string}
+ * @param {string} label - the label of the field
+ * @description Open the date picker widget
+ */
+Given('I click on the date picker widget on the field labeled {string}', (label, position) => {
+    cy.get(`label:contains(${JSON.stringify(label)})`)
+        .invoke('attr', 'id')
+        .then(($id) => {
+            let id = $id.split('label-')[1]
+            cy.get(`input[aria-labelledby="${$id}"]`).parent().find('img.ui-datepicker-trigger').click()
+        })
+})
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I open the date picker widget on the field labeled {string}
+ * @param {string} label - the label of the field
+ * @description Open the date picker widget
+ */
+Given('I click on the {string} button for the field labeled {string}', (button_label, label, position) => {
+    cy.get(`label:contains(${JSON.stringify(label)})`).parentsUntil('tr').parent().within(() => {
+        cy.get(`button:contains(${JSON.stringify(button_label)}):visible`).click({no_csrf_check: true})
     })
 })
