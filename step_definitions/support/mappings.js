@@ -157,7 +157,8 @@ window.elementChoices = {
     ' within the data collection instrument list' : 'table#table-forms_surveys',
     ' on the action popup' : '[id=formActionDropdown]',
     ' in the action popup' : '[id=formActionDropdown]',
-    ' in the Edit survey responses column' : 'table#form_rights:visible'
+    ' in the Edit survey responses column' : 'table#form_rights:visible',
+    ' in the open date picker widget' : 'div.ui-datepicker'
 }
 
 //IMPORTANT: Programmatically add the projectModules as element choices

@@ -655,7 +655,7 @@ Given('I select the checkbox option {string} for the field labeled {string}', (c
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Selects a specific item from a dropdown
  */
-Given('I select {string} on the {dropdownType} field labeled {string}{baseElement}', (option, type, label, base_element) => {
+Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open date picker widget for) {string}{baseElement}', (option, type, label, base_element) => {
     cy.not_loading()
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains(${JSON.stringify(label)}):visible`
@@ -779,37 +779,71 @@ Given('I move the slider field labeled {string} to the position of {int}', (labe
 
                 cy.wrap(subject).find('span').trigger('mousedown', {force: true})
 
-                const max = subject.attr('data-max')
-                const min = subject.attr('data-min')
-
-                let move_str = ''
-
                 //Get the current position of the slider and then increment up or down respectively
                 cy.get(`input[aria-labelledby="${$id}"]`).then(($input) => {
 
-                    const cur_pos = $input.val()
-                    let new_pos = position - cur_pos
-
-                    //If Gherkin integer is out of bounds, we'll go the maximum we can in the direction they wanted
-                    if(position >= max || position <= min){
-                        new_pos = (new_pos > 0) ?
-                            max - cur_pos :
-                            min - cur_pos
-                        alert(`Warning! The value requested for slider field labeled "${label}" is outside of bounds!  Max: ${max} Min: ${min}`)
-                    }
-
-                    //Move slider right if new_pos is positive; left if negative
-                    for(let i = 0; i < Math.abs(new_pos); i++){
-                        move_str += new_pos > 0 ? `{rightArrow}` : `{leftArrow}`
-                    }
-
-                    //Type right or left arrow, respectively ...
-                    cy.get(subject).find('span').type(move_str)
-
-                    //Target position changed, mouseup on original element
-                    cy.wrap(subject).find('span').trigger('mouseup', {force: true})
+                    cy.move_slider(subject,
+                                   $input.val(),
+                                   subject.attr('data-max'),
+                                   subject.attr('data-min'),
+                                   position)
                 })
             })
         })
 })
 
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I open the date picker widget on the field labeled {string}
+ * @param {string} label - the label of the field
+ * @description Open the date picker widget
+ */
+Given('I click on the date picker widget on the field labeled {string}', (label, position) => {
+    cy.get(`label:contains(${JSON.stringify(label)})`)
+        .invoke('attr', 'id')
+        .then(($id) => {
+            let id = $id.split('label-')[1]
+            cy.get(`input[aria-labelledby="${$id}"]`).parent().find('img.ui-datepicker-trigger').click()
+        })
+})
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I move the Hour slider for the open date picker widget to {int}
+ * @param {int} hour - the desired hour position we want
+ * @description Moves the slider to a specific position for the Hour slider
+ */
+Given('I move the Hour slider for the open date picker widget to {int}', (hour) => {
+    cy.get('.ui_tpicker_hour').then((subject) => {
+        cy.wrap(subject).find('span').trigger('mousedown', {force: true})
+
+        //Get the current position of the slider and then increment up or down respectively
+        cy.get('.ui_tpicker_time').then(($time) => {
+            const time = $time.text().split(':')
+            let $hour = time[0]
+            cy.move_slider(subject, $hour, 23, 0, hour, "Hour", 20)
+        })
+    })
+})
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I move the Minute slider for the open date picker widget to {int}
+ * @param {int} minute - the desired minute position we want
+ * @description Moves the slider to a specific position for the Minute slider
+ */
+Given('I move the Minute slider for the open date picker widget to {int}', (min) => {
+    cy.get('.ui_tpicker_minute').then((subject) => {
+        cy.wrap(subject).find('span').trigger('mousedown', {force: true})
+
+        //Get the current position of the slider and then increment up or down respectively
+        cy.get('.ui_tpicker_time').then(($time) => {
+            const time = $time.text().split(':')
+            let $min = time[1]
+            cy.move_slider(subject, $min, 59, 0, min, "Minute", 20)
+        })
+    })
+})
