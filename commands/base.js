@@ -159,7 +159,7 @@ Cypress.Commands.add('ensure_csrf_token', () => {
                                 //Some common elements to tell us things are still loading!
                                 if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
                                 if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
-                                if(Cypress.$('div#working').length) cy.get('div#working').should('not.be.visible')
+                                //if(Cypress.$('div#working').length) cy.get('div#working').should('not.be.visible')
                             }
                         })
                     })

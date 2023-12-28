@@ -375,15 +375,18 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         if(!isNaN(column)){
                             //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
                             //We can get around this by finding column index and looking for specific column value within a row
-                            if(value === "[icon]") {
+                            if(value === "[button]") {
+                                row_selector += `:has(td:has(button),th:has(button))`
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: true })
+                            } else if(value === "[icon]") {
                                 row_selector += `:has(td:has(img),th:has(img))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: false })
                             } else if(window.dateFormats.hasOwnProperty(value)){
                                 row_selector += `:has(td,th)`
-                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false })
+                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false, button: false })
                             } else {
                                 row_selector += `:has(:contains(${JSON.stringify(value)}))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false })
                             }
                         }
                     }
@@ -401,7 +404,9 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                                 const value = item['value']
 
                                 //Special case for icons
-                                if(item['icon']){
+                                if(item['button']) {
+                                    cy.wrap($cell).find('button').should('exist')
+                                } else if(item['icon']){
                                     cy.wrap($cell).find('img').should('exist')
                                 //Special case for RegEx on date / time formats
                                 } else if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
