@@ -47,3 +47,21 @@ Given('I click the (bubble)("X" icon)( to ){addOrSelect}( )(a record for the)(fo
         }
     })
 })
+
+/**
+ * @module RecordHomePage
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I (should) see the "{recordStatusIcons}" icon for the {string} data collection instrument on event {string}
+ * @param {string} recordStatusIcons - the data collection instrument you want to target
+ * @param {string} instrument - the data collection instrument you want to target
+ * @param {string} event - the event name you want to target
+ * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.
+ */
+
+Given('I (should) see the "{recordStatusIcons}" icon for the {string} longitudinal instrument on event {string}', (icon, instrument, event) => {
+    cy.table_cell_by_column_and_row_label(event, instrument, 'table#event_grid_table').then(($td) => {
+        cy.wrap($td).find('a:visible:first').then((link_location) => {
+            expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
+        })
+    })
+})
