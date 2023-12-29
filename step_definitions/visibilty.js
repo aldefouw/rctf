@@ -200,9 +200,28 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
                 cy.wrap($elm).find(sel).should('contain', text)
             })
         } else {
-            cy.top_layer(sel, element_selector)
-        }
 
+            cy.top_layer(sel, element_selector)
+
+            if (opt_str === "the exact time in the" || opt_str === "today's date in the") {
+                const today = new Date();
+                const year = today.getFullYear()
+                const month = String(today.getMonth() + 1).padStart(2, '0') // Months are zero-based
+                const day = String(today.getDate()).padStart(2, '0')
+                const hours = String(today.getHours()).padStart(2, '0')
+                const minutes = String(today.getMinutes()).padStart(2, '0')
+                const seconds = String(today.getSeconds()).padStart(2, '0')
+
+                const expectedValue = (opt_str === "the exact time in the") ?
+                    `${hours}:${minutes}:${seconds}` :
+                    `${year}-${month}-${day}`
+
+                cy.get(sel).find('input').invoke('val')
+                    .then((actualValue) => {
+                        expect(actualValue).to.eq(expectedValue)
+                    })
+            }
+        }
     }
 })
 
