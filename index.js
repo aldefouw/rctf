@@ -62,6 +62,9 @@ load_support_files()
 //This is where we initialize the stuff we need in a basic install
 before(() => {
     rctf_initialize()
+    cy.on('window:alert', (str) => {
+        window.lastAlert = str
+    })
 })
 
 beforeEach(() => {

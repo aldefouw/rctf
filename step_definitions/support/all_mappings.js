@@ -29,7 +29,7 @@ window.parameterTypes = {
     clickType: ['click on', 'check', 'uncheck'],
     confirmation: ['accept', 'cancel'],
     dataViewingRights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
-    dropdownType: ['dropdown', 'multiselect'],
+    dropdownType: ['dropdown', 'multiselect', 'checkboxes'],
     editEvent: ['Edit', 'Delete'],
     editField: ['Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],
     editSurveyRights: [
@@ -65,7 +65,7 @@ window.parameterTypes = {
         'Save & Go To Next Instance',
         'Save & Add New Instance',
     ],
-    labeledElement: ['button', 'link', 'field'],
+    labeledElement: ['button', 'link', 'field', 'section break'],
     labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named'],
     linkNames: ['link', 'tab', 'instrument', 'icon'],
     projectRequestLabel: ['Create Project', 'Send Request'],

@@ -84,7 +84,7 @@ Given('I should see the {dropdownType} field labeled {string} with the option {s
  * @param {string} dropdownType - available options: 'dropdown', 'multiselect'
  * @param {string} label the label of the row the selector belongs to
  * @param {dataTable} options the Data Table of selectable options
- * @description Visibility - Visually verifies that the element selector labeled label has the options listed
+ * @description Visibility - Visually verifies that the element selector has the options listed
  */
 Given("I should see the {dropdownType} field labeled {string} with the options below", (type, label, options) => {
     let label_selector = `:contains("${label}"):visible`
@@ -92,8 +92,11 @@ Given("I should see the {dropdownType} field labeled {string} with the options b
     cy.top_layer(label_selector).within(() => {
         for(let i = 0; i < options.rawTable.length; i++){
             let element_selector = `select:has(option:contains(${JSON.stringify(options.rawTable[i][0])})):visible`
-            let dropdown = cy.get_labeled_element(element_selector, label)
-            dropdown.should('contain', options.rawTable[i][0])
+            if (type === "multiselect") {
+                element_selector = `div:has(label:contains(${JSON.stringify(options.rawTable[i][0])})):visible`
+            }
+            let element = cy.get_labeled_element(element_selector, label)
+            element.should('contain', options.rawTable[i][0])
         }
     })
 })
@@ -149,13 +152,23 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
 Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{baseElement}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, base_element) => {
 
     //Special case of Project status
-    if(opt_str === "Project status:" && window.parameterTypes['projectStatus'].includes(text)){
+    if(opt_str === "Project status:" && window.parameterTypes['projectStatus'].includes(text)) {
         cy.get('div.menubox:contains("Project status:")').should('contain', text)
+    } else if (opt_str === "an alert box with the following text:"){
+
+        (function waitForAlert(i = 0) {
+            if (window.lastAlert !== undefined || i > 10) {
+                expect(window.lastAlert).to.contain(text)
+            } else {
+                setTimeout(waitForAlert, 500, (i + 1))
+            }
+        })()
+
     } else {
 
         // double quotes need to be re-escaped before inserting into :contains() selector
         text = text.replaceAll('\"', '\\\"')
-        let subsel = {'link':'a', 'button':'button', 'field': 'tr'}[el]
+        let subsel = {'link':'a', 'button':'button', 'field': 'tr', 'section break': 'td.header'}[el]
 
         let element_selector = window.elementChoices[base_element]
         let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible:not([disabled])` : '')

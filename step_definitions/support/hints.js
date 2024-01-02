@@ -155,7 +155,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'labeledElement',
-            regexp: /|button|link|field/,
+            regexp: /|button|link|field|section break|/,
         })
 
 defineParameterType({
