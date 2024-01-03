@@ -618,9 +618,7 @@ Given('I click the element containing the following text: {string}', (value) => 
  * @description Clicks the radio option on the field specified
  */
 Given('I select the radio option {string} for the field labeled {string}{baseElement}', (radio_option, field_label, base_element) => {
-    console.log(base_element)
     let outer_element = base_element.length > 0 ?  window.elementChoices[base_element]: window.elementChoices['']
-
     cy.get(outer_element).within(() => {
         cy.select_radio_by_label(field_label, radio_option)
     })
