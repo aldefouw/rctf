@@ -257,13 +257,23 @@ Given("I move the field named {string} after the field named {string}", (field_n
  * @param {int} position - the position (index starting from 0) where the instrument should be placed
  * @description Interactions - Drag and drop the field to the int position
  */
-Given("I drag (on )the field named {string} to position {int}", (field, position) => {
+Given("I drag (on )the field variable named {string} {aboveBelow} the field variable named {string}", (fieldToMove, aboveBelow, fieldAfter) => {
+    let field_index
 
-    cy.get('table[id*=design-]').contains(field).parents('table[id*=design-]').then((row) => {
-        cy.get('table[id*=design-]').eq(position).as('target')
-        cy.wrap(row).dragTo('@target')
+    cy.get('table[id*=design-]').then((rows) => {
+        for(let i = 0; i < rows.length; i++){
+            cy.wrap(rows.eq(i)).then((row) =>{
+                if(row.text().includes(`Variable: ${fieldAfter}\n`)){
+                    field_index = aboveBelow === "above" ? i : i + 1
+                }
+            })
+        }
+    }).then(() => {
+        cy.get('table[id*=design-]').contains(`Variable: ${fieldToMove}`).parents('table[id*=design-]').then((row) => {
+            cy.get('table[id*=design-]').eq(field_index).as('target')
+            cy.wrap(row).dragTo('@target')
+        })
     })
-
 })
 
 /**

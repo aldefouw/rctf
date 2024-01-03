@@ -92,7 +92,7 @@ Given("I should see the {dropdownType} field labeled {string} with the options b
     cy.top_layer(label_selector).within(() => {
         for(let i = 0; i < options.rawTable.length; i++){
             let element_selector = `select:has(option:contains(${JSON.stringify(options.rawTable[i][0])})):visible`
-            if (type === "multiselect") {
+            if (type === "multiselect" || type === "radio") {
                 element_selector = `div:has(label:contains(${JSON.stringify(options.rawTable[i][0])})):visible`
             }
             let element = cy.get_labeled_element(element_selector, label)

@@ -16,6 +16,7 @@ window.parameterTypes = {
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
     articleType: ['a', 'the'],
+    aboveBelow: ['above', 'below'],
     beforeAfter: ['before', 'after'],
     cellAction: [
         ' and click the new instance link',
@@ -29,7 +30,7 @@ window.parameterTypes = {
     clickType: ['click on', 'check', 'uncheck'],
     confirmation: ['accept', 'cancel'],
     dataViewingRights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
-    dropdownType: ['dropdown', 'multiselect', 'checkboxes'],
+    dropdownType: ['dropdown', 'multiselect', 'checkboxes', 'radio'],
     editEvent: ['Edit', 'Delete'],
     editField: ['Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],
     editSurveyRights: [
