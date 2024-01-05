@@ -104,6 +104,11 @@ defineParameterType({
         })
 
 defineParameterType({
+            name: 'disabled',
+            regexp: /(?: (is disabled||))?/,
+        })
+
+defineParameterType({
             name: 'dropdownType',
             regexp: /|dropdown|multiselect|checkboxes|radio/,
         })

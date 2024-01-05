@@ -149,7 +149,7 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Verifies that a visible element of the specified type containing `text` exists
  */
-Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{baseElement}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, base_element) => {
+Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{baseElement}( ){disabled}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, base_element, disabled_text) => {
 
     //Special case of Project status
     if(opt_str === "Project status:" && window.parameterTypes['projectStatus'].includes(text)) {
@@ -171,12 +171,15 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
         let subsel = {'link':'a', 'button':'button', 'field': 'tr', 'section break': 'td.header'}[el]
 
         let element_selector = window.elementChoices[base_element]
-        let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible:not([disabled])` : '')
+
+        let disabled_status = disabled_text === "is disabled" ? ':disabled': ':not([disabled]'
+
+        let sel = `${subsel}:contains("${text}"):visible` + (el === `button${disabled_status}` ? `,input[value="${text}"]:visible${disabled_status}` : '')
 
         if(window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
             if (!window.icons.hasOwnProperty(online_buttons)) {
                 online_buttons = online_buttons.replaceAll('"', '')
-                sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:not([disabled])` : '')
+                sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:${disabled_status}` : '')
             }
         }
 
@@ -211,10 +214,17 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
             const base = cy.frameLoaded().then(() => { cy.iframe() })
             base.within(($elm) => {
                 cy.wrap($elm).find(sel).should('contain', text)
+                if(disabled_text === "is disabled") {
+                    cy.wrap($elm).find(sel).should('be.disabled')
+                }
             })
         } else {
 
-            cy.top_layer(sel, element_selector)
+            cy.top_layer(sel, element_selector).then(($elm) => {
+                if(disabled_text === "is disabled") {
+                    cy.wrap($elm).find(sel).should('be.disabled')
+                }
+            })
 
             if (opt_str === "the exact time in the" || opt_str === "today's date in the") {
                 const today = new Date();

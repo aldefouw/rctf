@@ -30,6 +30,7 @@ window.parameterTypes = {
     clickType: ['click on', 'check', 'uncheck'],
     confirmation: ['accept', 'cancel'],
     dataViewingRights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
+    disabled: ['is disabled'],
     dropdownType: ['dropdown', 'multiselect', 'checkboxes', 'radio'],
     editEvent: ['Edit', 'Delete'],
     editField: ['Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],

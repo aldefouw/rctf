@@ -9,7 +9,7 @@ function optionalRegExp(keys){
 }
 
 //Add any parameterTypes that are optional to this array
-let optional_parameters = [ 'ordinal', 'onlineDesignerButtons', 'fileRepoIcons', 'participantListIcons' ]
+let optional_parameters = [ 'ordinal', 'onlineDesignerButtons', 'fileRepoIcons', 'participantListIcons', 'disabled' ]
 
 module.exports = {
     transformToRegExp: transformToRegExp,
