@@ -171,15 +171,14 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
         let subsel = {'link':'a', 'button':'button', 'field': 'tr', 'section break': 'td.header'}[el]
 
         let element_selector = window.elementChoices[base_element]
+        let disabled_status = disabled_text === "is disabled" ? ':disabled': ':not([disabled])'
 
-        let disabled_status = disabled_text === "is disabled" ? ':disabled': ':not([disabled]'
-
-        let sel = `${subsel}:contains("${text}"):visible` + (el === `button${disabled_status}` ? `,input[value="${text}"]:visible${disabled_status}` : '')
+        let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible${disabled_status}` : '')
 
         if(window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
             if (!window.icons.hasOwnProperty(online_buttons)) {
                 online_buttons = online_buttons.replaceAll('"', '')
-                sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible:${disabled_status}` : '')
+                sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible${disabled_status}` : '')
             }
         }
 
