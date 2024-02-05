@@ -5,7 +5,7 @@
  * @param {string} addOrSelect - available options: 'add', 'select'
  * @param {string} instrument - the name of the instrument you want to add a record to
  * @param {string} event - the name of the event you want to add a record to
- * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance', ''
+ * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance'
  * @description Clicks on an instrument / event pairing to add a record on the Record Home Page
  */
 
@@ -52,7 +52,7 @@ Given('I click the (bubble)("X" icon)( to ){addOrSelect}( )(a record for the)(fo
  * @module RecordHomePage
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I (should) see the "{recordStatusIcons}" icon for the {string} data collection instrument on event {string}
- * @param {string} recordStatusIcons - the data collection instrument you want to target
+ * @param {string} recordStatusIcons - available options: 'Incomplete', 'Unverified', 'Complete', 'Many statuses (mixed)', 'Incomplete (no data saved)', 'Partial Survey Response', 'Completed Survey Response', 'Many statuses (all same)'
  * @param {string} instrument - the data collection instrument you want to target
  * @param {string} event - the event name you want to target
  * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.

@@ -19,7 +19,7 @@ Given("I click on the bubble for the {string} data collection instrument for {re
  * @param {string} instrument - the data collection instrument you want to target
  * @param {string} event - the event name you want to target
  * @param {string} record_id - the value of the record_id you want to target
- * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance', ''
+ * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance'
  * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.
  */
 
@@ -31,7 +31,7 @@ Given("I locate the bubble for the {string} instrument on event {string} for rec
  * @module RecordStatusDashboard
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I (should) see the "{recordStatusIcons}" icon for the {string} longitudinal instrument on event {string} for record {string}
- * @param {string} recordStatusIcons - the data collection instrument you want to target
+ * @param {string} recordStatusIcons - available options: 'Incomplete', 'Unverified', 'Complete', 'Many statuses (mixed)', 'Incomplete (no data saved)', 'Partial Survey Response', 'Completed Survey Response', 'Many statuses (all same)'
  * @param {string} instrument - the data collection instrument you want to target
  * @param {string} event - the event name you want to target
  * @param {string} record_id - the value of the record_id you want to target

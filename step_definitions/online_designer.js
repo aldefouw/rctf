@@ -2,7 +2,7 @@
  * @module OnlineDesigner
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I {enterType} Choice(s) of {string} in(to) the open "{addEditField}" dialog box
- * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter'
+ * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter', 'click on'
  * @param {string} choices - the choices in string format
  * @param {string} addEditField - available options: 'Add New Field', 'Edit Field'
  */
