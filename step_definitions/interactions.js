@@ -208,7 +208,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on the {linkNames} {labeledExactly} {string} {saveButtonRouteMonitoring} {toDownloadFile} {baseElement}
+ * @example I click on the {onlineDesignerFieldIcons} {fileRepoIcons} {linkNames} {labeledExactly} {string} {saveButtonRouteMonitoring} {toDownloadFile} {baseElement}
  * @param {string} linkNames - available options: 'link', 'tab', 'instrument'
  * @param {string} text - the text on the anchor element you want to click* @param {string} saveButtonRouteMonitoring - available options: '', ' on the dialog box for the Repeatable Instruments and Events module', ' on the Designate Instruments for My Events page', ' on the Online Designer page', ' and cancel the confirmation window', ' and accept the confirmation window', ' in the dialog box to request a change in project status', ' to rename an instrument', ' in the "Add New Field" dialog box', ' in the "Edit Field" dialog box', ''
  * @param {string} toDownloadFile - available options: ' to download a file'
@@ -854,7 +854,7 @@ Given('I click on the date picker widget on the field labeled {string}', (label,
 /**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I open the date picker widget on the field labeled {string}
+ * @example I click on the {string} button for the field labeled {string}
  * @param {string} label - the label of the field
  * @description Open the date picker widget
  */

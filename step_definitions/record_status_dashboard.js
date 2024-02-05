@@ -45,7 +45,7 @@ Given('I (should) see the "{recordStatusIcons}" icon for the {string} longitudin
 /**
  * @module RecordStatusDashboard
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I select record ID {string} from arm name {string} on the Add / Edit record page
+ * @example I select record ID {string} from arm name {string} on the (Add|View) / Edit record page
  * @param {string} record_id - the name of the record ID
  * @param {string} arm_name - name of the arm as displayed in the dropdown menu (e.g. Arm 1: Arm 1)
  * @description Selects a specific record from the Add / Edit record page

@@ -22,11 +22,11 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
 /**
  * @module Download
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I should see a downloaded file named {string}
+ * @example I (should) see a downloaded file named {string}
  * @param {string} filename - the name of the file downloaded
  * @description Determines if a specific file name exists in our downloads directory
  */
-Given("I should see a downloaded file named {string}", (filename) => {
+Given("I (should) see a downloaded file named {string}", (filename) => {
     cy.readFile("cypress/downloads/" + filename).then( ($file) => {
         expect($file).to.exist
     })

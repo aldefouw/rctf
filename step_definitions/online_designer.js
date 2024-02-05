@@ -252,7 +252,7 @@ Given("I move the field named {string} after the field named {string}", (field_n
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I drag on the field named {string} to the position {int}
+ * @example I drag (on) the field variable named {string} {aboveBelow} the field variable named {string}
  * @param {string} field - the name of the field being drag-n-dropped
  * @param {int} position - the position (index starting from 0) where the instrument should be placed
  * @description Interactions - Drag and drop the field to the int position
