@@ -2,6 +2,7 @@
 require('./api')
 require('./auth')
 require('./control_center')
+require('./download')
 require('./data_import')
 require('./db')
 require('./dialog')

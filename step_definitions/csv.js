@@ -7,7 +7,7 @@
  * @description Verifies number of rows (excluding header) the CSV file should have.
  */
  Given("I (should )have a CSV file at path {string} that contains {int} row(s)", (path, headings) => {
-    cy.readFile(path).then( ($text) => {
+     cy.download_file(path).then( ($text) => {
         let lines = $text.trim().split('\n')
         let header_line = headings.rawTable[0][0]
         for(let i = 1; i < headings.rawTable[0].length; i++){
@@ -27,7 +27,7 @@
  * @description Verifies headings of the CSV file.
  */
  Given("the CSV file at path {string} has the headings below", (path, headings) => {
-    cy.readFile(path).then( ($text) => {
+     cy.download_file(path).then( ($text) => {
         let lines = $text.trim().split('\n')
         let header_line = headings.rawTable[0][0]
         for(let i = 1; i < headings.rawTable[0].length; i++){
@@ -48,7 +48,7 @@
  * @description Verifies a row value exists for a given column within a CSV file.
  */
  Given("the CSV file at path {string} has a value {string} for column {string}", (path, value, column) => {
-    cy.readFile(path).then( ($text) => {
+     cy.download_file(path).then( ($text) => {
         let lines = $text.trim().split('\n')
         let columns = lines[0].split(',')
         let index = columns.indexOf(column)
@@ -78,7 +78,7 @@
  * @description Removes a line from the CSV file at the path specified.
  */
  Given("I remove line {int} from a CSV file at path {string}", (line, path) => {
-    cy.readFile(path).then( ($text) => {
+     cy.download_file(path).then( ($text) => {
         let lines = $text.trim().split('\n')
 
         let newLines = []
