@@ -59,6 +59,7 @@
         for(let i = 1; i < lines.length; i++){
             let columns = lines[i].split(',')
             if(columns[index] === value) {
+                console.log(value)
                 found = true
                 break
             }

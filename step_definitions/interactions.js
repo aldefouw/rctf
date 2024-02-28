@@ -231,6 +231,7 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
         cy.get('body').invoke('append', loadScript);
     }
 
+
     if(exactly === "for the variable") {
         outer_element = `table:visible tr:has(:contains(${JSON.stringify(`Variable: ${text}`)})):visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
@@ -248,9 +249,11 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
     } else if(download.includes('with records in')) {
         let keyword = download.includes('rows') ? 'rows' : 'columns'
 
-        cy.top_layer(`:has(:contains("with records in ${keyword}"))`, outer_element).within(() => {
-            cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).click()
+        cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
+            //Note: This is a pretty brittle approach, but it works ... best way to handle this weird edge case where we are looking for "Download your Data Import Template", which has two hits
+            cy.get(`a:contains(${JSON.stringify(text)}):visible`).eq(keyword === "rows" ? 0 : 1).contains(text).click()
         })
+
     } else {
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).click()
