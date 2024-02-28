@@ -401,6 +401,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
             }).then(() => {
                 //console.log(columns)
+
                 dataTable.hashes().forEach((row) => {
                     row_selector = `${main_table}:visible tr`
                     let filter_selector = []
@@ -418,19 +419,19 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             //We can get around this by finding column index and looking for specific column value within a row
                             if(value === "[button]") {
                                 row_selector += `:has(td:has(button),th:has(button))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: true, checkbox: null })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: true, checkbox: false })
                             } else if(value === "[icon]") {
                                 row_selector += `:has(td:has(img),th:has(img))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: false, checkbox: null })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: false, checkbox: false })
                             } else if(value === "[✓]" || value === "[ ]") {
-                                row_selector += `:has(td:has(input[type=checkbox]),th:has(input[type=checkbox]))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: value === "[✓]" ? "checked" : "unchecked"  })
+                                row_selector += `:has(td:has(input[type=checkbox]${ value === "[✓]" ? ":checked" : "" }))`
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: true })
                             } else if(window.dateFormats.hasOwnProperty(value)){
                                 row_selector += `:has(td,th)`
-                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false, button: false, checkbox: null })
+                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false, button: false, checkbox: false })
                             } else {
                                 row_selector += `:has(:contains(${JSON.stringify(value)}))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: null })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: false })
                             }
                         }
                     }
@@ -440,27 +441,33 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                     //See if at least one row matches the criteria we are suggesting
                     cy.get(row_selector).should('have.length.greaterThan', 0).then(($row) => {
 
-                        //console.log($row)
+                        console.log(filter_selector)
 
                         filter_selector.forEach((item) => {
                             cy.wrap($row).find(`:nth-child(${item['column']})`).each(($cell, index) => {
 
-                                const value = item['value']
+                                let elm_type = $cell.prop('tagName').toLowerCase()
 
-                                //Special case for icons
-                                if(item['button']) {
-                                    cy.wrap($cell).find('button').should('exist')
-                                } else if(item['icon']){
-                                    cy.wrap($cell).find('img').should('exist')
-                                } else if(item['checkbox'] === "checked" || item['checkbox'] === "unchecked"){
-                                    cy.wrap($cell).find(`input[type=checkbox]${item['checkbox'] === "checked" ? ':checked' : ''}`).should('exist')
-                                //Special case for RegEx on date / time formats
-                                } else if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
-                                    expect($cell.text()).to.match(window.dateFormats[value])
+                                if(elm_type === 'td' || elm_type === 'th') {
 
-                                //All other cases are straight up text matches
-                                } else if ( $cell.text().includes(item['value']) ) {
-                                    expect($cell.text()).to.contain(value)
+                                    const value = item['value']
+
+                                    //Special case for icons
+                                    if(item['button']) {
+                                        cy.wrap($cell).find('button').should('exist')
+                                    } else if(item['icon']){
+                                        cy.wrap($cell).find('img').should('exist')
+                                    } else if(item['checkbox']){
+                                        cy.wrap($cell).find(`input[type=checkbox]`).should(item['value'] === "[✓]" ? 'be.checked' : 'not.be.checked')
+                                        //Special case for RegEx on date / time formats
+                                    } else if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
+                                        expect($cell.text()).to.match(window.dateFormats[value])
+
+                                        //All other cases are straight up text matches
+                                    } else if ( $cell.text().includes(item['value']) ) {
+                                        expect($cell.text()).to.contain(value)
+                                    }
+
                                 }
                             })
                         })
