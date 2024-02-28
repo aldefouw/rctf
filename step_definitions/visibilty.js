@@ -418,16 +418,19 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             //We can get around this by finding column index and looking for specific column value within a row
                             if(value === "[button]") {
                                 row_selector += `:has(td:has(button),th:has(button))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: true })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: true, checkbox: null })
                             } else if(value === "[icon]") {
                                 row_selector += `:has(td:has(img),th:has(img))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: false })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: false, checkbox: null })
+                            } else if(value === "[✓]" || value === "[ ]") {
+                                row_selector += `:has(td:has(input[type=checkbox]),th:has(input[type=checkbox]))`
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: value === "[✓]" ? "checked" : "unchecked"  })
                             } else if(window.dateFormats.hasOwnProperty(value)){
                                 row_selector += `:has(td,th)`
-                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false, button: false })
+                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false, button: false, checkbox: null })
                             } else {
                                 row_selector += `:has(:contains(${JSON.stringify(value)}))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false })
+                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: null })
                             }
                         }
                     }
@@ -449,6 +452,8 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                                     cy.wrap($cell).find('button').should('exist')
                                 } else if(item['icon']){
                                     cy.wrap($cell).find('img').should('exist')
+                                } else if(item['checkbox'] === "checked" || item['checkbox'] === "unchecked"){
+                                    cy.wrap($cell).find(`input[type=checkbox]${item['checkbox'] === "checked" ? ':checked' : ''}`).should('exist')
                                 //Special case for RegEx on date / time formats
                                 } else if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
                                     expect($cell.text()).to.match(window.dateFormats[value])
