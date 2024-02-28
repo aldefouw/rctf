@@ -137,7 +137,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
         window.survey_disable_attempt = true
     }
 
-    if(download === " to download a file") {
+    if(download.includes("to download a file")) {
         const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>';
         cy.get('body').invoke('append', loadScript);
     }
@@ -210,7 +210,8 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I click on the {onlineDesignerFieldIcons} {fileRepoIcons} {linkNames} {labeledExactly} {string} {saveButtonRouteMonitoring} {toDownloadFile} {baseElement}
  * @param {string} linkNames - available options: 'link', 'tab', 'instrument', 'icon'
- * @param {string} text - the text on the anchor element you want to click* @param {string} saveButtonRouteMonitoring - available options: '', ' on the dialog box for the Repeatable Instruments and Events module', ' on the Designate Instruments for My Events page', ' on the Online Designer page', ' and cancel the confirmation window', ' and accept the confirmation window', ' in the dialog box to request a change in project status', ' to rename an instrument', ' in the "Add New Field" dialog box', ' in the "Edit Field" dialog box', ''
+ * @param {string} text - the text on the anchor element you want to click
+ * @param {string} saveButtonRouteMonitoring - available options: '', ' on the dialog box for the Repeatable Instruments and Events module', ' on the Designate Instruments for My Events page', ' on the Online Designer page', ' and cancel the confirmation window', ' and accept the confirmation window', ' in the dialog box to request a change in project status', ' to rename an instrument', ' in the "Add New Field" dialog box', ' in the "Edit Field" dialog box', ''
  * @param {string} toDownloadFile - available options: ' to download a file'
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Clicks on an anchor element with a specific text label.
@@ -225,7 +226,7 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
     }
     let outer_element = window.elementChoices[base_element]
 
-    if(download === " to download a file") {
+    if(download.includes("to download a file")) {
         const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>';
         cy.get('body').invoke('append', loadScript);
     }
@@ -243,6 +244,12 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
     } else if(exactly === 'labeled exactly') {
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             cy.get('a:visible').contains(new RegExp("^" + text + "$", "g")).click()
+        })
+    } else if(download.includes('with records in')) {
+        let keyword = download.includes('rows') ? 'rows' : 'columns'
+
+        cy.top_layer(`:has(:contains("with records in ${keyword}"))`, outer_element).within(() => {
+            cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).click()
         })
     } else {
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {

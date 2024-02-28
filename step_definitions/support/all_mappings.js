@@ -107,6 +107,6 @@ window.parameterTypes = {
         'Move to low priority section',
         'archive request notification',
     ],
-    toDownloadFile: [' to download a file'],
+    toDownloadFile: [' to download a file', ' near "with records in rows" to download a file', ' near "with records in columns" to download a file'],
     userRightAction: ['add', 'remove']
 }

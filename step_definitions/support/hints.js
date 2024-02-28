@@ -250,7 +250,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'toDownloadFile',
-            regexp: /| to download a file/,
+            regexp: /| to download a file| near "with records in rows" to download a file| near "with records in columns" to download a file/,
         })
 
 defineParameterType({
