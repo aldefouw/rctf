@@ -358,12 +358,12 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
     let selector = window.tableMappings[table_type]
     let tabular_data = dataTable['rawTable']
-    let row_selector = ''
+    let html_elements = window.tableHtmlElements
 
     let header_table = selector
     let main_table = selector
 
-    //This is to account for weird cases where DataTables are present
+    //This is to account for weird cases where DataTables are present (in REDCap)
     if(Array.isArray(selector)){
         header_table = selector[0]
         main_table = selector[1]
@@ -375,101 +375,66 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         let header = tabular_data[0]
 
         let selector = `${header_table}:visible`
-
         let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
 
-        // console.log(window.elementChoices[base_element])
-
         outer_element.within(() => {
-            outer_element.then(($cells) => {
-                header.forEach((heading) => {
+            cy.get(`${selector} tr:first th,td`).then(($cells) => {
+                header.forEach((heading, index) => {
                     columns[heading] = null
                     for(let i = 0; i < $cells.length; i++){
                         let current_cell = $cells.eq(i)
-
-                        // console.log(current_cell[0])
-                        // console.log(heading)
-                        // console.log(i)
-                        // console.log(current_cell.text())
-                        // console.log(current_cell.text().includes(heading))
-
                         if (current_cell.text().includes(heading) && columns[heading] === null) {
                             columns[heading] = i + 1
                         }
                     }
                 })
-
             }).then(() => {
                 //console.log(columns)
-
-                dataTable.hashes().forEach((row) => {
-                    row_selector = `${main_table}:visible tr`
-                    let filter_selector = []
-
+                let filter_selector = []
+                dataTable.hashes().forEach((row, row_index) => {
                     for (const [index, key] of Object.keys(row).entries()) {
-                        // console.log(index)
-                        // console.log(key)
-                        // console.log(row)
                         let value = row[key]
-                        const column = columns[key]
-                        //console.log(key)
-                        //console.log(column)
-                        if(!isNaN(column)){
-                            //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
-                            //We can get around this by finding column index and looking for specific column value within a row
-                            if(value === "[button]") {
-                                row_selector += `:has(td:has(button),th:has(button))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: true, checkbox: false })
-                            } else if(value === "[icon]") {
-                                row_selector += `:has(td:has(img),th:has(img))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: true, button: false, checkbox: false })
-                            } else if(value === "[✓]" || value === "[ ]") {
-                                row_selector += `:has(td:has(input[type=checkbox]${ value === "[✓]" ? ":checked" : "" }))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: true })
-                            } else if(window.dateFormats.hasOwnProperty(value)){
-                                row_selector += `:has(td,th)`
-                                filter_selector.push({ column: index + 1, value: value, regex: true, icon: false, button: false, checkbox: false })
-                            } else {
-                                row_selector += `:has(:contains(${JSON.stringify(value)}))`
-                                filter_selector.push({ column: index + 1, value: value, regex: false, icon: false, button: false, checkbox: false })
-                            }
+                        let column = columns[key]
+                        if (!isNaN(column)) {
+                            filter_selector.push({
+                                'column': column,
+                                'row': row_index,
+                                'value': value,
+                                'html_elm': Object.keys(html_elements).includes(value),
+                                'regex': window.dateFormats.hasOwnProperty(value),
+                                'selector': Object.keys(html_elements).includes(value) ?
+                                    `:has(td:has(${html_elements[value].selector}),th:has(${html_elements[value].selector}))` :
+                                    `:has(${window.dateFormats.hasOwnProperty(value) ? 'td,th' : `:contains(${JSON.stringify(value)})`})`
+                            })
                         }
                     }
+                })
 
-                    //console.log(filter_selector)
+                //See if at least one row matches the criteria we are suggesting
+                //console.log(filter_selector)
+                let row_selector = []
+                filter_selector.forEach((item) => {
+                    row_selector[item.row] = (row_selector.hasOwnProperty(item.row)) ?
+                        `${row_selector[item.row]}${item.selector}` :
+                        `${main_table}:visible tr:visible${item.selector}`
+                })
 
-                    //See if at least one row matches the criteria we are suggesting
-                    cy.get(row_selector).should('have.length.greaterThan', 0).then(($row) => {
-
-                        console.log(filter_selector)
-
-                        filter_selector.forEach((item) => {
-                            cy.wrap($row).find(`:nth-child(${item['column']})`).each(($cell, index) => {
-
-                                let elm_type = $cell.prop('tagName').toLowerCase()
-
-                                if(elm_type === 'td' || elm_type === 'th') {
-
-                                    const value = item['value']
-
-                                    //Special case for icons
-                                    if(item['button']) {
-                                        cy.wrap($cell).find('button').should('exist')
-                                    } else if(item['icon']){
-                                        cy.wrap($cell).find('img').should('exist')
-                                    } else if(item['checkbox']){
-                                        cy.wrap($cell).find(`input[type=checkbox]`).should(item['value'] === "[✓]" ? 'be.checked' : 'not.be.checked')
-                                        //Special case for RegEx on date / time formats
-                                    } else if(item['regex'] && window.dateFormats[value].test($cell.text()) ){
-                                        expect($cell.text()).to.match(window.dateFormats[value])
-
-                                        //All other cases are straight up text matches
-                                    } else if ( $cell.text().includes(item['value']) ) {
-                                        expect($cell.text()).to.contain(value)
+                row_selector.forEach((row, row_number) => {
+                    cy.get(row).should('have.length.greaterThan', 0).then(($row) => {
+                     filter_selector.forEach((item) => {
+                            if(item.row === row_number){
+                                //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
+                                //We can get around this by finding column index and looking for specific column value within a row
+                                cy.wrap($row).find(`td:nth-child(${item.column}),th:nth-child(${item.column})`).each(($cell) => {
+                                    if (item.html_elm) {
+                                        cy.wrap($cell).find(html_elements[item.value].selector).should(html_elements[item.value].condition)
+                                    } else if (item.regex) {
+                                        expect($cell[0].innerText.trim()).to.match(window.dateFormats[item.value])
+                                    } else if ($cell[0].innerText.includes(item.value)) {
+                                        expect($cell[0].innerText.trim()).to.contain(item.value)
                                     }
-
-                                }
-                            })
+                                })
+                            }
                         })
                     })
                 })

@@ -232,3 +232,10 @@ window.participantListIcons = {
     'green checkmark' : `img[src*=circle_green_tick]`,
     'gray bubble': `img[src*=stop_gray]`
 }
+
+window.tableHtmlElements = {
+    '[icon]': { selector: 'img', condition: 'exist'},
+    '[button]': { selector: 'button', condition: 'exist'},
+    '[✓]': { selector: 'input[type=checkbox]:checked', condition: 'be.checked'},
+    '[ ]': { selector: 'input[type=checkbox]', condition: 'not.be.checked'},
+}
