@@ -377,16 +377,18 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         let selector = `${header_table}:visible`
         let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
 
+        let header_selector = `${selector} tr`
+        header.forEach((heading, index) => { header_selector += `:has(:contains(${JSON.stringify(heading)}))`})
+
         outer_element.within(() => {
-            cy.get(`${selector} tr:first th,td`).then(($cells) => {
+            cy.get(header_selector).then(($cells) => {
                 header.forEach((heading, index) => {
                     columns[heading] = null
-                    for(let i = 0; i < $cells.length; i++){
-                        let current_cell = $cells.eq(i)
-                        if (current_cell.text().includes(heading) && columns[heading] === null) {
+                    let all_cells = cy.wrap($cells).find(`td,th`).each(($cell, i) => {
+                        if ($cell.text().includes(heading) && columns[heading] === null) {
                             columns[heading] = i + 1
                         }
-                    }
+                    })
                 })
             }).then(() => {
                 //console.log(columns)
