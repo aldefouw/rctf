@@ -368,6 +368,84 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         header_table = selector[0]
         main_table = selector[1]
     }
+    //We will first try to match on exact match, then substring if no match
+    function exactMatch(label, header, columns, colSpan, count){
+        header.forEach((heading) => {
+            const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special characters
+            const exactPattern = new RegExp(`^${escapedLabel}$`)
+            if(exactPattern.test(heading) && columns[heading].match_type === 'none' && label !== ""){
+                columns[heading] = { col: count, match_type: 'exact', colSpan: colSpan }
+            }
+        })
+    }
+
+    function subMatch(label, header, columns, colSpan, count){
+        header.forEach((heading) => {
+            const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const substringPattern = new RegExp(escapedLabel);
+            const substringNoCase = new RegExp(escapedLabel, 'i');
+            const reverseMatch = new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+            if(columns[heading].match_type === 'none' && label !== ""){
+                if (substringPattern.test(heading)){
+                    columns[heading] = { col: count, match_type: 'sub', colSpan: colSpan }
+                } else if (substringNoCase.test(heading)){
+                    columns[heading] = { col: count, match_type: 'sub_no_case', colSpan: colSpan }
+                } else if (reverseMatch.test(label)){
+                    columns[heading] ={ col: count, match_type: 'reverse', colSpan: colSpan }
+                }
+            }
+        })
+    }
+
+    function findColSpanCols(columns){
+        for (const key in columns) {
+            if (columns.hasOwnProperty(key)) {
+                // Check if the match_type is "none"
+                if (columns[key].colSpan > 1) {
+                    //console.log(key)
+                }
+            }
+        }
+    }
+
+    function findColumnHeaders($cells, header, columns, exact = true, count = 0){
+        cy.wrap($cells).find(`td,th`).each(($cell, i, $cells) => {
+            let labels = $cell[0].innerText.split("\n")
+            let colSpan = parseInt($cell.attr('colspan'))
+            count += colSpan //We need to find the number of cells to span across
+            labels.forEach((label, index) => {
+                exact ? exactMatch(label, header, columns, colSpan, count) :
+                        subMatch(label, header, columns, colSpan, count)
+
+
+                // if (i === $cells.length - 1 && index === labels.length - 1) {
+                //     if(exact){
+                //         let exact_matches = true
+                //         for (const key in columns) {
+                //             if (columns.hasOwnProperty(key)) {
+                //                 // Check if the match_type is "none"
+                //                 if (columns[key].match_type === "none") {
+                //                     exact_matches = false
+                //                     break
+                //                 }
+                //             }
+                //         }
+                //
+                //         findColumnHeaders($cells, header, columns, false, 0)
+                //     }
+                //
+                //     findColSpanCols(columns)
+                // }
+            })
+        })
+
+            // if(exact){
+
+            // }
+            // console.log('test')
+            // findColSpanCols(columns)
+        // })
+    }
 
     //If we are including the table header, we are also going to match specific columns
     if(header === "header and") {
@@ -386,57 +464,16 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             header_selector += ')'
         })
 
+        header.forEach((heading, index) => {
+            columns[heading] = {match_type: 'none'}
+        })
+
         outer_element.within(() => {
-            cy.get(header_selector).then(($cells) => {
-
-                //EXACT MATCHES FIRST
-                header.forEach((heading, index) => {
-                    columns[heading] = { match_type: 'none' }
-                    cy.wrap($cells).find(`td,th`).each(($cell, i) => {
-
-                        let labels = $cell[0].innerText.split("\n")
-
-                        //We will first try to match on exact match, then substring if no match
-                        labels.forEach((label) => {
-                            // Escape special characters
-                            const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                            const exactPattern = new RegExp(`^${escapedLabel}$`);
-
-                            if(exactPattern.test(heading) && columns[heading].match_type === 'none' && label !== ""){
-                                columns[heading] = { col: i + 1, match_type: 'exact' }
-                            }
-                        })
-                    })
-                })
-
-                //SUBSTRING MATCHES SECOND
-                header.forEach((heading, index) => {
-                    cy.wrap($cells).find(`td,th`).each(($cell, i) => {
-                        let labels = $cell[0].innerText.split("\n")
-
-                        //We will first try to match on exact match, then substring if no match
-                        labels.forEach((label) => {
-                            const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-                            // Escape special characters
-                            const substringPattern = new RegExp(escapedLabel);
-                            const substringNoCase = new RegExp(escapedLabel, 'i');
-                            const reverseMatch = new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-
-                            if(columns[heading].match_type === 'none' && label !== ""){
-                                if (substringPattern.test(heading)){
-                                    columns[heading] = { col: i + 1, match_type: 'sub' }
-                                } else if (substringNoCase.test(heading)){
-                                    columns[heading] = { col: i + 1, match_type: 'sub_no_case' }
-                                } else if (reverseMatch.test(label)){
-                                    columns[heading] ={ col: i + 1, match_type: 'reverse' }
-                                }
-                            }
-                        })
-                    })
-                })
+            cy.get(header_selector, {timeout: 20000}).then(($cells) => {
+                findColumnHeaders($cells, header, columns)
             }).then(() => {
-                console.log(columns)
+
+                //console.log(columns)
                 let filter_selector = []
                 dataTable.hashes().forEach((row, row_index) => {
                     for (const [index, key] of Object.keys(row).entries()) {
@@ -477,6 +514,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                                 //Big sad .. cannot combine nth-child and contains in a pseudo-selector :(
                                 //We can get around this by finding column index and looking for specific column value within a row
                                 cy.wrap($row).find(`td:nth-child(${item.column}),th:nth-child(${item.column})`).each(($cell) => {
+                                    //console.log(item)
                                     if (item.html_elm) {
                                         cy.wrap($cell).find(html_elements[item.value].selector).should(html_elements[item.value].condition)
                                     } else if (item.regex) {
