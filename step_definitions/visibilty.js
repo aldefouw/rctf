@@ -389,7 +389,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         outer_element.within(() => {
             cy.get(header_selector).then(($cells) => {
                 header.forEach((heading, index) => {
-                    columns[heading] = null
+                    columns[heading] = { match_type: 'none' }
                     let all_cells = cy.wrap($cells).find(`td,th`).each(($cell, i) => {
 
                         let labels = $cell[0].innerText.split("\n")
@@ -401,24 +401,16 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             const exactPattern = new RegExp(`^${escapedLabel}$`);
                             const substringPattern = new RegExp(escapedLabel);
                             const substringNoCase = new RegExp(escapedLabel, 'i');
-
                             const reverseMatch = new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
 
-                            // Uncomment when troubleshooting
-                            console.log(`LABEL: ${label}`)
-                            console.log(`HEADING: ${heading}`)
-                            console.log(exactPattern.test(heading))
-                            console.log(substringPattern.test(heading))
-                            console.log(substringNoCase.test(heading))
-
-                            if(exactPattern.test(heading) && columns[heading] === null){
-                                columns[heading] = i + 1
-                            } else if (substringPattern.test(heading) && columns[heading] === null){
-                                columns[heading] = i + 1
-                            } else if (substringNoCase.test(heading) && columns[heading] === null){
-                                columns[heading] = i + 1
-                            } else if (reverseMatch.test(label)){
-                                columns[heading] = i + 1
+                            if(exactPattern.test(heading) && columns[heading].match_type === 'none'){
+                                columns[heading] = { col: i + 1, match_type: 'exact' }
+                            } else if (substringPattern.test(heading) && columns[heading].match_type === 'none'){
+                                columns[heading] = { col: i + 1, match_type: 'sub' }
+                            } else if (substringNoCase.test(heading) && columns[heading].match_type === 'none'){
+                                columns[heading] = { col: i + 1, match_type: 'sub_no_case' }
+                            } else if (reverseMatch.test(label) && columns[heading].match_type === 'none'){
+                                columns[heading] ={ col: i + 1, match_type: 'reverse' }
                             }
                         })
                     })
@@ -429,7 +421,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                 dataTable.hashes().forEach((row, row_index) => {
                     for (const [index, key] of Object.keys(row).entries()) {
                         let value = row[key]
-                        let column = columns[key]
+                        let column = columns[key].col
                         if (!isNaN(column)) {
 
                             let contains = ''
