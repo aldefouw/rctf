@@ -191,7 +191,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
 
         switch (ext) {
             case "bat":
-                if (format === sps) {
+                if (format === "sps") {
                     hyperlink = 'a:has(img[src*="spss"]:visible):visible'
                 } else {
                     hyperlink = 'a:has(img[src*="pathway"]:visible):visible'
