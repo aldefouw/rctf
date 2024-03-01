@@ -388,9 +388,11 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         outer_element.within(() => {
             cy.get(header_selector).then(($cells) => {
+
+                //EXACT MATCHES FIRST
                 header.forEach((heading, index) => {
                     columns[heading] = { match_type: 'none' }
-                    let all_cells = cy.wrap($cells).find(`td,th`).each(($cell, i) => {
+                    cy.wrap($cells).find(`td,th`).each(($cell, i) => {
 
                         let labels = $cell[0].innerText.split("\n")
 
@@ -399,18 +401,36 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             // Escape special characters
                             const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                             const exactPattern = new RegExp(`^${escapedLabel}$`);
+
+                            if(exactPattern.test(heading) && columns[heading].match_type === 'none' && label !== ""){
+                                columns[heading] = { col: i + 1, match_type: 'exact' }
+                            }
+                        })
+                    })
+                })
+
+                //SUBSTRING MATCHES SECOND
+                header.forEach((heading, index) => {
+                    cy.wrap($cells).find(`td,th`).each(($cell, i) => {
+                        let labels = $cell[0].innerText.split("\n")
+
+                        //We will first try to match on exact match, then substring if no match
+                        labels.forEach((label) => {
+                            const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                            // Escape special characters
                             const substringPattern = new RegExp(escapedLabel);
                             const substringNoCase = new RegExp(escapedLabel, 'i');
                             const reverseMatch = new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
 
-                            if(exactPattern.test(heading) && columns[heading].match_type === 'none'){
-                                columns[heading] = { col: i + 1, match_type: 'exact' }
-                            } else if (substringPattern.test(heading) && columns[heading].match_type === 'none'){
-                                columns[heading] = { col: i + 1, match_type: 'sub' }
-                            } else if (substringNoCase.test(heading) && columns[heading].match_type === 'none'){
-                                columns[heading] = { col: i + 1, match_type: 'sub_no_case' }
-                            } else if (reverseMatch.test(label) && columns[heading].match_type === 'none'){
-                                columns[heading] ={ col: i + 1, match_type: 'reverse' }
+                            if(columns[heading].match_type === 'none' && label !== ""){
+                                if (substringPattern.test(heading)){
+                                    columns[heading] = { col: i + 1, match_type: 'sub' }
+                                } else if (substringNoCase.test(heading)){
+                                    columns[heading] = { col: i + 1, match_type: 'sub_no_case' }
+                                } else if (reverseMatch.test(label)){
+                                    columns[heading] ={ col: i + 1, match_type: 'reverse' }
+                                }
                             }
                         })
                     })
