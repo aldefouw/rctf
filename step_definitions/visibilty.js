@@ -378,26 +378,48 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
 
         let header_selector = `${selector} tr`
-        header.forEach((heading, index) => { header_selector += `:has(:contains(${JSON.stringify(heading)}))`})
+        header.forEach((heading, index) => {
+            header_selector += ':has('
+            heading.split(' ').forEach((head) => {
+                header_selector += `:contains(${JSON.stringify(head)})`
+            })
+            header_selector += ')'
+        })
 
         outer_element.within(() => {
             cy.get(header_selector).then(($cells) => {
                 header.forEach((heading, index) => {
                     columns[heading] = null
                     let all_cells = cy.wrap($cells).find(`td,th`).each(($cell, i) => {
-                        if ($cell.text().includes(heading) && columns[heading] === null) {
-                            columns[heading] = i + 1
-                        }
+
+                        let labels = $cell[0].innerText.split("\n")
+
+                        //We will first try to match on exact match, then substring if no match
+                        labels.forEach((label) => {
+                            const exactPattern = new RegExp(`^${label}$`)
+                            const substringPattern = new RegExp(label)
+
+                            if(exactPattern.test(heading) && columns[heading] === null){
+                                columns[heading] = i + 1
+                            } else if (substringPattern.test(heading) && columns[heading] === null){
+                                columns[heading] = i + 1
+                            }
+                        })
+
                     })
                 })
             }).then(() => {
-                //console.log(columns)
+                console.log(columns)
                 let filter_selector = []
                 dataTable.hashes().forEach((row, row_index) => {
                     for (const [index, key] of Object.keys(row).entries()) {
                         let value = row[key]
                         let column = columns[key]
                         if (!isNaN(column)) {
+
+                            let contains = ''
+                            value.split(' ').forEach((val) => { contains += `:contains(${JSON.stringify(val)})` })
+
                             filter_selector.push({
                                 'column': column,
                                 'row': row_index,
@@ -406,7 +428,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                                 'regex': window.dateFormats.hasOwnProperty(value),
                                 'selector': Object.keys(html_elements).includes(value) ?
                                     `:has(td:has(${html_elements[value].selector}),th:has(${html_elements[value].selector}))` :
-                                    `:has(${window.dateFormats.hasOwnProperty(value) ? 'td,th' : `:contains(${JSON.stringify(value)})`})`
+                                    `:has(${window.dateFormats.hasOwnProperty(value) ? 'td,th' : contains})`
                             })
                         }
                     }
@@ -418,7 +440,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                 filter_selector.forEach((item) => {
                     row_selector[item.row] = (row_selector.hasOwnProperty(item.row)) ?
                         `${row_selector[item.row]}${item.selector}` :
-                        `${main_table}:visible tr:visible${item.selector}`
+                        `${main_table}:visible tr${item.selector}`
                 })
 
                 row_selector.forEach((row, row_number) => {
@@ -454,7 +476,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         outer_element.within(() => {
             tabular_data.forEach((row) => {
-                row_selector = 'tr'
+                let row_selector = 'tr'
                 row.forEach((element) => {
                     const containsStatements = element.split(/\n/) //This handles splitting values for us
                     containsStatements.forEach((statement) => {
@@ -477,7 +499,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         outer_element.within(() => {
             tabular_data.forEach((row) => {
-                row_selector = 'tr'
+                let row_selector = 'tr'
                 row.forEach((element) => {
                     if(!window.dateFormats.hasOwnProperty(element)) {
                         row_selector += `:has(td:contains(${JSON.stringify(element)}))`
