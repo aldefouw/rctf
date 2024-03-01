@@ -397,15 +397,24 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         //We will first try to match on exact match, then substring if no match
                         labels.forEach((label) => {
                             const exactPattern = new RegExp(`^${label}$`)
-                            const substringPattern = new RegExp(label)
+                            const substringPattern = label.indexOf(heading) !== -1
+                            const substringNoCase = label.toLowerCase().indexOf(heading.toLowerCase()) !== -1
+
+                            // Uncomment when troubleshooting
+                            // console.log(`LABEL: ${label}`)
+                            // console.log(`HEADING: ${heading}`)
+                            // console.log(exactPattern.test(heading))
+                            // console.log(substringPattern)
+                            // console.log(substringNoCase)
 
                             if(exactPattern.test(heading) && columns[heading] === null){
                                 columns[heading] = i + 1
-                            } else if (substringPattern.test(heading) && columns[heading] === null){
+                            } else if (substringPattern && columns[heading] === null){
+                                columns[heading] = i + 1
+                            } else if (substringNoCase && columns[heading] === null){
                                 columns[heading] = i + 1
                             }
                         })
-
                     })
                 })
             }).then(() => {
