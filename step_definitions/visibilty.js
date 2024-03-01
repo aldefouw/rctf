@@ -413,8 +413,9 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         let ls = $t[0].innerText.split("\n")
                         ls.forEach((label, index) => {
                             exact ? exactMatch(label, header, columns, 1, 1, freeze_count) :
-                                subMatch(label, header, columns, 1, 1, freeze_count)
+                                    subMatch(label, header, columns, 1, 1, freeze_count)
                         })
+                        freeze_count += 1
                     })
                 })
             }
@@ -437,8 +438,12 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                 })
 
                 prevColSpan = colSpan
+            }).then(() => {
+                console.log(columns)
             })
+
         })
+
     }
 
     //If we are including the table header, we are also going to match specific columns
