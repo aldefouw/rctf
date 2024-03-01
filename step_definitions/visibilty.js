@@ -397,7 +397,8 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         })
     }
 
-    function findColumnHeaders($cells, header, columns, exact = true, count = 0){
+    function findColumnHeaders(header_selector, $cells, header, columns) {
+        let count = 0
         let prevColSpan = 1
         cy.wrap($cells).find(`td,th`).each(($cell, i, cells) => {
             let colSpan = parseInt($cell.attr('colspan'))
@@ -408,42 +409,51 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             //Handle weird nested columns
             if (colSpan > 1 && rowSpan === 1) {
                 let freeze_count = count
-                cy.get(`table.dataTable:visible tr:nth-child(2) th[rowspan=1]`).each((c) => {
+                cy.get(`${header_selector} tr:nth-child(2) th[rowspan=1]`).each((c) => {
                     cy.wrap(c).then(($t) => {
                         let ls = $t[0].innerText.split("\n")
                         ls.forEach((label, index) => {
-                            exact ? exactMatch(label, header, columns, 1, 1, freeze_count) :
-                                    subMatch(label, header, columns, 1, 1, freeze_count)
+                            exactMatch(label, header, columns, 1, 1, freeze_count)
                         })
                         freeze_count += 1
                     })
                 })
             }
-
             prevColSpan = colSpan
 
         }).then(() => {
             count = 0
+            prevColSpan = 1
 
             cy.wrap($cells).find(`td,th`).each(($cell, i, cells) => {
                 let labels = $cell[0].innerText.split("\n")
-                let colSpan = parseInt($cell.attr('colspan'))
-                let rowSpan = parseInt($cell.attr('rowspan'))
-
+                let colSpan = parseInt($cell.attr('colspan')) || 1
+                let rowSpan = parseInt($cell.attr('rowspan')) || 1
                 count += prevColSpan //We need to find the number of cells to span across
-
                 labels.forEach((label) => {
-                        exact ? exactMatch(label, header, columns, colSpan, rowSpan, count) :
-                                subMatch(label, header, columns, colSpan,  rowSpan, count)
+                    exactMatch(label, header, columns, colSpan, rowSpan, count)
                 })
-
                 prevColSpan = colSpan
-            }).then(() => {
-                console.log(columns)
+            })
+        }).then(() => {
+            count = 0
+            prevColSpan = 1
+
+            cy.wrap($cells).find(`td,th`).each(($cell, i, cells) => {
+                let labels = $cell[0].innerText.split("\n")
+                let colSpan = parseInt($cell.attr('colspan')) || 1
+                let rowSpan = parseInt($cell.attr('rowspan')) || 1
+                count += prevColSpan //We need to find the number of cells to span across
+                labels.forEach((label) => {
+                    subMatch(label, header, columns, colSpan, rowSpan, count)
+                })
+                prevColSpan = colSpan
             })
 
-        })
+        }).then(() => {
+            console.log(columns)
 
+        })
     }
 
     //If we are including the table header, we are also going to match specific columns
@@ -469,7 +479,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
         outer_element.within(() => {
             cy.get(header_selector, {timeout: 20000}).then(($cells) => {
-                findColumnHeaders($cells, header, columns)
+                findColumnHeaders(header_selector, $cells, header, columns)
             }).then(() => {
                 console.log(columns)
                 let filter_selector = []
