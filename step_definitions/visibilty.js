@@ -402,18 +402,22 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                             const substringPattern = new RegExp(escapedLabel);
                             const substringNoCase = new RegExp(escapedLabel, 'i');
 
+                            const reverseMatch = new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+
                             // Uncomment when troubleshooting
-                            // console.log(`LABEL: ${label}`)
-                            // console.log(`HEADING: ${heading}`)
-                            // console.log(exactPattern.test(heading))
-                            // console.log(substringPattern.test(heading))
-                            // console.log(substringNoCase.test(heading))
+                            console.log(`LABEL: ${label}`)
+                            console.log(`HEADING: ${heading}`)
+                            console.log(exactPattern.test(heading))
+                            console.log(substringPattern.test(heading))
+                            console.log(substringNoCase.test(heading))
 
                             if(exactPattern.test(heading) && columns[heading] === null){
                                 columns[heading] = i + 1
                             } else if (substringPattern.test(heading) && columns[heading] === null){
                                 columns[heading] = i + 1
                             } else if (substringNoCase.test(heading) && columns[heading] === null){
+                                columns[heading] = i + 1
+                            } else if (reverseMatch.test(label)){
                                 columns[heading] = i + 1
                             }
                         })
