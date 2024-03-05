@@ -224,7 +224,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
             })
 
         } else {
-            cy.get(hyperlink).eq(i).then((anchor) => {
+            cy.get(hyperlink).eq(0).then((anchor) => {
                 const url = anchor.prop('href');
 
                 cy.request(url).then(($response) => {
