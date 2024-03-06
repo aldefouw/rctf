@@ -174,7 +174,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
     const downloads = {
         csv: ["csv"],
         sps: ["sps", "csv", "bat"],
-        sas: ["sas", "csv", "bat"],
+        sas: ["sas", "csv"],
         r: ["r", "csv"],
         do: ["do", "csv"],
         odm: ["xml"]
@@ -188,7 +188,6 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
         let content_type;
         let hyperlink;
         let ext = toDownload[i]
-
         switch (ext) {
             case "bat":
                 if (format === "sps") {
@@ -201,6 +200,10 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
             case "csv":
                 content_type = "application/csv"
                 hyperlink = 'a:has(img[src*="csv"]:visible):visible'
+                break;
+            case "sas":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="sas"]:visible):visible'
                 break;
             default:
                 content_type = "application/octet-stream"
