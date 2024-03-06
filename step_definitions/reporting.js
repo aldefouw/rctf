@@ -205,6 +205,18 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                 content_type = "application/octet-stream"
                 hyperlink = 'a:has(img[src*="sas"]:visible):visible'
                 break;
+            case "r":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="_r"]:visible):visible'
+                break;
+            case "do":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="_stata"]:visible):visible'
+                break;
+            case "xml":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="xml"]:visible):visible'
+                break;
             default:
                 content_type = "application/octet-stream"
                 hyperlink = 'a:has(img[src*="Resources/images/download"]):visible'
