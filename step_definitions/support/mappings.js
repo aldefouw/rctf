@@ -194,6 +194,17 @@ window.ordinalChoices = {
     seventh: 6,
     eighth: 7,
     ninth: 8,
+    tenth: 9,
+    eleventh: 10,
+    twelfth: 11,
+    thirteenth: 12,
+    fourteenth: 13,
+    fifteenth: 14,
+    sixteenth: 15,
+    seventeenth: 16,
+    eighteenth: 17,
+    nineteenth: 18,
+    twentieth: 19,
     last: -1
 }
 
