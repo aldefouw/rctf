@@ -174,7 +174,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
     const downloads = {
         csv: ["csv"],
         sps: ["sps", "csv", "bat"],
-        sas: ["sas", "csv", "bat"],
+        sas: ["sas", "csv"],
         r: ["r", "csv"],
         do: ["do", "csv"],
         odm: ["xml"]
@@ -188,10 +188,9 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
         let content_type;
         let hyperlink;
         let ext = toDownload[i]
-
         switch (ext) {
             case "bat":
-                if (format === sps) {
+                if (format === "sps") {
                     hyperlink = 'a:has(img[src*="spss"]:visible):visible'
                 } else {
                     hyperlink = 'a:has(img[src*="pathway"]:visible):visible'
@@ -201,6 +200,22 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
             case "csv":
                 content_type = "application/csv"
                 hyperlink = 'a:has(img[src*="csv"]:visible):visible'
+                break;
+            case "sas":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="sas"]:visible):visible'
+                break;
+            case "r":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="_r"]:visible):visible'
+                break;
+            case "do":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="_stata"]:visible):visible'
+                break;
+            case "xml":
+                content_type = "application/octet-stream"
+                hyperlink = 'a:has(img[src*="xml"]:visible):visible'
                 break;
             default:
                 content_type = "application/octet-stream"
@@ -224,7 +239,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
             })
 
         } else {
-            cy.get(hyperlink).eq(i).then((anchor) => {
+            cy.get(hyperlink).eq(0).then((anchor) => {
                 const url = anchor.prop('href');
 
                 cy.request(url).then(($response) => {
