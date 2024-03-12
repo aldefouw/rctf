@@ -340,7 +340,7 @@ Given("I add a new {fieldType} field labeled {string} with variable name {string
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I drag the instrument named {string} to the {ordinal} row
  * @param {string} instrument - the naame of the instrument being drag-n-dropped
- * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'last'
+ * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'last'
  * @description Interactions - Drag and drop the instrument to the int position
  */
 Given("I drag the instrument named {string} to the{ordinal} row", (instrument, position) => {

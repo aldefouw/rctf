@@ -35,7 +35,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'onlineDesignerFieldIcons',
-            regexp: /|Edit|Branching Logic|Copy|Move|Stop|Delete Field/,
+            regexp: /|Edit|Branching Logic|Copy|Move|Stop|Delete Field|Delete/,
         })
 
 defineParameterType({
@@ -170,7 +170,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'labeledExactly',
-            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named/,
+            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named|for Data Quality Rule #/,
         })
 
 defineParameterType({

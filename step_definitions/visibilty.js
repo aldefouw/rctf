@@ -335,7 +335,7 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
  * @example I should see {string} in (the) {tableTypes} table
  * @param {string} text - text to look for
- * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook', 'import data display', 'participant list'
+ * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook', 'import data display', 'participant list', 'user rights'
  * @description Identify specific text within a table
  */
 
