@@ -409,7 +409,8 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             //Handle weird nested columns
             if (colSpan > 1 && rowSpan === 1) {
                 let freeze_count = count
-                cy.get(`${header_selector} tr:nth-child(2) th[rowspan=1]`).each((c) => {
+                //Notice how we don't want to use TR here
+                cy.get(`${header_selector.replace('tr', '')} tr:nth-child(2) th[rowspan=1]`).each((c) => {
                     cy.wrap(c).then(($t) => {
                         let ls = $t[0].innerText.split("\n")
                         ls.forEach((label, index) => {
@@ -424,7 +425,6 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         }).then(() => {
             count = 0
             prevColSpan = 1
-
             cy.wrap($cells).find(`td,th`).each(($cell, i, cells) => {
                 let labels = $cell[0].innerText.split("\n")
                 let colSpan = parseInt($cell.attr('colspan')) || 1
@@ -464,7 +464,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         let selector = `${header_table}:visible`
         let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
 
-        let header_selector = `${selector} `
+        let header_selector = `${selector} tr`
         header.forEach((heading, index) => {
             header_selector += ':has('
             heading.split(' ').forEach((head) => {
