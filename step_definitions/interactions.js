@@ -479,6 +479,8 @@ Given('I clear the field labeled {string}', (label) => {
  * @description Selects a checkbox field by its label
  */
 Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}", (event_name, check, type, labeled_exactly, label, base_element) => {
+    cy.not_loading()
+
     let outer_element = window.elementChoices[base_element]
 
     let label_selector = `:contains(${JSON.stringify(label)}):visible`
