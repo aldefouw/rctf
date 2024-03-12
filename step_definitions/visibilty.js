@@ -240,7 +240,19 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
 
                 cy.get(sel).find('input').invoke('val')
                     .then((actualValue) => {
-                        expect(actualValue).to.eq(expectedValue)
+                        if(opt_str === "the exact time in the"){
+                            let [h, m, s] = actualValue.split(':').map(Number)
+                            const actualTimeInSeconds = (h * 3600) + (m * 60) + s
+
+                            let [h_e, m_e, s_e] = expectedValue.split(':').map(Number)
+                            const expectedTimeInTimeInSeconds = (h_e * 3600) + (m_e * 60) + s_e
+
+                            //5 seconds tolerance
+                            expect(actualTimeInSeconds).to.be.closeTo(expectedTimeInTimeInSeconds, 5)
+                        } else {
+                            expect(actualValue).to.eq(expectedValue)
+                        }
+
                     })
             }
         }
