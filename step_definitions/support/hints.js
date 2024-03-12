@@ -1,6 +1,6 @@
 defineParameterType({
             name: 'tableTypes',
-            regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|import data display|participant list/,
+            regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|import data display|participant list|user rights/,
         })
 
 defineParameterType({
@@ -20,7 +20,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'ordinal',
-            regexp: /(?: (first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|last||))?/,
+            regexp: /(?: (first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|last||))?/,
         })
 
 defineParameterType({
@@ -195,7 +195,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'onlineDesignerButtons',
-            regexp: /(?: ("Enable"|"Disable"|"Choose action"|"Survey settings"|"Automated Invitations"|enabled survey icon|"View Report"||))?/,
+            regexp: /(?: ("Enable"|"Disable"|"Choose action"|"Survey settings"|"Automated Invitations"|enabled survey icon|"View Report"|"Execute"||))?/,
         })
 
 defineParameterType({
