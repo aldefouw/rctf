@@ -421,8 +421,11 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             //Handle weird nested columns
             if (colSpan > 1 && rowSpan === 1) {
                 let freeze_count = count
+
+                if(table_type !== "report data") header_selector = header_selector.replace('tr', '')
+
                 //Notice how we don't want to use TR here
-                cy.get(`${header_selector.replace('tr', '')} tr:nth-child(2) th[rowspan=1]`).each((c) => {
+                cy.get(`${header_selector} tr:nth-child(2) th[rowspan=1]`).each((c) => {
                     cy.wrap(c).then(($t) => {
                         let ls = $t[0].innerText.split("\n")
                         ls.forEach((label, index) => {
@@ -485,6 +488,8 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         let outer_element = cy.top_layer(selector, window.elementChoices[base_element])
 
         let header_selector = `${selector} tr`
+        if(table_type === "report data") header_selector = `${selector} `
+
         header.forEach((heading, index) => {
             header_selector += ':has('
             heading.split(' ').forEach((head) => {
