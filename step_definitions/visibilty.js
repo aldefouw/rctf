@@ -437,15 +437,23 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         }).then(() => {
             count = 0
             prevColSpan = 1
+            let prevRowSpan = 1
+
+            //Determine if records exist
+            const records = Cypress.$('td.data:has(:contains("No records exist"))')
+
             cy.wrap($cells).find(`td,th`).each(($cell, i, cells) => {
                 let labels = $cell[0].innerText.split("\n")
                 let colSpan = parseInt($cell.attr('colspan')) || 1
                 let rowSpan = parseInt($cell.attr('rowspan')) || 1
-                count += prevColSpan //We need to find the number of cells to span across
+                if(records.length && prevRowSpan === 1 || records.length === 0){
+                    count += prevColSpan //We need to find the number of cells to span across
+                }
                 labels.forEach((label) => {
                     exactMatch(label, header, columns, colSpan, rowSpan, count)
                 })
                 prevColSpan = colSpan
+                prevRowSpan = rowSpan
             })
         }).then(() => {
             count = 0
