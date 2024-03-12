@@ -30,6 +30,11 @@ Given(/^I click on (?:a|the) table cell containing the text "(.*?)"(?: in)?(?: t
         }).as('dag_data')
     }
     let selector = window.tableMappings[table_type]
+
+    if(Array.isArray(window.tableMappings[table_type])) {
+        selector = window.tableMappings[table_type][0]
+    }
+
     cy.get(selector).within(() => {
         cy.get(`td:contains(${JSON.stringify(text)}):visible`).
         find(`a:contains(${JSON.stringify(text)}):visible:first, span:contains(${JSON.stringify(text)}):visible:first`).
