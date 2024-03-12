@@ -163,7 +163,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 
         //This is the key to the Online Designer buttons being identified!
         if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button)){
-            outer_element = `table:visible tr:contains("${text}"):visible`
+            outer_element = `table:visible tr:has(td:has(div:has(div:contains("${text}"))))`
             text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
         }
 
