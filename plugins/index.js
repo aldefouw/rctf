@@ -177,6 +177,16 @@ module.exports = (on, config) => {
                 .sort((a, b) => b.mtime - a.mtime)[0].file
 
             return `${downloadsDir}${latestFile}`
+        },
+
+        fileExists(filePath) {
+            try {
+                // Check if the file exists
+                fs.accessSync(filePath, fs.constants.F_OK);
+                return true; // File exists
+            } catch (error) {
+                return false; // File does not exist
+            }
         }
 
     })

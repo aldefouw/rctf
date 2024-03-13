@@ -232,6 +232,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                     expect($response.status).to.equal(200)
                     expect($response.headers['content-disposition']).to.contain('.' + ext)
                     expect($response.headers['content-type']).to.equal(content_type)
+                    cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
 
                     const contentDisposition = $response.headers['content-disposition']
 
@@ -244,8 +245,6 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                             cy.writeFile("cypress/downloads/" + filename, $response.body)
                         }
                     }
-
-                    cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
                 })
             })
 
@@ -258,6 +257,7 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                     expect($response.status).to.equal(200)
                     expect($response.headers['content-disposition']).to.contain('.' + ext)
                     expect($response.headers['content-type']).to.equal(content_type)
+                    cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
 
                     const contentDisposition = $response.headers['content-disposition']
 
@@ -270,10 +270,6 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                             cy.writeFile("cypress/downloads/" + filename, $response.body)
                         }
                     }
-
-
-                    cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
-
                 })
             })
         }

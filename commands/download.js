@@ -1,5 +1,13 @@
-Cypress.Commands.add('download_file', (filename) => {
-    const currentDate = new Date().toLocaleString('en-US', {
+function replaceFilename(file, date){
+    return file.replace('hhmm', `${date.substring(12, 14)}${date.substring(15, 17)}`)
+               .replace('yyyy', date.substring(6, 10))
+               .replace('mm', date.substring(0, 2))
+               .replace('hh', date.substring(11, 13))
+               .replace('dd', date.substring(3, 5))
+}
+
+function setLocalTimestamp(date){
+    return date.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -8,14 +16,36 @@ Cypress.Commands.add('download_file', (filename) => {
         minute: '2-digit',
         second: '2-digit'
     })
+}
 
-    filename = filename.replace('hhmm', `${currentDate.substring(12, 14)}${currentDate.substring(15, 17)}`)
-                        .replace('yyyy', currentDate.substring(6, 10))
-                        .replace('mm', currentDate.substring(0, 2))
-                        .replace('hh', currentDate.substring(11, 13))
-                        .replace('dd', currentDate.substring(3, 5))
+Cypress.Commands.add('download_file', (filename) => {
+    const current_time = new Date()
+    filename = replaceFilename(filename, setLocalTimestamp(current_time))
+    const minute_ago = current_time.setMinutes(current_time.getMinutes() - 1)
 
-    cy.readFile("cypress/downloads/" + filename).then(($file) => {
-        return $file
+    if(cy.fileExists("cypress/downloads/" + filename)){
+        cy.readFile("cypress/downloads/" + filename).then(($file) => {
+            return $file
+        })
+    } else {
+
+        filename = replaceFilename(filename, setLocalTimestamp(minute_ago))
+
+        if(cy.fileExists("cypress/downloads/" + filename)){
+            cy.readFile("cypress/downloads/" + filename).then(($file) => {
+                return $file
+            })
+        }
+    }
+})
+
+
+Cypress.Commands.add("fileExists", (filePath) => {
+    cy.task("fileExists", filePath).then((fileExists) => {
+        if (fileExists) {
+            return true
+        } else {
+            false
+        }
     })
 })
