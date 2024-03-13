@@ -1,5 +1,4 @@
 Cypress.Commands.add('download_file', (filename) => {
-
     const currentDate = new Date().toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
