@@ -233,8 +233,19 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                     expect($response.headers['content-disposition']).to.contain('.' + ext)
                     expect($response.headers['content-type']).to.equal(content_type)
 
-                    cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
+                    const contentDisposition = $response.headers['content-disposition']
 
+                    if (contentDisposition && contentDisposition.includes('filename')) {
+                        // Extract the filename from the Content-Disposition header
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+                        const matches = filenameRegex.exec(contentDisposition)
+                        if (matches !== null && matches[1]) {
+                            const filename = matches[1].replace(/['"]/g, '')
+                            cy.writeFile("cypress/downloads/" + filename, $response.body)
+                        }
+                    }
+
+                    cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
                 })
             })
 
@@ -247,6 +258,19 @@ Given("I click on the download icon(s) to receive the file(s) for the {string} f
                     expect($response.status).to.equal(200)
                     expect($response.headers['content-disposition']).to.contain('.' + ext)
                     expect($response.headers['content-type']).to.equal(content_type)
+
+                    const contentDisposition = $response.headers['content-disposition']
+
+                    if (contentDisposition && contentDisposition.includes('filename')) {
+                        // Extract the filename from the Content-Disposition header
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+                        const matches = filenameRegex.exec(contentDisposition)
+                        if (matches !== null && matches[1]) {
+                            const filename = matches[1].replace(/['"]/g, '')
+                            cy.writeFile("cypress/downloads/" + filename, $response.body)
+                        }
+                    }
+
 
                     cy.writeFile("cypress/downloads" + '/test_file.' + ext, $response.body)
 

@@ -1,20 +1,20 @@
 Cypress.Commands.add('download_file', (filename) => {
 
-    if(filename.includes('yyyy-mm-dd')){
-        // Create a new Date object representing today's date
-        const today = new Date();
+    const currentDate = new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    })
 
-        // Get the year, month, and day components from the Date object
-        const year = today.getFullYear();
-        // January is 0, so we add 1 to get the correct month
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-
-        // Format the date as yyyy-mm-dd
-        const formattedDate = `${year}-${month}-${day}`;
-
-        filename = filename.replace('yyyy-mm-dd', formattedDate)
-    }
+    filename = filename.replace('hhmm', `${currentDate.substring(12, 14)}${currentDate.substring(15, 17)}`)
+                        .replace('yyyy', currentDate.substring(6, 10))
+                        .replace('mm', currentDate.substring(0, 2))
+                        .replace('hh', currentDate.substring(11, 13))
+                        .replace('dd', currentDate.substring(3, 5))
 
     cy.readFile("cypress/downloads/" + filename).then(($file) => {
         return $file
