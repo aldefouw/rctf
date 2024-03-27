@@ -48,25 +48,33 @@
  * @description Verifies a row value exists for a given column within a CSV file.
  */
  Given("the CSV file at path {string} has a value {string} for column {string}", (path, value, column) => {
-     cy.download_file(path).then( ($text) => {
-        let lines = $text.trim().split('\n')
-        let columns = lines[0].split(',')
-        let index = columns.indexOf(column)
+     cy.download_file(path).then(($text) => {
+         let lines = $text.trim().split('\n')
+         let columns = lines[0].split(',')
+         let index = columns.indexOf(column)
 
-        expect(index).to.be.greaterThan(-1)
+         expect(index).to.be.greaterThan(-1)
 
-        let found = false
-        for(let i = 1; i < lines.length; i++){
-            let columns = lines[i].split(',')
-            if(columns[index] === value) {
-                console.log(value)
-                found = true
-                break
-            }
-        }
+         let found_value = null
+         let promise = Promise.resolve()
 
-        expect(found).to.equal(true)
-    })
+         promise = promise.then(() => {
+             for (let i = 1; i < lines.length; i++) {
+                     let columns = lines[i].split(',')
+                     let columnValue = columns[index].replace(/\r/g, '')
+                     if (columnValue === value) {
+                         found_value = columnValue
+                         return Promise.resolve()
+                     }
+             }
+         })
+
+         promise.then(() => {
+             expect(found_value).to.equal(value)
+         }).catch((error) => {
+             console.error("An error occurred:", error)
+         })
+     })
 })
 
 /**
