@@ -228,7 +228,9 @@ window.recordStatusIcons = {
 
 window.fileRepoIcons = {
     'File Share' : `i[class*=fa-arrow-up]`,
-    'Delete' : `i[class*=fa-times]`
+    'Restore' : `i[class*=fa-file-circle-plus]`,
+    'Delete' : `i[class*=fa-times]`,
+    'Delete Permanently' : `i[class*=fa-trash-can]`
 }
 
 window.onlineDesignerFieldIcons = {
