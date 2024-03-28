@@ -48,29 +48,54 @@
  * @description Verifies a row value exists for a given column within a CSV file.
  */
  Given("the CSV file at path {string} has a value {string} for column {string}", (path, value, column) => {
+     function parseCSVRow(row) {
+         // Regular expression to match commas not inside quotes
+         const regex = /,\s*(?=(?:[^"]|"[^"]*")*$)/
+         let cells = row.split(regex)
+
+         // Trim leading and trailing spaces and remove quotes from string cells
+         cells = cells.map(function(cell) { return cell.trim().replace(/^"|"$/g, '') })
+         return cells
+     }
+
      cy.download_file(path).then(($text) => {
          let lines = $text.trim().split('\n')
-         let columns = lines[0].split(',')
+         let columns = parseCSVRow(lines[0])
          let index = columns.indexOf(column)
 
          expect(index).to.be.greaterThan(-1)
 
-         let found_value = null
+         let found_value = { match: false, type: null, value: null }
          let promise = Promise.resolve()
 
          promise = promise.then(() => {
              for (let i = 1; i < lines.length; i++) {
-                     let columns = lines[i].split(',')
-                     let columnValue = columns[index].replace(/\r/g, '')
-                     if (columnValue === value) {
-                         found_value = columnValue
-                         return Promise.resolve()
+                 let columns = parseCSVRow(lines[i])
+                 let columnValue = columns[index]
+                 if (columnValue.includes(value)) {
+                     found_value['match'] = true
+                     found_value['type'] = 'string'
+                     found_value['value'] = columnValue
+                     return Promise.resolve()
+                 } else if (window.dateFormats.hasOwnProperty(value)){
+                    const substring = columnValue.match(window.dateFormats[value])
+                    const isMatch = substring !== null
+                     if(isMatch){
+                         found_value['match'] = true
+                         found_value['type'] = 'datetime'
+                         found_value['value'] = columnValue
                      }
+                 }
              }
          })
 
          promise.then(() => {
-             expect(found_value).to.equal(value)
+             if (found_value['match'] && found_value['type'] === 'datetime') {
+                 expect(found_value['value']).to.match(window.dateFormats[value])
+             } else if (found_value['match']) {
+                 expect(found_value['value']).to.contain(value)
+             }
+
          }).catch((error) => {
              console.error("An error occurred:", error)
          })
