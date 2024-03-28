@@ -84,6 +84,7 @@
                          found_value['match'] = true
                          found_value['type'] = 'datetime'
                          found_value['value'] = columnValue
+                         return Promise.resolve()
                      }
                  }
              }
