@@ -61,19 +61,19 @@ window.tableMappings = {
 window.dateFormats = {
     'mm-dd-yyyy': /\d{2}-\d{2}-\d{4}/,
     'yyyy-mm-dd': /\d{4}-\d{2}-\d{2}/,
-    'mm-dd-yyyy hh:mm': /\d{2}-\d{2}-\d{4} \d{1,2}:\d{2}(?:am|pm)?$/,
-    'yyyy-mm-dd hh:mm': /\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}(?:am|pm)?$/,
-    'mm-dd-yyyy hh:mm:ss': /\d{2}-\d{2}-\d{4} \d{1,2}:\d{2}:\d{2}(?:am|pm)?$/,
-    'yyyy-mm-dd hh:mm:ss': /\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}(?:am|pm)?$/,
+    'mm-dd-yyyy hh:mm': /\d{2}-\d{2}-\d{4} \d{1,2}:\d{2}(?:am|pm)?/,
+    'yyyy-mm-dd hh:mm': /\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}(?:am|pm)?/,
+    'mm-dd-yyyy hh:mm:ss': /\d{2}-\d{2}-\d{4} \d{1,2}:\d{2}:\d{2}(?:am|pm)?/,
+    'yyyy-mm-dd hh:mm:ss': /\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}(?:am|pm)?/,
     'mm/dd/yyyy': /\d{2}\/\d{2}\/\d{4}/,
     'yyyy/mm/dd': /\d{4}\/\d{2}\/\d{2}/,
-    'mm/dd/yyyy hh:mm': /\d{2}\/\d{2}\/\d{4} \d{1,2}:\d{2}(?:am|pm)?$/,
-    'yyyy/mm/dd hh:mm': /\d{4}\/\d{2}\/\d{2} \d{1,2}:\d{2}(?:am|pm)?$/,
-    'mm/dd/yyyy hh:mm:ss': /\d{2}\/\d{2}\/\d{4} \d{1,2}:\d{2}:\d{2}(?:am|pm)?$/,
-    'yyyy/mm/dd hh:mm:ss': /\d{4}\/\d{2}\/\d{2} \d{1,2}:\d{2}:\d{2}(?:am|pm)?$/,
-    'hh:mm': /\d{1,2}:\d{2}(?:am|pm)?$/,
-    'hh:mm:ss': /\d{1,2}:\d{2}:\d{2}(?:am|pm)?$/,
-    'hh:mm:ss.ms': /\d{1,2}:\d{2}:\d{2}\.\d{3}(?:am|pm)?$/
+    'mm/dd/yyyy hh:mm': /\d{2}\/\d{2}\/\d{4} \d{1,2}:\d{2}(?:am|pm)?/,
+    'yyyy/mm/dd hh:mm': /\d{4}\/\d{2}\/\d{2} \d{1,2}:\d{2}(?:am|pm)?/,
+    'mm/dd/yyyy hh:mm:ss': /\d{2}\/\d{2}\/\d{4} \d{1,2}:\d{2}:\d{2}(?:am|pm)?/,
+    'yyyy/mm/dd hh:mm:ss': /\d{4}\/\d{2}\/\d{2} \d{1,2}:\d{2}:\d{2}(?:am|pm)?/,
+    'hh:mm': /\d{1,2}:\d{2}(?:am|pm)?/,
+    'hh:mm:ss': /\d{1,2}:\d{2}:\d{2}(?:am|pm)?/,
+    'hh:mm:ss.ms': /\d{1,2}:\d{2}:\d{2}\.\d{3}(?:am|pm)?/
 }
 
 window.exportMappings = {
@@ -252,4 +252,5 @@ window.tableHtmlElements = {
     '[✓]': { selector: 'input[type=checkbox]:checked', condition: 'be.checked'},
     '[ ]': { selector: 'input[type=checkbox]', condition: 'not.be.checked'},
     '[text box]': { selector: 'textarea', condition: 'exist'},
+    '[lock icon]': { selector: 'img[src*=lock]', condition: 'exist' }
 }
