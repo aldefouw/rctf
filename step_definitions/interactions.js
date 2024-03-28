@@ -244,6 +244,9 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
     } else if(exactly === "for the File Repository file named"){
         outer_element = `${window.tableMappings['file repository']}:visible tr:has(:contains(${JSON.stringify(text)}))`
         cy.top_layer(`a:contains(${JSON.stringify(text)})`, outer_element).within(() => {
+            if(file_repo_icons === undefined){
+                file_repo_icons = designer_field_icons
+            }
             cy.get(`${window.fileRepoIcons[file_repo_icons]}`).click()
         })
     } else if(exactly === 'labeled exactly') {
