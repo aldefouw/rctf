@@ -249,6 +249,14 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
             }
             cy.get(`${window.fileRepoIcons[file_repo_icons]}`).click()
         })
+    } else if(exactly === "within the Record Locking Customization table for the Data Collection Instrument named"){
+        outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
+        cy.top_layer(`a:has(img:visible)`, outer_element).within(() => {
+            if(file_repo_icons === undefined){
+                file_repo_icons = designer_field_icons
+            }
+            cy.get(`${window.onlineDesignerFieldIcons[file_repo_icons]}`).click()
+        })
     } else if(exactly === 'labeled exactly') {
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             cy.get('a:visible').contains(new RegExp("^" + text + "$", "g")).click()

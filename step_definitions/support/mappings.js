@@ -55,7 +55,8 @@ window.tableMappings = {
     'codebook' : 'table#codebook-table',
     'import data display' : 'table#comptable',
     'participant list' : ['div#partlist_outerdiv table', 'table#table-participant_table'],
-    'user rights' : ['div#user_rights_roles_table table', 'table#table-user_rights_roles_table']
+    'user rights' : ['div#user_rights_roles_table table', 'table#table-user_rights_roles_table'], 
+    'record locking' : 'table#part11_forms'
 }
 
 window.dateFormats = {
