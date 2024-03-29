@@ -31,11 +31,19 @@ Cypress.Commands.add('download_file', (filename) => {
 
         filename = replaceFilename(filename, setLocalTimestamp(minute_ago))
 
-        if(cy.fileExists("cypress/downloads/" + filename)){
-            cy.readFile("cypress/downloads/" + filename).then(($file) => {
-                return $file
-            })
-        }
+        cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
+            if (fileExists) {
+                cy.readFile("cypress/downloads/" + filename).then(($file) => {
+                    console.log("File contents:", $file)
+                }).catch((error) => {
+                    console.error("Error reading file:", error)
+                });
+            } else {
+                console.log("File does not exist")
+            }
+        }).catch((error) => {
+            console.error("Error checking file existence:", error)
+        })
     }
 })
 
