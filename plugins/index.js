@@ -162,6 +162,10 @@ module.exports = (on, config) => {
             return fs.existsSync(file)
         },
 
+        phpTimeZone(php_path){
+            return `${php_path} -r "echo date_default_timezone_get();"`
+        },
+
         fetchLatestDownload({fileExtension}){
             const downloadsDir = shell.pwd() + '/cypress/downloads/'
 

@@ -208,3 +208,11 @@ Cypress.Commands.overwrite(
         }
     }
 )
+
+Cypress.Commands.add('php_time_zone', () => {
+    cy.task("phpTimeZone", Cypress.env('php')['path']).then((timeZone) => {
+        cy.exec(timeZone, { timeout: 100000}).then((time) => {
+            window.php_time_zone = time['stdout']
+        })
+    })
+})

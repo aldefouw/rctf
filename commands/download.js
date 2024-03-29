@@ -7,6 +7,16 @@ function replaceFilename(file, date){
 }
 
 function setLocalTimestamp(date){
+    if(window.php_time_zone !== null) {
+        // Get the PHP timezone from window.php_time_zone
+        const phpTimeZone = window.php_time_zone;
+
+        // Convert the JavaScript Date object to the PHP timezone
+        date = new Date(date.toLocaleString('en-US', {
+            timeZone: phpTimeZone
+        }))
+    }
+
     return date.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
