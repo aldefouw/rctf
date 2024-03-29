@@ -37,9 +37,26 @@ Cypress.Commands.add('download_file', (filename) => {
                     console.log("File contents:", $file)
                 }).catch((error) => {
                     console.error("Error reading file:", error)
-                });
+                })
             } else {
-                console.log("File does not exist")
+
+                const now = current_time.setMinutes(current_time.getMinutes())
+                filename = replaceFilename(filename, setLocalTimestamp(now))
+
+                cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
+                    if (fileExists) {
+                        cy.readFile("cypress/downloads/" + filename).then(($file) => {
+                            console.log("File contents:", $file)
+                        }).catch((error) => {
+                            console.error("Error reading file:", error)
+                        })
+                    } else {
+                        console.log("File does not exist")
+                    }
+                }).catch((error) => {
+                    console.error("Error checking file existence:", error)
+                })
+
             }
         }).catch((error) => {
             console.error("Error checking file existence:", error)
