@@ -335,7 +335,7 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
  * @example I should see {string} in (the) {tableTypes} table
  * @param {string} text - text to look for
- * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook', 'import data display', 'participant list', 'user rights'
+ * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook', 'import data display', 'participant list', 'user rights', 'record locking'
  * @description Identify specific text within a table
  */
 
@@ -515,7 +515,22 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                         if (!isNaN(column)) {
 
                             let contains = ''
-                            value.split(' ').forEach((val) => { contains += `:contains(${JSON.stringify(val)})` })
+
+                            if(Object.keys(html_elements).includes(value)) {
+                                contains += `td:has(${html_elements[value].selector}),th:has(${html_elements[value].selector})`
+                            } else if (window.dateFormats.hasOwnProperty(value)) {
+                                contains += `td,th`
+                            } else {
+                                value.split(' ').forEach((val) => {
+                                    if(Object.keys(html_elements).includes(val)) {
+                                        contains += `td:has(${html_elements[val].selector}),th:has(${html_elements[val].selector})`
+                                    } else if (window.dateFormats.hasOwnProperty(val)){
+                                        contains += `td,th`
+                                    } else{
+                                        contains += `:contains(${JSON.stringify(val)})`
+                                    }
+                                })
+                            }
 
                             filter_selector.push({
                                 'column': column,
@@ -523,10 +538,24 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
                                 'value': value,
                                 'html_elm': Object.keys(html_elements).includes(value),
                                 'regex': window.dateFormats.hasOwnProperty(value),
-                                'selector': Object.keys(html_elements).includes(value) ?
-                                    `:has(td:has(${html_elements[value].selector}),th:has(${html_elements[value].selector}))` :
-                                    `:has(${window.dateFormats.hasOwnProperty(value) ? 'td,th' : contains})`
+                                'selector': `:has(${contains})`
                             })
+
+                            // let contains = ''
+                            // value.split(' ').forEach((val) => {
+                            //     contains += `:contains(${JSON.stringify(val)})`
+                            // })
+                            //
+                            // filter_selector.push({
+                            //     'column': column,
+                            //     'row': row_index,
+                            //     'value': value,
+                            //     'html_elm': Object.keys(html_elements).includes(value),
+                            //     'regex': window.dateFormats.hasOwnProperty(value),
+                            //     'selector': Object.keys(html_elements).includes(value) ?
+                            //         `:has(td:has(${html_elements[value].selector}),th:has(${html_elements[value].selector}))` :
+                            //         `:has(${window.dateFormats.hasOwnProperty(value) ? 'td,th' : contains})`
+                            // })
                         }
                     }
                 })

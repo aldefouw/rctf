@@ -17,7 +17,7 @@ Given("I click the X to delete the data access group named {string}", (dag_name)
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I click on a table cell containing the text {string} in the {tableTypes} table and clear field and {enterType} enter {string}
  * @param {string} text - the text to locate the table cell
- * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook', 'import data display', 'participant list', 'user rights'
+ * @param {string} tableTypes - available options: 'a', 'logging', 'browse users', 'file repository', 'administrators', 'reports', 'report data', 'define events', 'data access groups', 'DAGs Switcher', 'record status dashboard', 'data collection instruments', 'codebook', 'import data display', 'participant list', 'user rights', 'record locking'
  * @param {string} enterType - available options: 'verify', 'enter', 'clear field and enter', 'click on'
  * @param {string} new_text - new text to type
  * @description Clicks on a table cell that is identified by a particular text string specified.

@@ -1,6 +1,6 @@
 defineParameterType({
             name: 'tableTypes',
-            regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|import data display|participant list|user rights/,
+            regexp: /|a|logging|browse users|file repository|administrators|reports|report data|define events|data access groups|DAGs Switcher|record status dashboard|data collection instruments|codebook|import data display|participant list|user rights|record locking/,
         })
 
 defineParameterType({
@@ -30,7 +30,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'fileRepoIcons',
-            regexp: /(?: (File Share|Delete||))?/,
+            regexp: /(?: (File Share|Restore|Delete|Delete Permanently||))?/,
         })
 
 defineParameterType({
@@ -170,7 +170,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'labeledExactly',
-            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named|for Data Quality Rule #/,
+            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named|for Data Quality Rule #|within the Record Locking Customization table for the Data Collection Instrument named/,
         })
 
 defineParameterType({
@@ -195,7 +195,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'onlineDesignerButtons',
-            regexp: /(?: ("Enable"|"Disable"|"Choose action"|"Survey settings"|"Automated Invitations"|enabled survey icon|"View Report"|"Execute"||))?/,
+            regexp: /(?: ("Enable"|"Disable"|"Choose action"|"Survey settings"|"Automated Invitations"|enabled survey icon|"View Report"|"Execute"|"Save"||))?/,
         })
 
 defineParameterType({
