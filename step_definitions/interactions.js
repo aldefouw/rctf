@@ -147,22 +147,40 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
     if (iframe === " in the iframe" || outer_element === 'iframe'){
         const base = cy.frameLoaded().then(() => { cy.iframe() })
 
-        if(exactly === 'labeled exactly'){
-            let sel = 'button:visible,input[value*=""]:visible'
+        if(outer_element === 'iframe'){
+            if(exactly === 'labeled exactly'){
+                let sel = 'button:visible,input[value*=""]:visible'
 
-            base.within(() => {
-                cy.top_layer(sel, outer_element).within(() => {
-                    cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click()
+                base.within(() => {
+                        cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click()
                 })
-            })
-        } else {
-            let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+            } else {
+                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
 
-            base.within(() => {
-                cy.top_layer(sel, outer_element).within(() => {
+                base.within(() => {
                     cy.get(sel).eq(ord).click()
                 })
-            })
+            }
+        } else {
+
+            if(exactly === 'labeled exactly'){
+                let sel = 'button:visible,input[value*=""]:visible'
+
+                base.within(() => {
+                    cy.top_layer(sel, outer_element).within(() => {
+                        cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click()
+                    })
+                })
+            } else {
+                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+
+                base.within(() => {
+                    cy.top_layer(sel, outer_element).within(() => {
+                        cy.get(sel).eq(ord).click()
+                    })
+                })
+            }
+
         }
 
     } else {
