@@ -309,16 +309,6 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
 
 /**
  * @module Interactions
- * @author Rushi Patel <rushi.patel@uhnresearch.ca>
- * @example I close the popup
- * @description Closes popup with button labeled "Close"
- */
- Given("I close the popup", (text) => {
-    cy.focused().should('have.text', 'Close').click()
- })
-
- /**
- * @module Interactions
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I click on the button labeled {string} for the row labeled {string}
  * @param {string} text - the text on the button element you want to click
