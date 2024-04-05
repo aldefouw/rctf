@@ -360,12 +360,15 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
 
     } else {
         let sel = `:contains(${JSON.stringify(label)}):visible`
-        let element = `input[type=text]:visible:first:not(.ui-helper-hidden-accessible),input[type=password]:visible:first:not(.ui-helper-hidden-accessible)`
+        let element = `input[type=text]:visible,input[type=password]:visible`
 
         //Either the base element as specified or the default
         let outer_element = base_element.length > 0 ?
             cy.top_layer(sel, window.elementChoices[base_element]) :
             cy.top_layer(sel)
+
+        console.log(base_element.length)
+        console.log(window.elementChoices[base_element])
 
         outer_element.within(() => {
             let elm = null
@@ -373,19 +376,18 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
             cy.contains(label).should('be.visible').then(($label) => {
                 cy.wrap($label).parent().then(($parent) =>{
                     if($parent.find(element).length){
-                        elm = cy.wrap($parent).find(element)
+                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     } else if ($parent.parent().find(element).length) {
-                        elm = cy.wrap($parent).parent().find(element)
+                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     }
 
                     if(enter_type === "enter"){
-                        elm.type(text)
+                        elm.first().type(text)
                     } else if (enter_type === "clear field and enter") {
-                        elm.clear().type(text)
+                        elm.first().clear().type(text)
                     }
                 })
             })
-
         })
     }
 })
