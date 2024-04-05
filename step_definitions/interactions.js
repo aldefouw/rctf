@@ -360,7 +360,7 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
 
     } else {
         let sel = `:contains(${JSON.stringify(label)}):visible`
-        let element = `:contains(${JSON.stringify(label)}):not(.ui-helper-hidden-accessible) > input[type=text]:visible:first,input[type=password]:visible:first`
+        let element = `:not(.ui-helper-hidden-accessible) > input[type=text]:visible:first,input[type=password]:visible:first`
 
         //Either the base element as specified or the default
         let outer_element = base_element.length > 0 ?
