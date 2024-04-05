@@ -427,7 +427,7 @@ Given ('I {enterType} {string} in(to) the textarea field labeled {string}{baseEl
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.find(element).hasClass('mceEditor')){
-                        cy.setTinyMceContent($parent.find(element)[0]['id'], text)
+                        cy.customSetTinyMceContent($parent.find(element)[0]['id'], text)
 
                         //All other cases
                     } else {

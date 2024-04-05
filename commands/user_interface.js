@@ -120,3 +120,37 @@ Cypress.Commands.add("move_slider", (subject, cur_pos, max, min, position, label
     //Target position changed, mouseup on original element
     cy.wrap(subject).find('span').trigger('mouseup', {force: true})
 })
+
+Cypress.Commands.add('customSetTinyMceContent', (fieldId, content) => {
+    // Wait for TinyMCE to be available
+    cy.window().then(win => {
+        return new Cypress.Promise(resolve => {
+            // Check if TinyMCE is available
+            if (win.tinymce) {
+                resolve(win.tinymce)
+            } else {
+                // Poll every 100 milliseconds until TinyMCE is available
+                const interval = setInterval(() => {
+                    if (win.tinymce) {
+                        clearInterval(interval)
+                        resolve(win.tinymce)
+                    }
+                }, 100)
+            }
+        })
+    }).then(tinymce => {
+        // Wait for the editor to be ready
+        return new Cypress.Promise(resolve => {
+            const interval = setInterval(() => {
+                const editor = tinymce.EditorManager.get(fieldId)
+                if (editor) {
+                    clearInterval(interval)
+                    resolve(editor)
+                }
+            }, 100)
+        })
+    }).then(editor => {
+        // Set the content in the editor
+        editor.setContent(content, { format: 'text' })
+    })
+})
