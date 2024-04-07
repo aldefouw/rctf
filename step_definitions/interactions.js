@@ -367,9 +367,6 @@ Given('I {enterType} {string} into the input field labeled {string}{baseElement}
             cy.top_layer(sel, window.elementChoices[base_element]) :
             cy.top_layer(sel)
 
-        console.log(base_element.length)
-        console.log(window.elementChoices[base_element])
-
         outer_element.within(() => {
             let elm = null
 
