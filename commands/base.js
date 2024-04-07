@@ -23,7 +23,7 @@ Cypress.Commands.add('not_loading', () => {
 
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
-    if(Cypress.$('div#working').length) cy.get('div#working').should('not.be.visible', { timeout: 20000 })
+    if(Cypress.$('div#working').length) cy.get('div#working', { timeout: 20000 }).should('not.be.visible')
 })
 
 Cypress.Commands.add("top_layer", (label_selector, base_element = 'div[role=dialog]:visible,html') => {
