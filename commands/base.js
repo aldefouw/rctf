@@ -210,9 +210,15 @@ Cypress.Commands.overwrite(
 )
 
 Cypress.Commands.add('php_time_zone', () => {
-    cy.task("phpTimeZone", Cypress.env('php')['path']).then((timeZone) => {
-        cy.exec(timeZone, { timeout: 100000}).then((time) => {
-            window.php_time_zone = time['stdout']
+    // Check if php path is set in Cypress.env.json
+    if (Cypress.env('php') && Cypress.env('php')['path']) {
+        cy.task("phpTimeZone", Cypress.env('php')['path']).then((timeZone) => {
+            cy.exec(timeZone, { timeout: 100000}).then((time) => {
+                window.php_time_zone = time['stdout']
+            })
         })
-    })
+    } else {
+        //If we have no PHP path set, we'll default to JavaScript timezone
+        window.php_time_zone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    }
 })
