@@ -43,12 +43,17 @@ function load_core_commands(){
     require('./commands/index')
 }
 
+function set_timezone(){
+    cy.php_time_zone()
+}
+
 function rctf_initialize() {
     load_core_step_definitions()
     load_core_commands()
     preserve_cookies()
     intercept_vanderbilt_requests()
     set_user_info()
+    set_timezone()
     reset_database()
 }
 
@@ -62,7 +67,6 @@ load_support_files()
 //This is where we initialize the stuff we need in a basic install
 before(() => {
     rctf_initialize()
-    cy.php_time_zone()
     cy.on('window:alert', (str) => {
         window.lastAlert = str
     })
