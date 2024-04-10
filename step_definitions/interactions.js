@@ -722,18 +722,27 @@ Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open
     cy.not_loading()
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains(${JSON.stringify(label)}):visible`
-    let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
-    cy.top_layer(label_selector, outer_element).within(() => {
-        cy.get_labeled_element(element_selector, label, option).then(($select) => {
-            cy.wrap($select).scrollIntoView().
-            should('be.visible').
-            should('be.enabled').then(($t) => {
-                cy.wait(500)
-                cy.wrap($t).select(option)
-                cy.wait(500)
+    if(type === "dropdown" || type === "multiselect"){
+        let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
+        cy.top_layer(label_selector, outer_element).within(() => {
+            cy.get_labeled_element(element_selector, label, option).then(($select) => {
+                cy.wrap($select).scrollIntoView().
+                should('be.visible').
+                should('be.enabled').then(($t) => {
+                    cy.wait(500)
+                    cy.wrap($t).select(option)
+                    cy.wait(500)
+                })
             })
         })
-    })
+    } else if(type === "radio" || type === "checkboxes"){
+        if(type === "checkboxes"){ type = 'checkbox' }
+        let label_selector = `:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
+        let selector = cy.get_labeled_element(label_selector, option, null, false)
+        cy.top_layer(label_selector, outer_element).within(() => {
+            selector.scrollIntoView().check()
+        })
+    }
 })
 
 /**
