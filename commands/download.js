@@ -30,57 +30,29 @@ function setLocalTimestamp(date){
 
 Cypress.Commands.add('download_file', (filename) => {
     const current_time = new Date()
-    filename = replaceFilename(filename, setLocalTimestamp(current_time))
-    const minute_ago = current_time.setMinutes(current_time.getMinutes() - 1)
+    const minute_ago = new Date(current_time.getTime())
+    minute_ago.setMinutes(current_time.getMinutes() - 1)
 
-    if(cy.fileExists("cypress/downloads/" + filename)){
-        cy.readFile("cypress/downloads/" + filename).then(($file) => {
-            return $file
-        })
-    } else {
-
-        filename = replaceFilename(filename, setLocalTimestamp(minute_ago))
-
-        cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
-            if (fileExists) {
-                cy.readFile("cypress/downloads/" + filename).then(($file) => {
-                    console.log("File contents:", $file)
-                }).catch((error) => {
-                    console.error("Error reading file:", error)
-                })
-            } else {
-
-                const now = current_time.setMinutes(current_time.getMinutes())
-                filename = replaceFilename(filename, setLocalTimestamp(now))
-
-                cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
-                    if (fileExists) {
-                        cy.readFile("cypress/downloads/" + filename).then(($file) => {
-                            console.log("File contents:", $file)
-                        }).catch((error) => {
-                            console.error("Error reading file:", error)
-                        })
-                    } else {
-                        console.log("File does not exist")
-                    }
-                }).catch((error) => {
-                    console.error("Error checking file existence:", error)
-                })
-
-            }
-        }).catch((error) => {
-            console.error("Error checking file existence:", error)
-        })
-    }
+    let first_file = replaceFilename(filename, setLocalTimestamp(current_time))
+    cy.fileExists("cypress/downloads/" + first_file).then((fileExists) => {
+        if(fileExists){
+            cy.readFile("cypress/downloads/" + first_file)
+        } else {
+            let second_file = replaceFilename(filename, setLocalTimestamp(minute_ago))
+            cy.fileExists("cypress/downloads/" + second_file).then((fileExists) => {
+                if(fileExists) {
+                    cy.readFile("cypress/downloads/" + second_file)
+                } else {
+                    expect(fileExists).to.be(true)
+                }
+            })
+        }
+    })
 })
 
 
 Cypress.Commands.add("fileExists", (filePath) => {
     cy.task("fileExists", filePath).then((fileExists) => {
-        if (fileExists) {
-            return true
-        } else {
-            false
-        }
+        return fileExists
     })
 })

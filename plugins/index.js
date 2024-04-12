@@ -184,13 +184,7 @@ module.exports = (on, config) => {
         },
 
         fileExists(filePath) {
-            try {
-                // Check if the file exists
-                fs.accessSync(filePath, fs.constants.F_OK);
-                return true; // File exists
-            } catch (error) {
-                return false; // File does not exist
-            }
+            return fs.existsSync(filePath)
         }
 
     })
