@@ -33,31 +33,45 @@ Cypress.Commands.add('download_file', (filename) => {
     filename = replaceFilename(filename, setLocalTimestamp(current_time))
     const minute_ago = current_time.setMinutes(current_time.getMinutes() - 1)
 
-    cy.fileExists("cypress/downloads/" + filename).then((file_exists) => {
-        if(file_exists){
-            cy.readFile("cypress/downloads/" + filename).then(($file) => {
-                console.log("File contents:", $file)
-            }).catch((error) => {
-                console.error("Error reading file:", error)
-            })
-        } else {
-            const now = current_time.setMinutes(current_time.getMinutes())
-            filename = replaceFilename(filename, setLocalTimestamp(now))
+    if(cy.fileExists("cypress/downloads/" + filename)){
+        cy.readFile("cypress/downloads/" + filename).then(($file) => {
+            return $file
+        })
+    } else {
 
-            cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
-                if (fileExists) {
-                    cy.readFile("cypress/downloads/" + filename).then(($file) => {
-                        console.log("File contents:", $file)
-                    }).catch((error) => {
-                        console.error("Error reading file:", error)
-                    })
-                } else {
-                    console.log("File does not exist")
-                }
-            })
-        }
-    })
+        filename = replaceFilename(filename, setLocalTimestamp(minute_ago))
 
+        cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
+            if (fileExists) {
+                cy.readFile("cypress/downloads/" + filename).then(($file) => {
+                    console.log("File contents:", $file)
+                }).catch((error) => {
+                    console.error("Error reading file:", error)
+                })
+            } else {
+
+                const now = current_time.setMinutes(current_time.getMinutes())
+                filename = replaceFilename(filename, setLocalTimestamp(now))
+
+                cy.fileExists("cypress/downloads/" + filename).then((fileExists) => {
+                    if (fileExists) {
+                        cy.readFile("cypress/downloads/" + filename).then(($file) => {
+                            console.log("File contents:", $file)
+                        }).catch((error) => {
+                            console.error("Error reading file:", error)
+                        })
+                    } else {
+                        console.log("File does not exist")
+                    }
+                }).catch((error) => {
+                    console.error("Error checking file existence:", error)
+                })
+
+            }
+        }).catch((error) => {
+            console.error("Error checking file existence:", error)
+        })
+    }
 })
 
 
