@@ -241,7 +241,9 @@ window.onlineDesignerFieldIcons = {
     'Move' : `img[src*=move]`,
     'Stop' : 'img[src*=stop]',
     'Delete Field': `img[src*=cross]`,
-    'Delete': `img[src*=cross]`
+    'Delete': `img[src*=cross]`,
+    'view' : 'a:visible:contains(view)',
+    'export' : 'a:visible:contains(export)'
 }
 
 window.participantListIcons = {
