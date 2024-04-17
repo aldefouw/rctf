@@ -35,7 +35,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'onlineDesignerFieldIcons',
-            regexp: /|Edit|Branching Logic|Copy|Move|Stop|Delete Field|Delete/,
+            regexp: /|Edit|Branching Logic|Copy|Move|Stop|Delete Field|Delete|view|export/,
         })
 
 defineParameterType({
@@ -240,7 +240,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'toDoRequestTypes',
-            regexp: /|Move to prod|Approve draft changes|Copy project/,
+            regexp: /|Move to prod|Approve draft changes|Copy project|Delete project/,
         })
 
 defineParameterType({
