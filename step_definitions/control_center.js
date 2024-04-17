@@ -78,7 +78,7 @@ Given('I enable the Administrator Privilege {string} for a new administrator', (
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I click on the "{toDoTableIcons}" icon for the {toDoRequestTypes} request created for the project named {string} within the "{toDoTableTypes}" table
  * @param {string} toDoTableIcons - available options: 'process request', 'get more information', 'add or edit a comment', 'Move to low priority section', 'archive request notification'
- * @param {string} toDoRequestTypes - available options: 'Move to prod', 'Approve draft changes', 'Copy project'
+ * @param {string} toDoRequestTypes - available options: 'Move to prod', 'Approve draft changes', 'Copy project', 'Delete project'
  * @param {string} project_name - the text value of project name you want to target
  * @param {string} toDoTableTypes - available options: 'Pending Requests', 'Low Priority Pending Requests', 'Completed & Archived Requests'
  * @description Clicks on an icon within the To-Do-List page based upon Icon, Request Type, Project Name, and Table Name specified.
