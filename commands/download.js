@@ -36,12 +36,12 @@ Cypress.Commands.add('download_file', (filename) => {
     let first_file = replaceFilename(filename, setLocalTimestamp(current_time))
     cy.fileExists("cypress/downloads/" + first_file).then((fileExists) => {
         if(fileExists){
-            cy.readFile("cypress/downloads/" + first_file)
+            cy.readFile("cypress/downloads/" + first_file, { timeout: 10000 })
         } else {
             let second_file = replaceFilename(filename, setLocalTimestamp(minute_ago))
             cy.fileExists("cypress/downloads/" + second_file).then((fileExists) => {
                 if(fileExists) {
-                    cy.readFile("cypress/downloads/" + second_file)
+                    cy.readFile("cypress/downloads/" + second_file, { timeout: 10000 })
                 } else {
                     expect(fileExists).to.be(true)
                 }
