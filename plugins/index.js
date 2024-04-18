@@ -135,7 +135,7 @@ module.exports = (on, config) => {
         },
 
         parseCsv({csv_string}) {
-            return csv.parse(csv_string)
+            return csv.parse(csv_string, { relax_column_count: true })
         },
 
         createInitialDbSeedLock(){
