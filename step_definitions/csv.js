@@ -81,7 +81,7 @@ Given("the downloaded CSV with filename {string}( should have)( has) the( ){head
      cy.download_file(filename).then(($text) => {
          cy.task('parseCsv', {csv_string: $text}).then((csv_rows) => {
              let lines = csv_rows
-             let columns = parseCSVRow(lines[0])
+             let columns = lines[0]
              let index = columns.indexOf(column)
 
              expect(index).to.be.greaterThan(-1)
@@ -91,7 +91,7 @@ Given("the downloaded CSV with filename {string}( should have)( has) the( ){head
 
              promise = promise.then(() => {
                  for (let i = 1; i < lines.length; i++) {
-                     let columns = parseCSVRow(lines[i])
+                     let columns = lines[i]
                      let columnValue = columns[index]
                      if (columnValue.includes(value)) {
                          found_value['match'] = true
