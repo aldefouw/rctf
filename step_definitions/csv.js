@@ -68,16 +68,6 @@ Given("the downloaded CSV with filename {string}( should have)( has) the( ){head
  * @description Verifies a row value exists for a given column within a CSV file.
  */
  Given("the downloaded CSV with filename {string}( should have)( has) a value {string} for column {string}", (filename, value, column) => {
-     function parseCSVRow(row) {
-         // Regular expression to match commas not inside quotes
-         const regex = /,\s*(?=(?:[^"]|"[^"]*")*$)/
-         let cells = row.split(regex)
-
-         // Trim leading and trailing spaces and remove quotes from string cells
-         cells = cells.map(function(cell) { return cell.trim().replace(/^"|"$/g, '') })
-         return cells
-     }
-
      cy.download_file(filename).then(($text) => {
          cy.task('parseCsv', {csv_string: $text}).then((csv_rows) => {
              let lines = csv_rows
