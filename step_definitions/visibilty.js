@@ -274,7 +274,10 @@ Given("I should NOT see( ){articleType}( ){labeledElement} labeled {string}{base
     let subsel = {'link':'a', 'button':'button', 'field': 'tr'}[el]
     let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,button[value="${text}"]:visible` : '')
     cy.wait(2000)
-    cy.get_top_layer(window.elementChoices[base_element], ($e) => {console.log(sel);expect($e.find(sel)).to.have.lengthOf(0)})
+    cy.get_top_layer(window.elementChoices[base_element], ($e) => {
+        // console.log(sel)
+        expect($e.find(sel)).to.have.lengthOf(0)
+    })
 })
 
 /**
@@ -474,8 +477,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             })
 
         }).then(() => {
-            console.log(columns)
-
+            //console.log(columns)
         })
     }
 
@@ -506,7 +508,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             cy.get(header_selector, {timeout: 20000}).then(($cells) => {
                 findColumnHeaders(header_selector, $cells, header, columns)
             }).then(() => {
-                console.log(columns)
+                //console.log(columns)
                 let filter_selector = []
                 dataTable.hashes().forEach((row, row_index) => {
                     for (const [index, key] of Object.keys(row).entries()) {
