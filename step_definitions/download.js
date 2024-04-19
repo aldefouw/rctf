@@ -8,14 +8,37 @@
 Given("I download a file by clicking on the link labeled {string}", (text) => {
     // We do not actually click on the link because new windows and Cypress do not work.
     // Instead, we sideload a request and save it where it would go
+
     cy.get('a:contains(' + text + '):visible').then((f) => {
-        cy.request({
-            url: f[0]['href'],
-            encoding: 'binary'
-        }).then((response) => {
-            expect(response.status).to.equal(200);
-            cy.writeFile('cypress/downloads/' + f[0]['innerText'], response.body, 'binary')
-        })
+
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:download*"
+        }, (req) => {
+            req.reply((res) => {
+                expect(res.statusCode).to.equal(200)
+            })
+        }).as('file_repo')
+
+        if(f.attr('onclick').includes("fileRepoDownload")){
+
+            cy.window().document().then(function (doc) {
+                doc.addEventListener('click', () => {
+                    setTimeout(function () { doc.location.reload() }, 5000)
+                })
+
+                cy.wrap(f).click()
+            })
+
+        } else {
+            cy.request({
+                url: f[0]['href'],
+                encoding: 'binary'
+            }).then((response) => {
+                expect(response.status).to.equal(200);
+                cy.writeFile('cypress/downloads/' + f[0]['innerText'], response.body, 'binary')
+            })
+        }
     })
 })
 

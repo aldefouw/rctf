@@ -177,5 +177,5 @@ Cypress.Commands.add('file_repo_upload', (fileNames) => {
     })
 
     //Select the Fixture within the Upload Input Button - no need to do anything else because JavaScript automatically fired within REDCap
-    cy.get('input#file-repository-file-input').selectFile(selected_files)
+    cy.get('input#file-repository-file-input').click().selectFile(selected_files)
 })
