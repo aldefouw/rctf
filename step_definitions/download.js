@@ -11,24 +11,21 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
 
     cy.get('a:contains(' + text + '):visible').then((f) => {
 
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:download*"
-        }, (req) => {
-            req.reply((res) => {
-                expect(res.statusCode).to.equal(200)
-            })
-        }).as('file_repo')
+
 
         if(f.attr('onclick').includes("fileRepoDownload")){
 
-            cy.window().document().then(function (doc) {
-                doc.addEventListener('click', () => {
-                    setTimeout(function () { doc.location.reload() }, 5000)
+            cy.intercept({
+                method: 'GET',
+                url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:download*"
+            }, (req) => {
+                req.reply((res) => {
+                    expect(res.statusCode).to.equal(200)
                 })
-
-                cy.wrap(f).click()
-            })
+            }).as('file_repo_download')
+            cy.suppressWaitForPageLoad()
+            cy.wrap(f).click()
+            cy.wait('@file_repo_download')
 
         } else {
             cy.request({

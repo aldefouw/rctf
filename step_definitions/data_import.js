@@ -21,10 +21,6 @@ Given("I upload a {string} format file located at {string}, by clicking the butt
  * @description Imports file(s) to the File Repository.
  */
 Given("I click the button labeled {string} to select and upload the following file(s) to the File Repository:", (button_label, dataTable) => {
-    cy.intercept({
-        method: 'POST',
-        url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getFileList*"
-    }).as('file_repo_list')
 
     cy.intercept({
         method: 'POST',
@@ -48,8 +44,7 @@ Given("I click the button labeled {string} to select and upload the following fi
         cy.wait(`@file_repo_upload_${i}`)
     }
 
-    cy.wait('@file_repo_list')
-    cy.wait('@file_breadcrumbs')
+    // cy.wait('@file_breadcrumbs')
 
 })
 

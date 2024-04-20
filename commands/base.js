@@ -21,6 +21,7 @@ Cypress.Commands.add('not_loading', () => {
         })
     }
 
+    if(Cypress.$('#file-repository-table_processing').length) cy.get('#file-repository-table_processing').should('not.be.visible')
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
     if(Cypress.$('div#working').length) cy.get('div#working', { timeout: 30000 }).should('not.be.visible')
@@ -226,4 +227,23 @@ Cypress.Commands.add('php_time_zone', () => {
     }
 
     cy.wrap(`Configured Timezone: ${window.php_time_zone}`)
+})
+
+Cypress.Commands.add("suppressWaitForPageLoad", function () {
+    cy.intercept("*", req => {
+        req.on("before:response", res => {
+            const isDownload = res.headers["content-disposition"]?.startsWith("attachment");
+            // Need to exclude requests not made by the application, such as
+            // background browser requests.
+            const origin = cy.getRemoteLocation("origin");
+            const isFromAUT = req.headers["referer"]?.startsWith(origin);
+            if (isDownload && isFromAUT) {
+                Cypress.log({
+                    name: "suppressWaitForPageLoad",
+                    message: "Bypassing wait for page load event because response has Content-Disposition: attachment"
+                });
+                cy.isStable(true, "load");
+            }
+        });
+    });
 })
