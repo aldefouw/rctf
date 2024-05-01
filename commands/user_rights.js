@@ -18,7 +18,7 @@ Cypress.Commands.add('add_users_to_data_access_groups', (groups = [], usernames 
             expect($table).to.contain(cur_group)
         })
 
-        cy.route({method: 'GET',
+        cy.intercept({method: 'GET',
             url: '**/DataAccessGroups/data_access_groups_ajax.php?pid=' + project_id + '&action=select_group&user=' + cur_user}).as('user_ajax')
 
         cy.get('select#group_users').select(cur_user)
@@ -26,7 +26,7 @@ Cypress.Commands.add('add_users_to_data_access_groups', (groups = [], usernames 
         //Wait for the query to finish first before we proceed
         cy.wait('@user_ajax')
 
-        cy.route({method: 'GET',
+        cy.intercept({method: 'GET',
             url: '**/DataAccessGroups/data_access_groups_ajax.php?pid=' + project_id + '&action=add_user&user=' + cur_user + '&group_id=*'}).as('group_ajax')
 
 
