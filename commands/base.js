@@ -6,7 +6,7 @@ cy.on('window:load', () => {
     window.aboutToUnload = false
 })
 
-function wait_for_detachment(selector, options = {}){
+Cypress.Commands.add('wait_for_detachment', (selector, options = {}) => {
     const { timeout = Cypress.config('defaultCommandTimeout'), interval = 100 } = options
     const startTime = Date.now();
 
@@ -32,7 +32,7 @@ function wait_for_detachment(selector, options = {}){
 
         checkDetachment()
     })
-}
+})
 
 Cypress.Commands.add('not_loading', () => {
     // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
