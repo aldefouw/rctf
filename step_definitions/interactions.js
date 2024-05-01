@@ -37,6 +37,11 @@ function before_click_monitor(type){
         cy.on('window:confirm', (str) => {
             return true
         })
+    } else if (type === " in the File Repository table"){
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + '/*FileRepositoryController:getFileList*'
+        }).as('file_repo_list')
     }
 }
 
@@ -59,6 +64,9 @@ function after_click_monitor(type){
         cy.on('window:confirm', (str) => {
             return true //subsequent windows go back to default behavior
         })
+    } else if (type === " in the File Repository table"){
+        cy.wait('@file_repo_list')
+        cy.window().its('performance.navigation.type').should('eq', 1)
     }
 }
 
@@ -305,7 +313,15 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
 
     } else {
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
-            cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).click()
+            cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).then(($elm) => {
+                if(link_type === " in the File Repository table"){
+                    cy.wait_for_detachment($elm).then(() => {
+                        cy.get(`a:contains(${JSON.stringify(text)}):visible`).click()
+                    })
+                } else {
+                    cy.wrap($elm).click()
+                }
+            })
         })
     }
 
