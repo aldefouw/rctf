@@ -6,6 +6,34 @@ cy.on('window:load', () => {
     window.aboutToUnload = false
 })
 
+function wait_for_detachment(selector, options = {}){
+    const { timeout = Cypress.config('defaultCommandTimeout'), interval = 100 } = options
+    const startTime = Date.now();
+
+    return new Promise((resolve, reject) => {
+        const checkDetachment = () => {
+            const now = Date.now()
+            const elapsedTime = now - startTime
+
+            if (elapsedTime >= timeout) {
+                reject(new Error(`Element ${selector} did not become detached within ${timeout}ms`))
+                return
+            }
+
+            cy.get(selector, { timeout: 0 }).then(($element) => {
+                if (Cypress.dom.isDetached($element)) {
+                    resolve(true)
+                } else {
+                    // Element is still attached, retry after interval
+                    cy.wait(interval).then(checkDetachment)
+                }
+            })
+        }
+
+        checkDetachment()
+    })
+}
+
 Cypress.Commands.add('not_loading', () => {
     // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
     // This prevents us from looking at stuff before a reload is done (hopefully!)
@@ -21,7 +49,14 @@ Cypress.Commands.add('not_loading', () => {
         })
     }
 
-    if(Cypress.$('#file-repository-table_processing').length) cy.get('#file-repository-table_processing').should('not.be.visible')
+    if(Cypress.$('#file-repository-table_processing').length) {
+        cy.get('#file-repository-table_processing').should('not.be.visible').should('have.css', 'display', 'none')
+    }
+
+    if(Cypress.$('#file-repository-space-usage-loading').length){
+        cy.get('#file-repository-space-usage-loading').should('have.css', 'visibility', 'hidden')
+    }
+
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
     if(Cypress.$('div#progress').length) cy.get('div#progress').should('not.be.visible')
     if(Cypress.$('div#working').length) cy.get('div#working', { timeout: 30000 }).should('not.be.visible')
