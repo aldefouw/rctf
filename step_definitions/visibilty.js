@@ -33,12 +33,53 @@ Given("I (should )see (the ){string}{iframeVisibility}{baseElement}", (text, ifr
  * @description Visually verifies that text does NOT exist within the HTML object.
  */
 Given("I should NOT see {string}{baseElement}", (text, base_element = '') => {
+    cy.not_loading()
+
+    function waitForDetachment(selector, options = {}) {
+        const { timeout = Cypress.config('defaultCommandTimeout'), interval = 100 } = options
+        const startTime = Date.now();
+
+        return new Promise((resolve, reject) => {
+            const checkDetachment = () => {
+                const now = Date.now()
+                const elapsedTime = now - startTime
+
+                if (elapsedTime >= timeout) {
+                    reject(new Error(`Element ${selector} did not become detached within ${timeout}ms`))
+                    return
+                }
+
+                cy.get(selector, { timeout: 0 }).then(($element) => {
+                    if (Cypress.dom.isDetached($element)) {
+                        resolve(true)
+                    } else {
+                        // Element is still attached, retry after interval
+                        cy.wait(interval).then(checkDetachment)
+                    }
+                })
+            }
+
+            checkDetachment()
+        })
+    }
+
     //If we don't detect it anywhere
     if(Cypress.$(`${window.elementChoices[base_element]}:contains(${JSON.stringify(text)})`).length === 0){
         expect('html').to.not.contain(text)
     //If we do detect the text, let us make sure it is not visible on-screen
     } else {
-        cy.contains(text).should('not.be.visible');
+        cy.contains(text).then(($elm) => {
+            if ($elm.length === 0){
+                expect($elm.length).to.equal(0)
+            } else if (!$elm.is(':visible')) {
+                cy.wrap($elm).should('not.be.visible')
+            //In some cases, we have to wait for detachment to occur before we can check for condition
+            } else {
+                waitForDetachment($elm).then(() => {
+                    expect('html').to.not.contain(text)
+                })
+            }
+        })
     }
 })
 
