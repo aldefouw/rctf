@@ -164,9 +164,23 @@ Cypress.Commands.add('upload_file', (fileName, fileType = ' ', selector = '', bu
     })
 })
 
-Cypress.Commands.add('file_repo_upload', (fileNames) => {
+Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository-file-input', count_of_files = 0) => {
+    cy.intercept({
+        method: 'POST',
+        url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
+    }).as('file_breadcrumbs')
+
+    for(let i = 0; i < count_of_files; i++){
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:upload*"
+        }).as(`file_repo_upload_${i}`)
+    }
+
     //Make sure the page is not loading
-    cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
+    if(Cypress.$('#file-repository-table_processing:visible').length){
+        cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
+    }
 
     let selected_files = []
 
@@ -177,5 +191,28 @@ Cypress.Commands.add('file_repo_upload', (fileNames) => {
     })
 
     //Select the Fixture within the Upload Input Button - no need to do anything else because JavaScript automatically fired within REDCap
-    cy.get('input#file-repository-file-input').selectFile(selected_files)
+    cy.get(id).then(($id) => {
+
+        let elm = cy.wrap($id)
+
+        if(Cypress.dom.isDetached($id)){
+            elm = cy.get(id)
+        }
+
+        elm.selectFile(selected_files, {force: true}).then(() => {
+
+            for(let i = 0; i < count_of_files; i++){
+                if (Cypress.$('.toast.fade.show').length) {
+                    cy.get('.toast.fade.show').should('be.visible').then(() => {
+                        if (Cypress.$('#file-repository-space-usage-loading:visible').length) {
+                            cy.get('#file-repository-space-usage-loading').should('have.css', 'visibility', 'hidden')
+                        }
+                    })
+                }
+            }
+
+            cy.wait('@file_breadcrumbs')
+        })
+
+    })
 })
