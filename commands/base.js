@@ -34,6 +34,40 @@ Cypress.Commands.add('wait_to_hide_or_detach', (selector, options = {}) => {
     })
 })
 
+Cypress.Commands.add('wait_for_datatables', () => {
+    cy.window().then((win) => {
+        return win.$('.dataTable:first:visible').dataTable()
+    })
+})
+
+Cypress.Commands.add('waitForInitDtEvent', () => {
+    // Wrap the loop logic in cy.wrap() to ensure Cypress retries it
+    // Loop until DT_LOADED becomes true or until timeout
+    cy.wrap(null, { timeout: 30000 }).should(() => {
+        let DT_LOADED = cy.state('window').DT_LOADED
+
+        // Check if DT_LOADED is true, if not, retry
+        if (!DT_LOADED) { throw new Error('DT_LOADED is still false') }
+
+        // Return DT_LOADED to exit the loop
+        return DT_LOADED
+    })
+
+    cy.get('@lastDataTablesMethod')
+})
+
+Cypress.Commands.add('assertWindowProperties', () => {
+    cy.window().then((win) => {
+        win.DT_LOADED = true
+
+        win.$('.dataTable:first:visible').dataTable().on('init.dt', function(e, settings) {
+            win.DT_LOADED = false
+        })
+    })
+
+    cy.waitForInitDtEvent()
+})
+
 Cypress.Commands.add('not_loading', () => {
     // For a 302 redirect, wait for performance.navigation.type to be 1 - (TYPE_RELOAD)
     // This prevents us from looking at stuff before a reload is done (hopefully!)
@@ -47,14 +81,6 @@ Cypress.Commands.add('not_loading', () => {
                 })
             }
         })
-    }
-
-    if(Cypress.$('#file-repository-table_processing').length) {
-        cy.get('#file-repository-table_processing').should('not.be.visible').should('have.css', 'display', 'none')
-    }
-
-    if(Cypress.$('#file-repository-space-usage-loading').length){
-        cy.get('#file-repository-space-usage-loading').should('have.css', 'visibility', 'hidden')
     }
 
     if(Cypress.$('span#progress_save').length) cy.get('span#progress_save').should('not.be.visible')
