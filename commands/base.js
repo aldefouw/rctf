@@ -6,11 +6,11 @@ cy.on('window:load', () => {
     window.aboutToUnload = false
 })
 
-Cypress.Commands.add('wait_for_detachment', (selector, options = {}) => {
+Cypress.Commands.add('wait_to_hide_or_detach', (selector, options = {}) => {
     const { timeout = Cypress.config('defaultCommandTimeout'), interval = 100 } = options
-    const startTime = Date.now();
+    const startTime = Date.now()
 
-    return new Promise((resolve, reject) => {
+    new Promise((resolve, reject) => {
         const checkDetachment = () => {
             const now = Date.now()
             const elapsedTime = now - startTime
@@ -21,7 +21,7 @@ Cypress.Commands.add('wait_for_detachment', (selector, options = {}) => {
             }
 
             cy.get(selector, { timeout: 0 }).then(($element) => {
-                if (Cypress.dom.isDetached($element)) {
+                if (!$element.is(':visible') || Cypress.dom.isDetached($element)) {
                     resolve(true)
                 } else {
                     // Element is still attached, retry after interval
