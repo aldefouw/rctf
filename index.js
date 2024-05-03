@@ -74,6 +74,10 @@ before(() => {
 
 beforeEach(() => {
     window.registeredAlias = false
+
+    cy.window().then((win) => {
+        cy.spy(win, 'initFileSelectAllCheckbox').as('lastDataTablesMethod')
+    })
 })
 
 // // This is what makes these functions available to outside scripts

@@ -35,7 +35,7 @@ Cypress.Commands.add('wait_to_hide_or_detach', (selector, options = {}) => {
 })
 
 Cypress.Commands.add('wait_for_datatables', () => {
-    cy.window().then((win) => {
+    return cy.window().then((win) => {
         return win.$('.dataTable:first:visible').dataTable()
     })
 })
@@ -60,7 +60,9 @@ Cypress.Commands.add('assertWindowProperties', () => {
     cy.window().then((win) => {
         win.DT_LOADED = true
 
-        win.$('.dataTable:first:visible').dataTable().on('init.dt', function(e, settings) {
+        const dt = win.$('.dataTable:first:visible').dataTable()
+
+        dt.on('init.dt', function(e, settings) {
             win.DT_LOADED = false
         })
     })

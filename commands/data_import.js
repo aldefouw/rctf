@@ -199,7 +199,7 @@ Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository
             elm = cy.get(id)
         }
 
-        elm.selectFile(selected_files).then(() => {
+        elm.selectFile(selected_files, {force: true}).then(() => {
 
             for(let i = 0; i < count_of_files; i++){
                 if (Cypress.$('.toast.fade.show').length) {

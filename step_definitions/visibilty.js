@@ -41,18 +41,9 @@ Given("I should NOT see {string}{baseElement}", (text, base_element = '') => {
     //If we do detect the text, let us make sure it is not visible on-screen
     } else {
         cy.contains(text).then(($elm) => {
-
-            if ($elm.length === 0){
-                expect($elm.length).to.equal(0)
-            //If the element is currently visible
-            } else if (!$elm.is(':visible')) {
-                cy.wrap($elm).should('not.be.visible')
-            //In some cases, we have to wait for detachment to occur before we can check for condition
-            } else {
-                cy.wait_for_detachment($elm).then(() => {
-                    expect('html').to.not.contain(text)
-                })
-            }
+            cy.wait_to_hide_or_detach($elm).then(() => {
+                expect('html').to.not.contain(text)
+            })
         })
     }
 })
@@ -222,6 +213,8 @@ Given("I (should )see( ){articleType}( ){optionalString}( ){onlineDesignerButton
             //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
             let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
             element_selector = `${element_selector}:visible ${window.tableMappings['data collection instruments']}:visible ${selector}`
+        } else if (labeled_exactly === " in the File Repository breadcrumb" || labeled_exactly === "  in the File Repository table"){
+            //cy.wait('@file_breadcrumbs')
         }
 
         if(window.elementChoices[base_element] === 'iframe'){
@@ -385,6 +378,8 @@ Given('I should see {string} in (the ){tableTypes} table', (text, table_type = '
  */
 Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
     cy.not_loading()
+
+    cy.wait_for_datatables().assertWindowProperties()
 
     let selector = window.tableMappings[table_type]
     let tabular_data = dataTable['rawTable']
