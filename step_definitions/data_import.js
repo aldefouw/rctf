@@ -21,31 +21,7 @@ Given("I upload a {string} format file located at {string}, by clicking the butt
  * @description Imports file(s) to the File Repository.
  */
 Given("I click the button labeled {string} to select and upload the following file(s) to the File Repository:", (button_label, dataTable) => {
-
-    cy.intercept({
-        method: 'POST',
-        url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
-    }).as('file_breadcrumbs')
-
-    cy.file_repo_upload(dataTable['rawTable'])
-
-    const count_of_files = dataTable['rawTable'].length
-
-    for(let i = 0; i < count_of_files; i++){
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:upload*"
-        }).as(`file_repo_upload_${i}`)
-    }
-
-    cy.get(`button:contains(${JSON.stringify(button_label)}):visible`).invoke('attr', 'onclick', "")
-
-    for(let i = 0; i < count_of_files; i++){
-        cy.wait(`@file_repo_upload_${i}`)
-    }
-
-    // cy.wait('@file_breadcrumbs')
-
+    cy.file_repo_upload(dataTable['rawTable'], 'input#file-repository-file-input', dataTable['rawTable'].length)
 })
 
 /**
