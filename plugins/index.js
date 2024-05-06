@@ -13,7 +13,7 @@ const fs = require('fs')
 const csv = require('async-csv')
 const path = require('path')
 
-const { addCucumberPreprocessorPlugin, defineParameterType, Given, When, Then } = require("@badeball/cypress-cucumber-preprocessor")
+const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor")
 const { preprocessor } = require("@badeball/cypress-cucumber-preprocessor/browserify")
 
 module.exports = (on, config) => {
