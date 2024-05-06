@@ -1,3 +1,5 @@
+const { Given } = require('@badeball/cypress-cucumber-preprocessor')
+
 /**
  * @module UserRights
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>

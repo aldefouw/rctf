@@ -1,3 +1,5 @@
+const { Given } = require('@badeball/cypress-cucumber-preprocessor')
+
 /**
  * @module Survey
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>

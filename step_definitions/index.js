@@ -1,4 +1,7 @@
 //PARAMETER TYPES IMPORTED HERE
+require('../index')
+require('../commands')
+
 require('./support/mappings') //this needs to come before all_types because we use some of this in all_types
 require('./support/all_mappings')
 require('./support/all_types')

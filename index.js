@@ -1,5 +1,8 @@
+const { Given, When, Then, defineParameterType } = require('@badeball/cypress-cucumber-preprocessor')
+
 window.compareVersions = require('compare-versions')
 window.escapeStringRegexp = require('escape-string-regexp')
+
 require('cypress-iframe')
 require('@4tw/cypress-drag-drop')
 require('@foreachbe/cypress-tinymce')
@@ -35,7 +38,7 @@ function reset_database(){
     cy.base_db_seed()
 }
 
-function load_core_step_definitions(){
+function load_core_step_definitions (Given, When, Then, defineParameterType){
     require('./step_definitions/index')
 }
 
@@ -47,46 +50,56 @@ function set_timezone(){
     cy.php_time_zone()
 }
 
-function rctf_initialize() {
-    load_core_step_definitions()
-    load_core_commands()
-    preserve_cookies()
-    intercept_vanderbilt_requests()
-    set_user_info()
-    set_timezone()
-    reset_database()
-}
-
 function load_support_files(){
     require('./support/index')
+    console.log(window.user_info)
 }
 
-//Load REDCap Cypress Test Framework Support Files
 load_support_files()
 
-//This is where we initialize the stuff we need in a basic install
-before(() => {
-    rctf_initialize()
-    cy.on('window:alert', (str) => {
-        window.lastAlert = str
-    })
-})
 
-beforeEach(() => {
-    window.registeredAlias = false
 
-    cy.window().then((win) => {
-        cy.spy(win, 'initFileSelectAllCheckbox').as('lastDataTablesMethod')
+function rctf_initialize(Given, When, Then, defineParameterType) {
+
+    load_core_commands()
+    load_core_step_definitions(Given, When, Then, defineParameterType)
+
+    //This is where we initialize the stuff we need in a basic install
+    before(() => {
+        load_support_files()
+        set_user_info()
+        cy.on('window:alert', (str) => {
+            window.lastAlert = str
+        })
     })
-})
+
+    beforeEach(() => {
+        preserve_cookies()
+
+        window.registeredAlias = false
+
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
+        }).as('file_breadcrumbs')
+
+        cy.intercept({
+            method: 'POST',
+            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getFileList*"
+        }).as('file_list')
+
+    })
+
+    // intercept_vanderbilt_requests()
+    // set_user_info()
+    // set_timezone()
+    // reset_database()
+}
+
+rctf_initialize()
 
 // // This is what makes these functions available to outside scripts
 module.exports = {
-    rctf_initialize: () => { rctf_initialize },
-    load_core_step_definitions: () => { load_core_step_definitions },
-    load_core_commands: () => { load_core_commands },
-    preserve_cookies: () => { preserve_cookies },
-    intercept_vanderbilt_requests: () => { intercept_vanderbilt_requests },
-    set_user_info: () => { set_user_info },
-    reset_database: () => { reset_database }
+    load_core_step_definitions: (Given, When, Then, defineParameterType) => { load_core_step_definitions(Given, When, Then, defineParameterType) },
+    rctf_initialize: (Given, When, Then, defineParameterType) => { rctf_initialize(Given, When, Then, defineParameterType) }
 }
