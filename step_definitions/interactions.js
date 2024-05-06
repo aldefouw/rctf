@@ -1,3 +1,5 @@
+const { Given } = require('@badeball/cypress-cucumber-preprocessor')
+
 function before_click_monitor(type){
     if(type === ' in the "Add New Field" dialog box' || type === ' in the "Edit Field" dialog box' ){
         cy.intercept({
@@ -37,11 +39,6 @@ function before_click_monitor(type){
         cy.on('window:confirm', (str) => {
             return true
         })
-    } else if (type === " in the File Repository table"){
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + '/*FileRepositoryController:getFileList*'
-        }).as('file_repo_list')
     }
 }
 
@@ -64,9 +61,6 @@ function after_click_monitor(type){
         cy.on('window:confirm', (str) => {
             return true //subsequent windows go back to default behavior
         })
-    } else if (type === " in the File Repository table"){
-        // cy.wait('@file_repo_list')
-        // cy.window().its('performance.navigation.type').should('eq', 1)
     }
 }
 
@@ -263,6 +257,10 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
 
     cy.not_loading()
 
+    if(base_element === " in the File Repository table"){
+        cy.wait_for_datatables().assertWindowProperties()
+    }
+
     if(base_element === undefined){
         base_element = ''
     }
@@ -315,7 +313,7 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).then(($elm) => {
                 if(base_element === " in the File Repository table"){
-                    cy.wrap($elm).click()
+                    cy.get($elm).invoke('attr', 'onclick')
                 } else {
                     cy.wrap($elm).click()
                 }

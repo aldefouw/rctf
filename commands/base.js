@@ -53,7 +53,10 @@ Cypress.Commands.add('waitForInitDtEvent', () => {
         return DT_LOADED
     })
 
-    cy.get('@lastDataTablesMethod')
+    cy.get('@breadcrumbs')
+    cy.get('@file_rename')
+    cy.get('@all_checkboxes')
+    cy.get('@load_datatable')
 })
 
 Cypress.Commands.add('assertWindowProperties', () => {

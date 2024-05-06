@@ -52,3 +52,5 @@ function UserInfo() {
 }
 
 window.user_info = new UserInfo();
+console.log(window.user_info)
+

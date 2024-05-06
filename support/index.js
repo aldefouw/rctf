@@ -4,3 +4,4 @@ require('./xhr_behavior')
 require('./uncaught_exceptions')
 
 console.log('RCTF: Support Files Loaded')
+
