@@ -66,20 +66,13 @@ function rctf_initialize(Given, When, Then, defineParameterType) {
     before(() => {
         load_support_files()
         set_user_info()
+        intercept_vanderbilt_requests()
+        set_timezone()
+        reset_database()
+
         cy.on('window:alert', (str) => {
             window.lastAlert = str
         })
-
-        intercept_vanderbilt_requests()
-        set_user_info()
-        set_timezone()
-        reset_database()
-    })
-
-    beforeEach(() => {
-        preserve_cookies()
-
-        window.registeredAlias = false
 
         cy.intercept({
             method: 'POST',
@@ -90,7 +83,15 @@ function rctf_initialize(Given, When, Then, defineParameterType) {
             method: 'POST',
             url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getFileList*"
         }).as('file_list')
+    })
 
+    beforeEach(() => {
+        preserve_cookies()
+        window.registeredAlias = false
+
+        // cy.window().then((win) => {
+        //     cy.spy(win, 'initFileSelectAllCheckbox').as('breadcrumbs')
+        // })
     })
 
 }
