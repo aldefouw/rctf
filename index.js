@@ -58,7 +58,6 @@ function load_support_files(){
 
 function rctf_initialize(Given, When, Then, defineParameterType) {
     load_support_files()
-
     load_core_commands()
     load_core_step_definitions(Given, When, Then, defineParameterType)
 
