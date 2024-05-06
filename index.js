@@ -55,11 +55,9 @@ function load_support_files(){
     console.log(window.user_info)
 }
 
-load_support_files()
-
-
 
 function rctf_initialize(Given, When, Then, defineParameterType) {
+    load_support_files()
 
     load_core_commands()
     load_core_step_definitions(Given, When, Then, defineParameterType)
@@ -71,6 +69,11 @@ function rctf_initialize(Given, When, Then, defineParameterType) {
         cy.on('window:alert', (str) => {
             window.lastAlert = str
         })
+
+        intercept_vanderbilt_requests()
+        set_user_info()
+        set_timezone()
+        reset_database()
     })
 
     beforeEach(() => {
@@ -90,13 +93,7 @@ function rctf_initialize(Given, When, Then, defineParameterType) {
 
     })
 
-    // intercept_vanderbilt_requests()
-    // set_user_info()
-    // set_timezone()
-    // reset_database()
 }
-
-rctf_initialize()
 
 // // This is what makes these functions available to outside scripts
 module.exports = {
