@@ -56,10 +56,10 @@ function load_support_files(){
 }
 
 
-function rctf_initialize(Given, When, Then, defineParameterType) {
+function rctf_initialize(Given, defineParameterType) {
     load_support_files()
     load_core_commands()
-    load_core_step_definitions(Given, When, Then, defineParameterType)
+    load_core_step_definitions(Given, defineParameterType)
 
     //This is where we initialize the stuff we need in a basic install
     before(() => {
@@ -97,6 +97,5 @@ function rctf_initialize(Given, When, Then, defineParameterType) {
 
 // // This is what makes these functions available to outside scripts
 module.exports = {
-    load_core_step_definitions: (Given, When, Then, defineParameterType) => { load_core_step_definitions(Given, When, Then, defineParameterType) },
-    rctf_initialize: (Given, When, Then, defineParameterType) => { rctf_initialize(Given, When, Then, defineParameterType) }
+    rctf_initialize: (Given, defineParameterType) => { rctf_initialize(Given, defineParameterType) }
 }
