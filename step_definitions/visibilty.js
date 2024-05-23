@@ -184,6 +184,8 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
     } else if (opt_str.includes('icon') &&
         opt_str.includes('longitudinal instrument on event')){
 
+        const matches = extractQuotedStrings(opt_str)
+
         cy.table_cell_by_column_and_row_label(matches[2], matches[1], 'table#event_grid_table').then(($td) => {
             cy.wrap($td).find('a:visible:first').then((link_location) => {
                 expect(link_location).to.have.descendants(window.recordStatusIcons[matches[0]])
