@@ -281,19 +281,6 @@ Given("I drag (on )the field variable named {string} {aboveBelow} the field vari
 /**
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
- * @example I should see a field named {string}
- * @param {string} fieldBefore the field name that comes before
- * @param {string} fieldAfter the field name that comes after
- * @description Visually verifies that the fieldBefore is before fieldAfter
- */
-Given("I should see (a )(the )field named {string}", (field_name) => {
-    cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${field_name})`).contains(field_name)
-})
-
-
-/**
- * @module OnlineDesigner
- * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I should see a field named {string} {beforeAfter} field named {string}
  * @param {string} fieldBefore - the field name that comes before
  * @param {string} beforeAfter - available options: 'before', 'after'
