@@ -151,7 +151,37 @@ Given("I should see the radio labeled {string} with option {string} {select}", (
 Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{iframeVisibility}{baseElement}( ){disabled}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, iframe, base_element, disabled_text) => {
     cy.not_loading()
 
-    if(opt_str === "a field named"){
+    function extractQuotedStrings(str) {
+        let inQuotes = false
+        let currentQuote = ''
+        const result = []
+
+        for (let i = 0; i < str.length; i++) {
+            const char = str[i]
+
+            if (char === '"') {
+                if (inQuotes) {
+                    result.push(currentQuote)
+                    currentQuote = ''
+                }
+                inQuotes = !inQuotes;
+            } else if (inQuotes) {
+                currentQuote += char
+            }
+        }
+
+        return result
+    }
+
+    if(opt_str.includes('icon') &&
+        opt_str.includes('longitudinal instrument on event') &&
+        opt_str.includes('for record')) {
+
+        const matches = extractQuotedStrings(opt_str)
+
+        cy.get_record_status_dashboard(matches[2], matches[1], text, '', false, matches[0])
+        
+    } else if(opt_str === "a field named"){
         cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${text})`).contains(text)
     } else if (window.icons.hasOwnProperty(text)) {
         cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
