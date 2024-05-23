@@ -533,17 +533,7 @@ Given('I clear the field labeled {string}', (label) => {
 Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}{iframeVisibility}", (event_name, check, type, labeled_exactly, label, base_element, iframe) => {
     cy.not_loading()
 
-    function fetchElmByLabel(label_selector, outer_element, selector){
-        cy.top_layer(label_selector, outer_element).within(() => {
-            if (type === "radio" || check === "click on") {
-                selector.scrollIntoView().click()
-            } else if (check === "check") {
-                selector.scrollIntoView().check()
-            } else if (check === "uncheck") {
-                selector.scrollIntoView().uncheck()
-            }
-        })
-    }
+    const elm = (iframe === " in the iframe") ? cy.frameLoaded().then(() => { cy.iframe() }) : null
 
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains(${JSON.stringify(label)}):visible`
@@ -560,14 +550,23 @@ Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {check
         element_selector = `tr:contains(${JSON.stringify(event_name)}):visible td:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
     }
 
-    let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
-
-    if(iframe === " in the iframe"){
-        cy.frameLoaded().then(() => { cy.iframe() }).within(() => {
-            fetchElmByLabel(label_selector, outer_element, selector)
+    function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
+        cy.top_layer(label_selector, outer_element).within(() => {
+            let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
+            if (type === "radio" || check === "click on") {
+                selector.scrollIntoView().click()
+            } else if (check === "check") {
+                selector.scrollIntoView().check()
+            } else if (check === "uncheck") {
+                selector.scrollIntoView().uncheck()
+            }
         })
+    }
+
+    if(iframe === " in the iframe") {
+        elm.within(() => { clickElement(label_selector, outer_element, element_selector, label, labeled_exactly) })
     } else {
-        fetchElmByLabel(label_selector, outer_element, selector)
+        clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
     }
 })
 
