@@ -52,7 +52,6 @@ function set_timezone(){
 
 function load_support_files(){
     require('./support/index')
-    console.log(window.user_info)
 }
 
 
