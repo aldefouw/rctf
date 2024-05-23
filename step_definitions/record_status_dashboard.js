@@ -32,21 +32,6 @@ Given("I locate the bubble for the {string} instrument on event {string} for rec
 /**
  * @module RecordStatusDashboard
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I (should) see the "{recordStatusIcons}" icon for the {string} longitudinal instrument on event {string} for record {string}
- * @param {string} recordStatusIcons - available options: 'Incomplete', 'Unverified', 'Complete', 'Many statuses (mixed)', 'Incomplete (no data saved)', 'Partial Survey Response', 'Completed Survey Response', 'Many statuses (all same)'
- * @param {string} instrument - the data collection instrument you want to target
- * @param {string} event - the event name you want to target
- * @param {string} record_id - the value of the record_id you want to target
- * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.
- */
-
-Given('I (should) see the "{recordStatusIcons}" icon for the {string} longitudinal instrument on event {string} for record {string}', (icon, instrument, event, record_id) => {
-    cy.get_record_status_dashboard(event, instrument, record_id, '', false, icon)
-})
-
-/**
- * @module RecordStatusDashboard
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I select record ID {string} from arm name {string} on the (Add|View) / Edit record page
  * @param {string} record_id - the name of the record ID
  * @param {string} arm_name - name of the arm as displayed in the dropdown menu (e.g. Arm 1: Arm 1)
