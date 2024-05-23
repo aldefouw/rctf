@@ -151,7 +151,9 @@ Given("I should see the radio labeled {string} with option {string} {select}", (
 Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{iframeVisibility}{baseElement}( ){disabled}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, iframe, base_element, disabled_text) => {
     cy.not_loading()
 
-    if (window.icons.hasOwnProperty(text)) {
+    if(opt_str === "a field named"){
+        cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${text})`).contains(text)
+    } else if (window.icons.hasOwnProperty(text)) {
         cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
         should('be.visible').
         should('have.descendants', window.icons[text])
