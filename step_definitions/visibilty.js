@@ -180,7 +180,16 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         const matches = extractQuotedStrings(opt_str)
 
         cy.get_record_status_dashboard(matches[2], matches[1], text, '', false, matches[0])
-        
+
+    } else if (opt_str.includes('icon') &&
+        opt_str.includes('longitudinal instrument on event')){
+
+        cy.table_cell_by_column_and_row_label(matches[2], matches[1], 'table#event_grid_table').then(($td) => {
+            cy.wrap($td).find('a:visible:first').then((link_location) => {
+                expect(link_location).to.have.descendants(window.recordStatusIcons[matches[0]])
+            })
+        })
+
     } else if(opt_str === "a field named"){
         cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${text})`).contains(text)
     } else if (window.icons.hasOwnProperty(text)) {
