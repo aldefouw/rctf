@@ -192,6 +192,16 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
             })
         })
 
+    } else if (opt_str === "an alert box with the following text:") {
+
+        (function waitForAlert(i = 0) {
+            if (window.lastAlert !== undefined || i > 10) {
+                expect(window.lastAlert).to.contain(text)
+            } else {
+                setTimeout(waitForAlert, 500, (i + 1))
+            }
+        })()
+
     } else if(opt_str === "a field named"){
         cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${text})`).contains(text)
     } else if (window.icons.hasOwnProperty(text)) {
@@ -211,16 +221,6 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                 //Special case of Project status
                 if (opt_str === "Project status:" && window.parameterTypes['projectStatus'].includes(text)) {
                     cy.get('div.menubox:contains("Project status:")').should('contain', text)
-                } else if (opt_str === "an alert box with the following text:") {
-
-                    (function waitForAlert(i = 0) {
-                        if (window.lastAlert !== undefined || i > 10) {
-                            expect(window.lastAlert).to.contain(text)
-                        } else {
-                            setTimeout(waitForAlert, 500, (i + 1))
-                        }
-                    })()
-
                 } else {
 
                     // double quotes need to be re-escaped before inserting into :contains() selector
