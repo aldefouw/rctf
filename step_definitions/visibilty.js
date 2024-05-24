@@ -359,22 +359,6 @@ Given("I should NOT see( ){articleType}( ){labeledElement} labeled {string}{base
 /**
  * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I should see {string} in the data entry form field labeled {string}
- * @param {string} text - the text that should be in the field
- * @param {string} label - the label of the field
- * @description Identifies specific text string in a field identified by a label.
- */
-Given('I should see {string} in the data entry form field labeled {string}', (text, label) => {
-    cy.contains('label', label)
-        .invoke('attr', 'id')
-        .then(($id) => {
-            cy.get('[name="' + $id.split('label-')[1] + '"]').should('have.value', text)
-        })
-})
-
-/**
- * @module Visibility
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I (should) see a(n) {string} within the {string} row of the column labeled {string} {tableName}
  * @param {string} table_item - the item that you are searching for - includes "checkmark", "x", or any {string}
  * @param {string} row_label - the label of the table row
