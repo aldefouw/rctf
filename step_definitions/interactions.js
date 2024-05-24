@@ -315,7 +315,7 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
                 if(base_element === " in the File Repository table"){
                     cy.get($elm).invoke('attr', 'onclick')
                 } else {
-                    cy.wrap($elm).click()
+                    cy.wrap($elm).click({force: true})
                 }
             })
         })
