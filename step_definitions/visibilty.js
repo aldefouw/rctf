@@ -437,7 +437,13 @@ Given('I should see {string} in (the ){tableTypes} table', (text, table_type = '
 Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
     cy.not_loading()
 
-    cy.wait_for_datatables().assertWindowProperties()
+    //Determine if records exist
+    const records = Cypress.$('td.data:has(:contains("No records exist"))')
+
+    //If records do NOT exist, do not bother looking for data tables to load!
+    if(records.length === 0){
+        cy.wait_for_datatables().assertWindowProperties()
+    }
 
     let selector = window.tableMappings[table_type]
     let tabular_data = dataTable['rawTable']
@@ -512,9 +518,6 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
             count = 0
             prevColSpan = 1
             let prevRowSpan = 1
-
-            //Determine if records exist
-            const records = Cypress.$('td.data:has(:contains("No records exist"))')
 
             cy.wrap($cells).find(`td,th`).each(($cell, i, cells) => {
                 let labels = $cell[0].innerText.split("\n")
