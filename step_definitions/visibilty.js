@@ -173,7 +173,17 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         return result
     }
 
-    if(opt_str.includes('icon') &&
+    if(opt_str.includes('the data entry form')) {
+
+        const matches = extractQuotedStrings(opt_str)
+
+        cy.contains('label', text)
+            .invoke('attr', 'id')
+            .then(($id) => {
+                cy.get('[name="' + $id.split('label-')[1] + '"]').should('have.value', matches[0])
+            })
+
+    } else if(opt_str.includes('icon') &&
         opt_str.includes('longitudinal instrument on event') &&
         opt_str.includes('for record')) {
 
