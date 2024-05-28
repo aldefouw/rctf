@@ -143,3 +143,38 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
     })
 
 })
+
+Cypress.Commands.add('instrument_visibility', (not_see, instrument, event) => {
+
+    let event_sections = {}
+    let event_counter = 0
+    let instruments = []
+
+    cy.get('table#record_status_table').within(() => {
+        cy.get('thead').within(() => {
+            cy.get('tr').then(($first_tr) => {
+                Cypress.$.each($first_tr, (tri_row, tri_html) => {
+                    Cypress.$(tri_html).children().each(($thi, $th) => {
+                        if (tri_row === 0) {
+                            event_sections[$th.innerText] = {
+                                start: event_counter,
+                                end: (event_counter + $th.colSpan) - 1
+                            }
+                            event_counter += $th.colSpan
+                        } else if (tri_row > 0) {
+                            const current_event = event_sections[event]
+                            if ($thi >= (current_event['start'] - 1) && ($thi <= current_event['end'] - 1) ) {
+                                instruments.push($th.innerText)
+                            }
+                        }
+                    })
+                })
+            })
+        })
+    }).then(() => {
+        (not_see === 'not ') ?
+            expect(instruments).not.to.include(instrument) :
+            expect(instruments).to.include(instrument)
+    })
+
+})
