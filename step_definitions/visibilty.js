@@ -148,7 +148,7 @@ Given("I should see the radio labeled {string} with option {string} {select}", (
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Verifies that a visible element of the specified type containing `text` exists
  */
-Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{iframeVisibility}{baseElement}( ){disabled}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, iframe, base_element, disabled_text) => {
+Given("I (should ){notSee}( )see {articleType}{optionalString}{onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{iframeVisibility}{baseElement}( ){disabled}", (not_see, article_type, opt_str, online_buttons, el, labeled_exactly, text, iframe, base_element, disabled_text) => {
     cy.not_loading()
 
     //console.log(opt_str)
@@ -176,7 +176,12 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         return result
     }
 
-    if(opt_str.includes('the data entry form')) {
+    if(opt_str.includes('Data Collection Instrument named')){
+
+        const matches = extractQuotedStrings(opt_str)
+        cy.instrument_visibility(not_see, matches[0], text)
+
+    } else if(opt_str.includes('the data entry form')) {
 
         const matches = extractQuotedStrings(opt_str)
 
@@ -232,9 +237,11 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         })
     } else {
         let base
+        let subsel = base_element
 
-        if(el !== null){
-            base = cy.get(`${el}:has(:contains(${JSON.stringify(text)}):visible)${(el === 'button' ? `,input[value="${text}"]:visible` : '')}`)
+        if(el !== ''){
+            subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header'}[el]
+            base = cy.get(`${subsel}:contains(${JSON.stringify(text)}):visible${(el === 'button' ? `,input[value="${text}"]:visible` : '')}`)
         } else {
             base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
                 cy.frameLoaded().then(() => { cy.iframe() }) :
@@ -242,7 +249,7 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         }
 
         base.within(($elm) => {
-            expect($elm).length.to.be.greaterThan(0)
+            return expect($elm).length.to.be.greaterThan(0)
         }).then((next_section) => {
 
                 //Special case of Project status
@@ -250,11 +257,8 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                     cy.get('div.menubox:contains("Project status:")').should('contain', text)
                 } else {
 
-                    console.log('yeppers')
-
                     // double quotes need to be re-escaped before inserting into :contains() selector
                     text = text.replaceAll('\"', '\\\"')
-                    let subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header'}[el]
 
                     let element_selector = window.elementChoices[base_element]
                     let disabled_status = disabled_text === "is disabled" ? ':disabled' : ':not([disabled])'
@@ -308,14 +312,47 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                                 cy.wrap($elm).find(sel).should('be.disabled')
                             }
                         })
+                    } else if (opt_str === "the exact time in the" || opt_str === "today's date in the") {
+                        const today = new Date();
+                        const year = today.getFullYear()
+                        const month = String(today.getMonth() + 1).padStart(2, '0') // Months are zero-based
+                        const day = String(today.getDate()).padStart(2, '0')
+                        const hours = String(today.getHours()).padStart(2, '0')
+                        const minutes = String(today.getMinutes()).padStart(2, '0')
+                        const seconds = String(today.getSeconds()).padStart(2, '0')
+
+                        const expectedValue = (opt_str === "the exact time in the") ?
+                            `${hours}:${minutes}:${seconds}` :
+                            `${year}-${month}-${day}`
+
+                        cy.get(sel).find('input').invoke('val')
+                            .then((actualValue) => {
+                                if (opt_str === "the exact time in the") {
+                                    let [h, m, s] = actualValue.split(':').map(Number)
+                                    const actualTimeInSeconds = (h * 3600) + (m * 60) + s
+
+                                    let [h_e, m_e, s_e] = expectedValue.split(':').map(Number)
+                                    const expectedTimeInTimeInSeconds = (h_e * 3600) + (m_e * 60) + s_e
+
+                                    //5 seconds tolerance
+                                    expect(actualTimeInSeconds).to.be.closeTo(expectedTimeInTimeInSeconds, 5)
+                                } else {
+                                    expect(actualValue).to.eq(expectedValue)
+                                }
+
+                            })
                     } else {
 
                         cy.top_layer(sel, element_selector).then(($elm) => {
 
                             cy.wrap($elm).find(sel).then(($element) => {
-                                $element.is('button') ?
-                                    cy.wrap($element).should('contain', text) :
+
+                                if(el === 'button' && !$element.is('button')) {
                                     cy.wrap($element).invoke('attr', 'value').should('include', text)
+                                } else {
+                                    cy.wrap($element).should('contain', text)
+                                }
+
                             })
 
                             if (disabled_text === "is disabled") {
@@ -323,39 +360,8 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                             }
                         })
 
-                        if (opt_str === "the exact time in the" || opt_str === "today's date in the") {
-                            const today = new Date();
-                            const year = today.getFullYear()
-                            const month = String(today.getMonth() + 1).padStart(2, '0') // Months are zero-based
-                            const day = String(today.getDate()).padStart(2, '0')
-                            const hours = String(today.getHours()).padStart(2, '0')
-                            const minutes = String(today.getMinutes()).padStart(2, '0')
-                            const seconds = String(today.getSeconds()).padStart(2, '0')
-
-                            const expectedValue = (opt_str === "the exact time in the") ?
-                                `${hours}:${minutes}:${seconds}` :
-                                `${year}-${month}-${day}`
-
-                            cy.get(sel).find('input').invoke('val')
-                                .then((actualValue) => {
-                                    if (opt_str === "the exact time in the") {
-                                        let [h, m, s] = actualValue.split(':').map(Number)
-                                        const actualTimeInSeconds = (h * 3600) + (m * 60) + s
-
-                                        let [h_e, m_e, s_e] = expectedValue.split(':').map(Number)
-                                        const expectedTimeInTimeInSeconds = (h_e * 3600) + (m_e * 60) + s_e
-
-                                        //5 seconds tolerance
-                                        expect(actualTimeInSeconds).to.be.closeTo(expectedTimeInTimeInSeconds, 5)
-                                    } else {
-                                        expect(actualValue).to.eq(expectedValue)
-                                    }
-
-                                })
-                        }
                     }
                 }
-
         })
     }
 
