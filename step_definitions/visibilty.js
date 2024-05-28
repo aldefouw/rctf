@@ -151,7 +151,8 @@ Given("I should see the radio labeled {string} with option {string} {select}", (
 Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{iframeVisibility}{baseElement}( ){disabled}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, iframe, base_element, disabled_text) => {
     cy.not_loading()
 
-    // console.log(opt_str)
+    //console.log(opt_str)
+    //console.log(el)
 
     function extractQuotedStrings(str) {
         let inQuotes = false
@@ -230,22 +231,26 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
             expect($file).to.exist
         })
     } else {
-        const base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
-            cy.frameLoaded().then(() => { cy.iframe() }) :
-            cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
+        let base
+
+        if(el !== null){
+            base = cy.get(`${el}:has(:contains(${JSON.stringify(text)}):visible)${(el === 'button' ? `,input[value="${text}"]:visible` : '')}`)
+        } else {
+            base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
+                cy.frameLoaded().then(() => { cy.iframe() }) :
+                cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
+        }
+
         base.within(($elm) => {
-            return cy.wrap($elm).should('contain', text)
+            expect($elm).length.to.be.greaterThan(0)
         }).then((next_section) => {
-
-            // console.log('made it here')
-            // console.log(labeled_exactly)
-
-            if(!next_section) {
 
                 //Special case of Project status
                 if (opt_str === "Project status:" && window.parameterTypes['projectStatus'].includes(text)) {
                     cy.get('div.menubox:contains("Project status:")').should('contain', text)
                 } else {
+
+                    console.log('yeppers')
 
                     // double quotes need to be re-escaped before inserting into :contains() selector
                     text = text.replaceAll('\"', '\\\"')
@@ -289,14 +294,8 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                         let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
                         element_selector = `${element_selector}:visible ${window.tableMappings['data collection instruments']}:visible ${selector}`
 
-                        // cy.top_layer(sel, outer_element).within(() => {
-                        //     cy.get(sel).eq(ord).then(($button) => {
-                        //         cy.wrap($elm).find(sel)
-                        //     })
-                        // })
-
                     } else if (labeled_exactly === " in the File Repository breadcrumb" || labeled_exactly === "  in the File Repository table") {
-                        //cy.wait('@file_breadcrumbs')
+                        cy.wait('@file_breadcrumbs')
                     }
 
                     if (window.elementChoices[base_element] === 'iframe') {
@@ -312,6 +311,13 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                     } else {
 
                         cy.top_layer(sel, element_selector).then(($elm) => {
+
+                            cy.wrap($elm).find(sel).then(($element) => {
+                                $element.is('button') ?
+                                    cy.wrap($element).should('contain', text) :
+                                    cy.wrap($element).invoke('attr', 'value').should('include', text)
+                            })
+
                             if (disabled_text === "is disabled") {
                                 cy.wrap($elm).find(sel).should('be.disabled')
                             }
@@ -349,7 +355,6 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                         }
                     }
                 }
-            }
 
         })
     }
