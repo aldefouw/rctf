@@ -204,13 +204,17 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
 
     } else if (opt_str === "an alert box with the following text:") {
 
-        (function waitForAlert(i = 0) {
-            if (window.lastAlert !== undefined || i > 10) {
-                expect(window.lastAlert).to.contain(text)
-            } else {
-                setTimeout(waitForAlert, 500, (i + 1))
-            }
-        })()
+        return new Cypress.Promise((resolve) => {
+            // Simulate an async operation
+            setTimeout(() => {
+
+                if (window.lastAlert !== undefined || i > 10) {
+                    expect(window.lastAlert).to.contain(text)
+                }
+
+                resolve('done')
+            }, 1000)
+        })
 
     } else if(opt_str === "a field named"){
         cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${text})`).contains(text)
@@ -225,6 +229,9 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         base.within(($elm) => {
             return cy.wrap($elm).should('contain', text)
         }).then((next_section) => {
+
+            // console.log('made it here')
+            // console.log(labeled_exactly)
 
             if(!next_section) {
 
@@ -274,6 +281,13 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
                         //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
                         let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
                         element_selector = `${element_selector}:visible ${window.tableMappings['data collection instruments']}:visible ${selector}`
+
+                        // cy.top_layer(sel, outer_element).within(() => {
+                        //     cy.get(sel).eq(ord).then(($button) => {
+                        //         cy.wrap($elm).find(sel)
+                        //     })
+                        // })
+
                     } else if (labeled_exactly === " in the File Repository breadcrumb" || labeled_exactly === "  in the File Repository table") {
                         //cy.wait('@file_breadcrumbs')
                     }
