@@ -151,6 +151,8 @@ Given("I should see the radio labeled {string} with option {string} {select}", (
 Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{iframeVisibility}{baseElement}( ){disabled}", (article_type, opt_str, online_buttons, el, labeled_exactly, text, iframe, base_element, disabled_text) => {
     cy.not_loading()
 
+    // console.log(opt_str)
+
     function extractQuotedStrings(str) {
         let inQuotes = false
         let currentQuote = ''
@@ -222,6 +224,11 @@ Given("I (should )see {articleType}{optionalString}{onlineDesignerButtons}( ){la
         cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
         should('be.visible').
         should('have.descendants', window.icons[text])
+
+    } else if(opt_str === "a downloaded file named"){
+        cy.download_file(text).then(($file) => {
+            expect($file).to.exist
+        })
     } else {
         const base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
             cy.frameLoaded().then(() => { cy.iframe() }) :
