@@ -68,7 +68,7 @@ window.parameterTypes = {
         'Save & Add New Instance',
     ],
     labeledElement: ['button', 'link', 'field', 'section break'],
-    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', "within the Record Locking Customization table for the Data Collection Instrument named"],
+    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', "within the Record Locking Customization table for the Data Collection Instrument named", "in the data entry form field", 'for the Event named', 'longitudinal instrument on event'],
     linkNames: ['link', 'tab', 'instrument', 'icon'],
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSee: ['not '],
@@ -108,5 +108,6 @@ window.parameterTypes = {
         'archive request notification',
     ],
     toDownloadFile: [' to download a file', ' near "with records in rows" to download a file', ' near "with records in columns" to download a file'],
-    userRightAction: ['add', 'remove']
+    userRightAction: ['add', 'remove'],
+    visibilityPrefix: ['an alert box with the following text:', 'a field named', 'a downloaded file named', 'Project status:', 'the exact time in the', "today's date in the"]
 }
