@@ -211,8 +211,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
     let disabled_status = disabled_text !== undefined && disabled_text === "is disabled" ? ':disabled': ':not([disabled])'
 
     // double quotes need to be re-escaped before inserting into :contains() selector
-    text = text.replaceAll('\"', '\\\"')
-    let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible${disabled_status}` : '')
+    let sel = `${subsel}:contains(${JSON.stringify(text)}):visible` + (el === 'button' ? `,input[value=${JSON.stringify(text)}]:visible${disabled_status}` : '')
 
     if (window.icons.hasOwnProperty(text)) {
         cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
