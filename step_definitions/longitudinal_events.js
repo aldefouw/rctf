@@ -127,6 +127,18 @@ Given("I click on the {editEvent} image for the event named {string}", (type, ev
 //    })
 // })
 
+Given("I (should )see the {string} icon for the {string} longitudinal instrument on event {string}", (icon, instrument, event) => {
+   cy.table_cell_by_column_and_row_label(event, matches[1], 'table#event_grid_table').then(($td) => {
+      cy.wrap($td).find('a:visible:first').then((link_location) => {
+         expect(link_location).to.have.descendants(window.recordStatusIcons[matches[0]])
+      })
+   })
+})
+
+Given("I (should )see the {string} icon for the {string} longitudinal instrument on event {string} for record {string}", function (icon, instrument, event, record) {
+   cy.get_record_status_dashboard(event, instrument, record, '', false, icon)
+})
+
 /**
  * @module LongitudinalEvents
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
