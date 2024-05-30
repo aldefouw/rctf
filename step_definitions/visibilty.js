@@ -161,7 +161,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
     cy.not_loading()
 
 
-    const opt_str = prefix
+    let opt_str = prefix
 
     // console.log(not_see)
     // console.log(article_type)
@@ -310,6 +310,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
                     if (!window.icons.hasOwnProperty(online_buttons)) {
                         online_buttons = online_buttons.replaceAll('"', '')
                         sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible${disabled_status}` : '')
+                        text = online_buttons
                     }
                 }
 
