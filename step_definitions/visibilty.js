@@ -204,7 +204,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
 
 
     let base
-    let subsel = base_element
+    let subsel = ''
 
     if(el !== ''){ subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header'}[el] }
 
