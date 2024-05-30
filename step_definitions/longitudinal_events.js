@@ -84,48 +84,48 @@ Given("I click on the {editEvent} image for the event named {string}", (type, ev
    }
 })
 
-// /**
-//  * @module LongitudinalEvents
-//  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
-//  * @example I (should) (not) see a Data Collection Instrument named {string} for the Event named {string}
-//  * @param {string} instrument - the name of the instrument
-//  * @param {string} event - the name of the event
-//  * @description Verifies an instrument exists within an event on a longitudinal project
-//  */
-//
-// Given("I (should ){notSee}see a Data Collection Instrument named {string} for the Event named {string}", (not_see, instrument, event) => {
-//
-//    let event_sections = {}
-//    let event_counter = 0
-//    let instruments = []
-//
-//    cy.get('table#record_status_table').within(() => {
-//       cy.get('thead').within(() => {
-//          cy.get('tr').then(($first_tr) => {
-//             Cypress.$.each($first_tr, (tri_row, tri_html) => {
-//                Cypress.$(tri_html).children().each(($thi, $th) => {
-//                   if (tri_row === 0) {
-//                      event_sections[$th.innerText] = {
-//                         start: event_counter,
-//                         end: (event_counter + $th.colSpan) - 1
-//                      }
-//                      event_counter += $th.colSpan
-//                   } else if (tri_row > 0) {
-//                      const current_event = event_sections[event]
-//                      if ($thi >= (current_event['start'] - 1) && ($thi <= current_event['end'] - 1) ) {
-//                         instruments.push($th.innerText)
-//                      }
-//                   }
-//                })
-//             })
-//          })
-//       })
-//    }).then(() => {
-//       (not_see === 'not ') ?
-//           expect(instruments).not.to.include(instrument) :
-//           expect(instruments).to.include(instrument)
-//    })
-// })
+/**
+ * @module LongitudinalEvents
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I (should) (not) see a Data Collection Instrument named {string} for the Event named {string}
+ * @param {string} instrument - the name of the instrument
+ * @param {string} event - the name of the event
+ * @description Verifies an instrument exists within an event on a longitudinal project
+ */
+
+Given("I (should ){notSee}see a Data Collection Instrument named {string} for the Event named {string}", (not_see, instrument, event) => {
+
+   let event_sections = {}
+   let event_counter = 0
+   let instruments = []
+
+   cy.get('table#record_status_table').within(() => {
+      cy.get('thead').within(() => {
+         cy.get('tr').then(($first_tr) => {
+            Cypress.$.each($first_tr, (tri_row, tri_html) => {
+               Cypress.$(tri_html).children().each(($thi, $th) => {
+                  if (tri_row === 0) {
+                     event_sections[$th.innerText] = {
+                        start: event_counter,
+                        end: (event_counter + $th.colSpan) - 1
+                     }
+                     event_counter += $th.colSpan
+                  } else if (tri_row > 0) {
+                     const current_event = event_sections[event]
+                     if ($thi >= (current_event['start'] - 1) && ($thi <= current_event['end'] - 1) ) {
+                        instruments.push($th.innerText)
+                     }
+                  }
+               })
+            })
+         })
+      })
+   }).then(() => {
+      (not_see === 'not ') ?
+          expect(instruments).not.to.include(instrument) :
+          expect(instruments).to.include(instrument)
+   })
+})
 
 Given("I (should )see the {string} icon for the {string} longitudinal instrument on event {string}", (icon, instrument, event) => {
    cy.table_cell_by_column_and_row_label(event, instrument, 'table#event_grid_table').then(($td) => {
