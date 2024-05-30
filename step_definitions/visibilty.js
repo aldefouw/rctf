@@ -284,10 +284,9 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
         }
 
     } else {
-
         base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
             cy.frameLoaded().then(() => { cy.iframe() }) :
-            cy.get(`${window.elementChoices[base_element]}:has(:contains(${JSON.stringify(text)}):visible)`)
+            cy.get(`${window.elementChoices[base_element]}:has(${sel})`)
 
         base.within(($elm) => {
             return expect($elm).length.to.be.greaterThan(0)
