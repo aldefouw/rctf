@@ -128,9 +128,9 @@ Given("I click on the {editEvent} image for the event named {string}", (type, ev
 // })
 
 Given("I (should )see the {string} icon for the {string} longitudinal instrument on event {string}", (icon, instrument, event) => {
-   cy.table_cell_by_column_and_row_label(event, matches[1], 'table#event_grid_table').then(($td) => {
+   cy.table_cell_by_column_and_row_label(event, instrument, 'table#event_grid_table').then(($td) => {
       cy.wrap($td).find('a:visible:first').then((link_location) => {
-         expect(link_location).to.have.descendants(window.recordStatusIcons[matches[0]])
+         expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
       })
    })
 })
