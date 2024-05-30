@@ -208,6 +208,8 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
 
     if(el !== ''){ subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header'}[el] }
 
+    let disabled_status = disabled_text !== undefined && disabled_text === "is disabled" ? ':disabled': ':not([disabled])'
+
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
     let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible${disabled_status}` : '')
@@ -303,9 +305,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
                 })
             } else {
 
-
                 let element_selector = window.elementChoices[base_element]
-                let disabled_status = disabled_text === "is disabled" ? ':disabled' : ':not([disabled])'
 
                 if (window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
                     if (!window.icons.hasOwnProperty(online_buttons)) {
