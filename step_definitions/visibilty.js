@@ -284,6 +284,16 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
         }
 
     } else {
+
+        if (window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
+            if (!window.icons.hasOwnProperty(online_buttons)) {
+                online_buttons = online_buttons.replaceAll('"', '')
+                sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible${disabled_status}` : '')
+            }
+        }
+
+        let element_selector = window.elementChoices[base_element]
+
         base = (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe') ?
             cy.frameLoaded().then(() => { cy.iframe() }) :
             cy.get(`${window.elementChoices[base_element]}:has(${sel})`)
@@ -302,16 +312,6 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
                     }
                 })
             } else {
-
-                let element_selector = window.elementChoices[base_element]
-
-                if (window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
-                    if (!window.icons.hasOwnProperty(online_buttons)) {
-                        online_buttons = online_buttons.replaceAll('"', '')
-                        sel = `${subsel}:contains("${online_buttons}"):visible` + (el === 'button' ? `,input[value="${online_buttons}"]:visible${disabled_status}` : '')
-                        text = online_buttons
-                    }
-                }
 
                 if (labeled_exactly === "for the variable") {
                     if (!window.parameterTypes['onlineDesignerButtons'].includes(online_buttons)) {
@@ -338,6 +338,9 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
                     //We are converting to lower case because this will generally match on the instrument name (and prevent duplicate matches)
                     let selector = `tr:has(td:contains(${JSON.stringify(text)}):first:visible)`
                     element_selector = `${element_selector}:visible ${window.tableMappings['data collection instruments']}:visible ${selector}`
+
+                    //We do this here because the value we're looking for in the assertion is the button label NOT the row label
+                    text = online_buttons
                 }
 
                 cy.top_layer(sel, element_selector).then(($elm) => {
