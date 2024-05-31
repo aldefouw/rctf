@@ -235,16 +235,6 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
         should('have.descendants', window.icons[text])
     } else if (labeled_exactly === " in the File Repository breadcrumb" || labeled_exactly === "  in the File Repository table") {
         cy.wait('@file_breadcrumbs')
-    } else if(opt_str.includes('icon') && opt_str.includes('longitudinal instrument on event')){
-        const matches = extractQuotedStrings(opt_str)
-        cy.get_record_status_dashboard(matches[2], matches[1], text, '', false, matches[0])
-    } else if (opt_str.includes('longitudinal instrument on event')){
-        const matches = extractQuotedStrings(opt_str)
-        cy.table_cell_by_column_and_row_label(text, matches[1], 'table#event_grid_table').then(($td) => {
-            cy.wrap($td).find('a:visible:first').then((link_location) => {
-                expect(link_location).to.have.descendants(window.recordStatusIcons[matches[0]])
-            })
-        })
     } else if(window.parameterTypes['visibilityPrefix'].includes(prefix)){
 
         if (prefix === "Project status:" && window.parameterTypes['projectStatus'].includes(text)) {
@@ -363,6 +353,8 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
                     cy.wrap($elm).find(sel).then(($element) => {
                         if(el === 'button' && !$element.is('button')) {
                             cy.wrap($element).invoke('attr', 'value').should('include', text)
+                        } else if (window.icons.hasOwnProperty(online_buttons)) {
+                            cy.wrap($element).should('have.descendants', window.icons[online_buttons])
                         } else {
                             cy.wrap($element).should('contain', text)
                         }
