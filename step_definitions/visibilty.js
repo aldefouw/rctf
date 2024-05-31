@@ -225,7 +225,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
     if(el !== ''){ subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header'}[el] }
 
     //It's possible for the survey icon to appear even if the instrument itself is not a link
-    if(el === 'link' && online_buttons.includes('survey icon')){
+    if(el === 'link' && online_buttons !== undefined && online_buttons.includes('survey icon')){
         subsel = ''
     }
 
