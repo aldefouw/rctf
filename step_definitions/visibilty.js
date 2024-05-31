@@ -150,6 +150,22 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
 
 /**
  * @module Visibility
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I should see {string} in the data entry form field {string}
+ * @param {string} field_value - the text that should be displayed in the field
+ * @param {string} field_name - the text that identifies the field in the form
+ * @description Visually verifies the text within a data entry form field
+ */
+Given("I should see {string} in the data entry form field {string}", function (field_value, field_name) {
+    cy.get(`label:contains(${JSON.stringify(field_name)})`)
+        .invoke('attr', 'id')
+        .then(($id) => {
+            cy.get('[name="' + $id.split('label-')[1] + '"]')
+        }).should('contain.value', field_value)
+})
+
+/**
+ * @module Visibility
  * @author Corey DeBacker <debacker@wisc.edu>
  * @example I (should) see {articleType} {optionalString} {onlineDesignerButtons} {labeledElement} {labeledExactly} {string}{baseElement} {disabled}
  * @param {string} labeledElement - available options: 'button', 'link', 'field', 'section break'
