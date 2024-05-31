@@ -384,3 +384,17 @@ Given('I click the "reset" link for the field labeled {string}', (label) => {
         find('a:contains("reset"):visible').
         eq(0).click()
 })
+
+/**
+ * @module OnlineDesigner
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I (should )see {string} within the field with variable name {string}
+ * @param {string} text - available options: 'Add Field', 'Add Matrix of Fields', 'Import from Field Bank'
+ * @param {string} variable_name - the name of the field you want to add a field below
+ * @description Clicks on one of the add field options below a specified field name
+ */
+Given("I (should )see {string} within the field with variable name {string}", (text, variable_name) => {
+    cy.get('table[id*=design-]').contains(`Variable: ${variable_name}`).parents('table[id*=design-]').then((row) => {
+        cy.wrap(row).should('contain.text', text)
+    })
+})
