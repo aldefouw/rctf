@@ -313,7 +313,12 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).then(($elm) => {
                 if(base_element === " in the File Repository table"){
-                    cy.get($elm).invoke('attr', 'onclick')
+                    cy.intercept({
+                        method: 'POST',
+                        url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
+                    }).as('file_breadcrumbs')
+                    //cy.get($elm).invoke('attr', 'onclick')
+                    cy.get($elm).click()
                 } else {
                     cy.wrap($elm).click()
                 }
