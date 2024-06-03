@@ -117,8 +117,8 @@ Given("I should see the {dropdownType} field labeled {string} with the options b
  * @param {string} check - available options: 'checked', 'unchecked'
  * @description Selects a checkbox field by its label
  */
-Given("I should see a checkbox labeled {string} that is {check}", (field_type, label, check) => {
-    let label_selector = `:contains("${label}"):visible`
+Given("I should see a checkbox labeled {string} that is {check}", (label, check) => {
+    let label_selector = `:contains(${JSON.stringify(label)}):visible`
     let element_selector = `input[type=checkbox]:visible`
     cy.top_layer(label_selector).within(() => {
         cy.get_labeled_element(element_selector, label).should(check === "checked" ? "be.checked" : "not.be.checked")
