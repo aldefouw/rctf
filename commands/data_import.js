@@ -165,7 +165,10 @@ Cypress.Commands.add('upload_file', (fileName, fileType = ' ', selector = '', bu
 })
 
 Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository-file-input', count_of_files = 0) => {
-
+    cy.intercept({
+        method: 'POST',
+        url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
+    }).as('file_breadcrumbs')
 
     for(let i = 0; i < count_of_files; i++){
         cy.intercept({
@@ -196,7 +199,10 @@ Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository
             elm = cy.get(id)
         }
 
-        elm.selectFile(selected_files, {force: true}).then(() => {
+        console.log($id)
+        console.log(elm)
+
+        elm.selectFile(selected_files).then(() => {
 
             for(let i = 0; i < count_of_files; i++){
                 if (Cypress.$('.toast.fade.show').length) {
