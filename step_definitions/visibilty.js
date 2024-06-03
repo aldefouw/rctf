@@ -72,8 +72,8 @@ Given("I should see {string} in the title", (title) => {
  * @description Selects a specific item from a dropdown
  */
 Given('I should see the {dropdownType} field labeled {string} with the option {string} selected{baseElement}', (type, label, option, base_element) => {
-    let label_selector = `:contains("${label}"):visible`
-    let element_selector = `select:has(option:contains("${option}")):visible`
+    let label_selector = `:contains(${JSON.stringify(label)}):visible`
+    let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible`
 
     //Either the base element as specified or the default
     let outer_element = base_element.length > 0 ?
