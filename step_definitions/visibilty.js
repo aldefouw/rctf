@@ -374,6 +374,17 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
     }
 })
 
+Given("I (should )see the date( and time) {string} in the field labeled {string}", (field_datetime, field_label) => {
+    cy.get(`label:contains(${JSON.stringify(field_label)})`)
+        .invoke('attr', 'id')
+        .then(($id) => {
+            cy.get('[name="' + $id.split('label-')[1] + '"]')
+        }).invoke('val')
+        .then((actualValue) => {
+            expect(actualValue).to.eq(field_datetime)
+        })
+})
+
 /**
  * @module Visibility
  * @author Corey DeBacker <debacker@wisc.edu>
@@ -390,7 +401,6 @@ Given("I should NOT see( ){articleType}( ){labeledElement} labeled {string}{base
     let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,button[value="${text}"]:visible` : '')
     cy.wait(2000)
     cy.get_top_layer(window.elementChoices[base_element], ($e) => {
-        // console.log(sel)
         expect($e.find(sel)).to.have.lengthOf(0)
     })
 })
