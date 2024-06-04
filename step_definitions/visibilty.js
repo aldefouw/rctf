@@ -252,9 +252,9 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
                         window.lastAlert.forEach((alert) => {
                             if(alert.includes(text)){
                                 expect(alert).to.contain(text)
+                                resolve('done')
                             }
                         })
-                        resolve('done')
                     } else {
                         setTimeout(waitForAlert, 500, (i + 1))
                     }
