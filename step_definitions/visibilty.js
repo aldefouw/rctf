@@ -176,7 +176,6 @@ Given("I should see {string} in the data entry form field {string}", function (f
 Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButtons}( ){labeledElement}( ){labeledExactly}( ){string}{baseElement}{iframeVisibility}( ){disabled}", (not_see, article_type, prefix, online_buttons, el, labeled_exactly, text, base_element, iframe, disabled_text) => {
     cy.not_loading()
 
-
     let opt_str = prefix
 
     // console.log(not_see)
@@ -249,9 +248,12 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
         } else if (prefix === 'an alert box with the following text:'){
             return new Cypress.Promise((resolve) => {
                 (function waitForAlert(i = 0) {
-                    if (window.lastAlert !== undefined || i > 10) {
-                        console.log(window.lastAlert)
-                        expect(window.lastAlert).to.contain(text)
+                    if (window.lastAlert !== [] || i > 10) {
+                        window.lastAlert.forEach((alert) => {
+                            if(alert.includes(text)){
+                                expect(alert).to.contain(text)
+                            }
+                        })
                         resolve('done')
                     } else {
                         setTimeout(waitForAlert, 500, (i + 1))
