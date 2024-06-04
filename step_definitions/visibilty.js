@@ -248,7 +248,7 @@ Given("I (should ){notSee}see( ){articleType}( ){visibilityPrefix}( ){onlineDesi
         } else if (prefix === 'an alert box with the following text:'){
             return new Cypress.Promise((resolve) => {
                 (function waitForAlert(i = 0) {
-                    if (window.lastAlert !== [] || i > 10) {
+                    if ((window.lastAlert !== undefined && window.lastAlert.length !== 0) || i > 10) {
                         window.lastAlert.forEach((alert) => {
                             if(alert.includes(text)){
                                 expect(alert).to.contain(text)
