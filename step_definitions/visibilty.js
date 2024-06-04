@@ -482,6 +482,11 @@ Given('I should see {string} in (the ){tableTypes} table', (text, table_type = '
 Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
     cy.not_loading()
 
+    if(table_type === 'file repository'){
+        cy.wait('@file_breadcrumbs')
+        cy.wait('@file_list')
+    }
+
     //Determine if records exist
     const records = Cypress.$('td.data:has(:contains("No records exist"))')
 
