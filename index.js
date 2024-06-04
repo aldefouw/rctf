@@ -1,5 +1,3 @@
-const { Given, When, Then, defineParameterType } = require('@badeball/cypress-cucumber-preprocessor')
-
 window.compareVersions = require('compare-versions')
 window.escapeStringRegexp = require('escape-string-regexp')
 
@@ -55,7 +53,10 @@ function load_support_files(){
 }
 
 
-function rctf_initialize(Given, defineParameterType) {
+function rctf_initialize(preprocessor) {
+
+    const { Given, BeforeStep, defineParameterType } = preprocessor
+
     load_support_files()
     load_core_commands()
     load_core_step_definitions(Given, defineParameterType)
@@ -67,9 +68,23 @@ function rctf_initialize(Given, defineParameterType) {
         intercept_vanderbilt_requests()
         set_timezone()
         reset_database()
+        window.lastAlert = []
+    })
 
+    BeforeStep((options) => {
+
+        //Get last alert
         cy.on('window:alert', (str) => {
-            window.lastAlert = str
+            if(!window.lastAlert.includes(str)){
+                window.lastAlert.push(str)
+            }
+        })
+
+        //Get last confirmation
+        cy.on('window:confirm', (str) => {
+            if(!window.lastAlert.includes(str)){
+                window.lastAlert.push(str)
+            }
         })
 
         cy.intercept({
@@ -96,5 +111,5 @@ function rctf_initialize(Given, defineParameterType) {
 
 // // This is what makes these functions available to outside scripts
 module.exports = {
-    rctf_initialize: (Given, defineParameterType) => { rctf_initialize(Given, defineParameterType) }
+    rctf_initialize: (Given, BeforeStep, defineParameterType) => { rctf_initialize(Given, BeforeStep, defineParameterType) }
 }
