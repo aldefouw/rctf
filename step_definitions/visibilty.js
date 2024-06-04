@@ -485,6 +485,7 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
     if(table_type === 'file repository'){
         cy.wait('@file_breadcrumbs')
         cy.wait('@file_list')
+        cy.wait('@file_breadcrumbs')
     }
 
     //Determine if records exist
