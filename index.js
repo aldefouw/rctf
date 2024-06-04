@@ -75,16 +75,12 @@ function rctf_initialize(preprocessor) {
 
         //Get last alert
         cy.on('window:alert', (str) => {
-            if(!window.lastAlert.includes(str)){
-                window.lastAlert.push(str)
-            }
+            window.lastAlert.push(str)
         })
 
         //Get last confirmation
         cy.on('window:confirm', (str) => {
-            if(!window.lastAlert.includes(str)){
-                window.lastAlert.push(str)
-            }
+            window.lastAlert.push(str)
         })
 
         cy.intercept({
