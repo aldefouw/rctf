@@ -93,7 +93,7 @@ Given("I click on the {editEvent} image for the event named {string}", (type, ev
  * @description Verifies an instrument exists within an event on a longitudinal project
  */
 
-Given("I (should ){notSee}see a Data Collection Instrument named {string} for the Event named {string}", (not_see, instrument, event) => {
+Given("I (should) {notSee}( )see a Data Collection Instrument named {string} for the Event named {string}", (not_see, instrument, event) => {
 
    let event_sections = {}
    let event_counter = 0
