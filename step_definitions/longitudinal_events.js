@@ -121,7 +121,7 @@ Given("I (should) {notSee}( )see a Data Collection Instrument named {string} for
          })
       })
    }).then(() => {
-      (not_see === 'not ') ?
+      (not_see === 'not') ?
           expect(instruments).not.to.include(instrument) :
           expect(instruments).to.include(instrument)
    })
