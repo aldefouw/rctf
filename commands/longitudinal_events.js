@@ -53,9 +53,25 @@ Cypress.Commands.add('change_event_name', (current_name, proposed_name = '', pro
         })
     }
 
+    cy.get('div.menubox:contains("Project status:")').then(($text) => {
+
+    })
+
     if(!production) {
         if(current_name === proposed_name) {
-            cy.wait('@define_ajax_events')
+            cy.get('div.menubox').contains('Project status:').then(($element) => {
+                // Extract the text content of the entire div
+                const textContent = $element.text()
+
+                // Use a regular expression to extract the project status value
+                const match = textContent.match(/Project status:\s*(\w+)/);
+                const projectStatus = match ? match[1] : ''
+
+                // Check if the project status is not 'Production'
+                if (projectStatus !== 'Production') {
+                    cy.wait('@define_ajax_events')
+                }
+            })
         }
 
         if(save) {
