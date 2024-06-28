@@ -188,16 +188,26 @@ Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository
     //Select the Fixture within the Upload Input Button - no need to do anything else because JavaScript automatically fired within REDCap
     cy.get(id).then(($id) => {
 
-        let elm = cy.wrap($id)
+        function waitForFileUpload($id, i, retries = 5) {
+            // Wait for the request and get the response
+            cy.wait(`@file_repo_upload_${i}`).then((interception) => {
+                // If the response status is 200, do nothing (success)
+                if (interception.response.statusCode === 200) {
 
-        if(Cypress.dom.isDetached($id)){
-            elm = cy.get(id)
-        } else {
-            cy.wait(1000)
+                // If the response status is not 200, perform another action and retry
+                } else {
+                    cy.wrap($id).selectFile(selected_files[i], {force: true})
+                    waitForFileUpload($id, i, retries - 1)
+                }
+            })
         }
 
-        elm.selectFile(selected_files).then(() => {
+        cy.wrap($id).selectFile(selected_files, {force: true}).then(() => {
             for(let i = 0; i < count_of_files; i++){
+                //cy.wait(`@file_repo_upload_${i}`)
+
+                waitForFileUpload($id, i)
+
                 if (Cypress.$('.toast.fade.show').length) {
                     cy.get('.toast.fade.show').should('be.visible').then(() => {
                         if (Cypress.$('#file-repository-space-usage-loading:visible').length) {
