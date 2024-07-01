@@ -394,7 +394,7 @@ Given('I click the "reset" link for the field labeled {string}', (label) => {
  * @description Clicks on one of the add field options below a specified field name
  */
 Given("I (should )see {string} within the field with variable name {string}", (text, variable_name) => {
-    cy.get('table[id*=design-]').contains(`Variable: ${variable_name}`).parents('table[id*=design-]').then((row) => {
+    cy.get(`table[id*=design-]:contains(${JSON.stringify(`Variable: ${variable_name}`)})`).then((row) => {
         cy.wrap(row).should('contain.text', text)
     })
 })
