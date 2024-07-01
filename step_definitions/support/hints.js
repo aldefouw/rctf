@@ -184,8 +184,13 @@ defineParameterType({
         })
 
 defineParameterType({
+            name: 'notSeeDC',
+            regexp: /|should NOT see a Data Collection Instrument named|should no longer see a Data Collection Instrument named/,
+        })
+
+defineParameterType({
             name: 'notSee',
-            regexp: /||should|should NOT|should no longer/,
+            regexp: /||should NOT|should no longer/,
         })
 
 defineParameterType({
