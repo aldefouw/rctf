@@ -121,7 +121,7 @@ Given("I {notSeeDC} {string} for the Event named {string}", (not_see, instrument
          })
       })
    }).then(() => {
-      (not_see === 'should NOT' || not_see === 'should no longer') ?
+      (not_see === 'should NOT see a Data Collection Instrument named' || not_see === 'should no longer see a Data Collection Instrument named') ?
           expect(instruments).not.to.include(instrument) :
           expect(instruments).to.include(instrument)
    })
