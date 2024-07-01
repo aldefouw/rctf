@@ -185,7 +185,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'notSee',
-            regexp: /|should not|should NOT|should no longer/,
+            regexp: /||should|should NOT|should no longer/,
         })
 
 defineParameterType({
