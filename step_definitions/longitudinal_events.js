@@ -93,7 +93,7 @@ Given("I click on the {editEvent} image for the event named {string}", (type, ev
  * @description Verifies an instrument exists within an event on a longitudinal project
  */
 
-Given("I {notSee}( )see a Data Collection Instrument named {string} for the Event named {string}", (not_see, instrument, event) => {
+Given("I( ){notSee} see a Data Collection Instrument named {string} for the Event named {string}", (not_see, instrument, event) => {
 
    let event_sections = {}
    let event_counter = 0
@@ -121,7 +121,7 @@ Given("I {notSee}( )see a Data Collection Instrument named {string} for the Even
          })
       })
    }).then(() => {
-      (not_see === 'not') ?
+      (not_see === 'should NOT' || not_see === 'should no longer') ?
           expect(instruments).not.to.include(instrument) :
           expect(instruments).to.include(instrument)
    })
