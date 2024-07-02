@@ -7,14 +7,83 @@
 // You can read more here:
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
+// ***********************************************************
+// This example plugins/index.js can be used to load plugins
+//
+// You can change the location of this file or turn off loading
+// the plugins file with the 'pluginsFile' configuration option.
+//
+// You can read more here:
+// https://on.cypress.io/plugins-guide
+// ***********************************************************
 const shell = require('shelljs')
 const sed_lite = require('sed-lite').sed
 const fs = require('fs')
 const csv = require('async-csv')
 const path = require('path')
 
-const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor")
-const { preprocessor } = require("@badeball/cypress-cucumber-preprocessor/browserify")
+const { addCucumberPreprocessorPlugin, defineParameterType, Given, When, Then } = require("@badeball/cypress-cucumber-preprocessor")
+const { compile } = require("@badeball/cypress-cucumber-preprocessor/browserify")
+
+const { Transform, PassThrough } = require("stream");
+const browserifyPreprocessor = require("@cypress/browserify-preprocessor");
+const stream_1 = require("stream");
+
+function transform(configuration, filepath) {
+    if (!filepath.match(".feature$")) {
+        return new stream_1.PassThrough();
+    }
+    let buffer = Buffer.alloc(0);
+    return new stream_1.Transform({
+        transform(chunk, encoding, done) {
+            buffer = Buffer.concat([buffer, chunk]);
+            done();
+        },
+        async flush(done) {
+            try {
+
+                let content = buffer.toString("utf8");
+
+                // Map custom keywords to standard Gherkin keywords
+                const keywordMapping = {
+                    "Functional Requirement: ": "Scenario: ",
+                };
+
+                for (const [customKeyword, standardKeyword] of Object.entries(keywordMapping)) {
+                    const regex = new RegExp(`\\b${customKeyword}\\b`, 'g');
+                    content = content.replace(regex, standardKeyword);
+                }
+
+                done(null, await compile(configuration, content, filepath));
+            }
+            catch (e) {
+                done(e);
+            }
+        },
+    });
+}
+function preprendTransformerToOptions(configuration, options) {
+    let wrappedTransform;
+    if (!options.browserifyOptions ||
+        !Array.isArray(options.browserifyOptions.transform)) {
+        wrappedTransform = [transform.bind(null, configuration)];
+    }
+    else {
+        wrappedTransform = [
+            transform.bind(null, configuration),
+            ...options.browserifyOptions.transform,
+        ];
+    }
+    return Object.assign(Object.assign({}, options), { browserifyOptions: Object.assign(Object.assign({}, (options.browserifyOptions || {})), { transform: wrappedTransform }) });
+}
+function preprocessor(configuration, options = browserifyPreprocessor.defaultOptions, { prependTransform = true } = {}) {
+    if (prependTransform) {
+        options = preprendTransformerToOptions(configuration, options)
+    }
+    return function (file) {
+        return browserifyPreprocessor(options)(file)
+    }
+}
 
 module.exports = (on, config) => {
 
