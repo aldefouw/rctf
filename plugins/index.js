@@ -46,7 +46,7 @@ function transform(configuration, filepath) {
 
                 // Map custom keywords to standard Gherkin keywords
                 const keywordMapping = {
-                    "Functional Requirement: ": "Scenario: ",
+                    "Action: ": "Scenario: ",
                 };
 
                 for (const [customKeyword, standardKeyword] of Object.entries(keywordMapping)) {
