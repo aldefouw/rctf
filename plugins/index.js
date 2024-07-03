@@ -42,17 +42,42 @@ function transform(configuration, filepath) {
         async flush(done) {
             try {
 
-                let content = buffer.toString("utf8");
+                let content = buffer.toString("utf8")
+                const lines = content.split('\n')
 
                 // Map custom keywords to standard Gherkin keywords
                 const keywordMapping = {
                     "Action: ": "Scenario: ",
-                };
-
-                for (const [customKeyword, standardKeyword] of Object.entries(keywordMapping)) {
-                    const regex = new RegExp(`\\b${customKeyword}\\b`, 'g');
-                    content = content.replace(regex, standardKeyword);
                 }
+
+                let inDataTable = false
+                let inMultilineString = false
+
+                const processedLines = lines.map(line => {
+                    // Detect multiline string start and end
+                    if (line.trim().startsWith('"""')) {
+                        inMultilineString = !inMultilineString
+                        return line
+                    }
+
+                    // Detect data table start and end
+                    if (line.trim().startsWith('|') && !inMultilineString) {
+                        inDataTable = true
+                    } else if (!line.trim().startsWith('|') && inDataTable) {
+                        inDataTable = false
+                    }
+
+                    // Only replace keyword if not in data table or multiline string
+                    if (!inDataTable && !inMultilineString) {
+                        for (const [customKeyword, standardKeyword] of Object.entries(keywordMapping)) {
+                            const regex = new RegExp(`^\\s*${customKeyword}`, 'g')
+                            line = line.replace(regex, standardKeyword)
+                        }
+                    }
+                    return line
+                })
+
+                content = processedLines.join('\n')
 
                 done(null, await compile(configuration, content, filepath));
             }
