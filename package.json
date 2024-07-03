@@ -12,12 +12,14 @@
     "compare-versions": "3.6.0",
     "cypress-iframe": "1.0.1",
     "sed-lite": "0.8.4",
-    "shelljs": "0.8.5"
+    "shelljs": "0.8.5",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.1"
   },
   "peerDependencies": {
     "cypress": "^11.2.0"
   },
   "devDependencies": {
+    "cypress-on-fix": "^1.0.3",
     "documentation": "git://github.com/documentationjs/documentation#97e9361",
     "redcap_cypress_doc_theme": "git://github.com/aldefouw/redcap_cypress_doc_theme#777b0a0"
   },
