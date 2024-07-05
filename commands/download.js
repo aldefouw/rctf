@@ -28,7 +28,7 @@ function setLocalTimestamp(date){
     })
 }
 
-Cypress.Commands.add('download_file', (filename) => {
+Cypress.Commands.add('fetch_timestamped_file', (filename) => {
     const current_time = new Date()
     const minute_ago = new Date(current_time.getTime())
     minute_ago.setMinutes(current_time.getMinutes() - 1)
@@ -36,20 +36,25 @@ Cypress.Commands.add('download_file', (filename) => {
     let first_file = replaceFilename(filename, setLocalTimestamp(current_time))
     cy.fileExists("cypress/downloads/" + first_file).then((fileExists) => {
         if(fileExists){
-            cy.readFile("cypress/downloads/" + first_file, { timeout: 10000 })
+            return "cypress/downloads/" + first_file
         } else {
             let second_file = replaceFilename(filename, setLocalTimestamp(minute_ago))
             cy.fileExists("cypress/downloads/" + second_file).then((fileExists) => {
                 if(fileExists) {
-                    cy.readFile("cypress/downloads/" + second_file, { timeout: 10000 })
+                    return "cypress/downloads/" + second_file
                 } else {
-                    expect(fileExists).to.be(true)
+                    throw new Error(`No file exists for ${first_file} or ${second_file}!`)
                 }
             })
         }
     })
 })
 
+Cypress.Commands.add('download_file', (filename) => {
+    cy.fetch_timestamped_file(filename).then(($file) => {
+        cy.readFile($file, { timeout: 10000 })
+    })
+})
 
 Cypress.Commands.add("fileExists", (filePath) => {
     cy.task("fileExists", filePath).then((fileExists) => {

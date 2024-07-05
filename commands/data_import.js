@@ -165,6 +165,20 @@ Cypress.Commands.add('upload_file', (fileName, fileType = ' ', selector = '', bu
 })
 
 Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository-file-input', count_of_files = 0) => {
+    function waitForFileUpload($id, i, retries = 5) {
+        // Wait for the request and get the response
+        cy.wait(`@file_repo_upload_${i}`).then((interception) => {
+            // If the response status is 200, do nothing (success)
+            if (interception.response.statusCode === 200) {
+
+                // If the response status is not 200, perform another action and retry
+            } else {
+                cy.wrap($id).selectFile(selected_files[i], {force: true})
+                waitForFileUpload($id, i, retries - 1)
+            }
+        })
+    }
+
     for(let i = 0; i < count_of_files; i++){
         cy.intercept({
             method: 'POST',
@@ -188,25 +202,11 @@ Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository
     //Select the Fixture within the Upload Input Button - no need to do anything else because JavaScript automatically fired within REDCap
     cy.get(id).then(($id) => {
 
-        function waitForFileUpload($id, i, retries = 5) {
-            // Wait for the request and get the response
-            cy.wait(`@file_repo_upload_${i}`).then((interception) => {
-                // If the response status is 200, do nothing (success)
-                if (interception.response.statusCode === 200) {
-
-                // If the response status is not 200, perform another action and retry
-                } else {
-                    cy.wrap($id).selectFile(selected_files[i], {force: true})
-                    waitForFileUpload($id, i, retries - 1)
-                }
-            })
-        }
-
         cy.wrap($id).selectFile(selected_files, {force: true}).then(() => {
             for(let i = 0; i < count_of_files; i++){
-                //cy.wait(`@file_repo_upload_${i}`)
+                cy.wait(`@file_repo_upload_${i}`)
 
-                waitForFileUpload($id, i)
+                //waitForFileUpload($id, i)
 
                 if (Cypress.$('.toast.fade.show').length) {
                     cy.get('.toast.fade.show').should('be.visible').then(() => {

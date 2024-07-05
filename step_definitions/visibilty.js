@@ -263,9 +263,7 @@ Given("I (should )see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButt
         } else if (prefix === 'a field named'){
             cy.get(`table[role=presentation]:visible tr:visible td:visible:contains(${text})`).contains(text)
         } else if(prefix === "a downloaded file named") {
-            cy.download_file(text).then(($file) => {
-                expect($file).to.exist
-            })
+            expect(cy.fetch_timestamped_file(text)).to.have.length
         } else if(prefix === "the exact time in the" || prefix === "today's date in the"){
             const today = new Date();
             const year = today.getFullYear()
