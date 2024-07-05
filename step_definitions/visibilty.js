@@ -486,11 +486,15 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
         cy.wait('@file_breadcrumbs')
     }
 
-    const processing = Cypress.$('.dataTables_processing')
-
-    if(processing.length){
-        cy.get('.dataTables_processing').should('have.css', 'display', 'none')
-    }
+    cy.url().then((currentUrl) => {
+        cy.get('body').then(($body) => {
+            if ($body.find('.dataTables_processing').length > 0) {
+                cy.url().should('eq', currentUrl).then(() => {
+                    cy.get('.dataTables_processing').should('have.css', 'display', 'none');
+                })
+            }
+        })
+    })
 
     //Determine if records exist
     const records = Cypress.$('td.data:has(:contains("No records exist"))')
