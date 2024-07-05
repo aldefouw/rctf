@@ -493,15 +493,28 @@ Given ('I {enterType} {string} in(to) the textarea field labeled {string}{baseEl
 Given('I {enterType} {string} into the data entry form field labeled {string}', (enter_type, text, label) => {
     //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
     if(enter_type === "clear field and enter"){
-        cy.get(`label:contains(${JSON.stringify(label)})`)
-            .invoke('attr', 'id')
-            .then(($id) => {
-                cy.get('[name="' + $id.split('label-')[1] + '"]')
-            })
-            .click()
-            .clear()
-            .type(text)
-            .blur() //Remove focus after we are done so alerts pop up
+
+        if(text === ""){
+            cy.get(`label:contains(${JSON.stringify(label)})`)
+                .invoke('attr', 'id')
+                .then(($id) => {
+                    cy.get('[name="' + $id.split('label-')[1] + '"]')
+                })
+                .click()
+                .clear()
+                .blur() //Remove focus after we are done so alerts pop up
+        } else {
+            cy.get(`label:contains(${JSON.stringify(label)})`)
+                .invoke('attr', 'id')
+                .then(($id) => {
+                    cy.get('[name="' + $id.split('label-')[1] + '"]')
+                })
+                .click()
+                .clear()
+                .type(text)
+                .blur() //Remove focus after we are done so alerts pop up
+        }
+
     } else {
         cy.get(`label:contains(${JSON.stringify(label)})`)
             .invoke('attr', 'id')
