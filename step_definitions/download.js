@@ -13,19 +13,32 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
 
     cy.get('a:contains(' + text + '):visible').then((f) => {
 
-
-
         if(f.attr('onclick').includes("fileRepoDownload")){
 
             cy.intercept({
                 method: 'GET',
                 url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:download*"
             }, (req) => {
+
+                // Need to exclude requests not made by the application, such as background browser requests.
+                req.on("before:response", res => {
+                    const isDownload = res.headers["content-disposition"]?.startsWith("attachment");
+                    const origin = cy.getRemoteLocation("origin");
+                    const isFromAUT = req.headers["referer"]?.startsWith(origin);
+                    if (isDownload && isFromAUT) {
+                        Cypress.log({
+                            name: "suppressWaitForPageLoad",
+                            message: "Bypassing wait for page load event - response has Content-Disposition: attachment"
+                        });
+                        cy.isStable(true, "load");
+                    }
+                })
+
                 req.reply((res) => {
                     expect(res.statusCode).to.equal(200)
                 })
+
             }).as('file_repo_download')
-            cy.suppressWaitForPageLoad()
             cy.wrap(f).click()
             cy.wait('@file_repo_download')
 
