@@ -1,3 +1,5 @@
+require('cypress-wait-until')
+
 function replaceFilename(file, date){
     return file.replace('hhmm', `${date.substring(12, 14)}${date.substring(15, 17)}`)
                .replace('yyyy', date.substring(6, 10))
@@ -40,7 +42,7 @@ Cypress.Commands.add('fetch_timestamped_file', (filename) => {
         } else {
             let second_file = replaceFilename(filename, setLocalTimestamp(minute_ago))
             cy.fileExists("cypress/downloads/" + second_file).then((fileExists) => {
-                if(fileExists) {
+                if(fileExists){
                     return "cypress/downloads/" + second_file
                 } else {
                     throw new Error(`No file exists for ${first_file} or ${second_file}!`)
@@ -56,8 +58,14 @@ Cypress.Commands.add('download_file', (filename) => {
     })
 })
 
-Cypress.Commands.add("fileExists", (filePath) => {
-    cy.task("fileExists", filePath).then((fileExists) => {
-        return fileExists
+Cypress.Commands.add("fileExists", (filePath, timeout = 5000, interval = 500) => {
+    cy.waitUntil(() => {
+        return cy.task('fileExists', filePath).then((fileExists) => {
+            fileExists
+        })
+    }, {
+        timeout: timeout,
+        interval: interval,
+        errorMsg: `File ${filePath} was not found within ${timeout / 1000} seconds`
     })
 })
