@@ -40,7 +40,7 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
     row_label = escapeCssSelector(row_label)
 
     let selector = `${table_selector}:has(${header_row_type}:contains('${column_label}'):visible):visible`
-    let td_selector = `tr:has(${row_cell_type}:visible):visible`
+    let td_selector = `tr:has(${row_cell_type}:visible):first:visible`
 
     if(row_number === 0) {
         if(table_selector !== body_table){
@@ -49,7 +49,7 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
             selector = `${table_selector}:has(${row_cell_type}:contains('${row_label}'):visible,${header_row_type}:contains('${column_label}'):visible):visible`
         }
 
-        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):visible`
+        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):first:visible`
     }
 
     cy.get(selector).within(() => {
