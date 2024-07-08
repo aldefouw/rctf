@@ -12,6 +12,7 @@ Cypress.Commands.add('fetch_login', () => {
 })
 
 Cypress.Commands.add('login', (options) => {
+    cy.clearAllSessionStorage()
     cy.session(options['username'], () => {
         cy.visit('/')
         cy.intercept('POST', '/').as('loginStatus')
