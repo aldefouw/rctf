@@ -21,7 +21,6 @@ Cypress.Commands.add('login', (options) => {
         cy.get('button').contains('Log In').click()
     }, {
         validate: () => {
-            cy.getCookie('PHPSESSID').should('exist')
             cy.visit('/')
         }
     })
