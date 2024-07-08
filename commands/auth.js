@@ -12,7 +12,7 @@ Cypress.Commands.add('fetch_login', () => {
 })
 
 Cypress.Commands.add('login', (options) => {
-    cy.session([options['username'], () => {
+    cy.session(options['username'], () => {
         cy.visit('/')
         cy.intercept('POST', '/').as('loginStatus')
         cy.get('input[name=username]').invoke('attr', 'value', options['username'])
@@ -26,6 +26,7 @@ Cypress.Commands.add('login', (options) => {
 })
 
 Cypress.Commands.add('logout', () => {
+    cy.clearCookie('PHPSESSID')
     cy.visit_version({page: "", parameters: "action=logout"})
     cy.get('html').should('contain', 'Log In')
 })
