@@ -19,15 +19,16 @@ Cypress.Commands.add('login', (options) => {
         cy.get('input[name=username]').invoke('attr', 'value', options['username'])
         cy.get('input[name=password]').invoke('attr', 'value', options['password'])
         cy.get('button').contains('Log In').click()
+        cy.url().should('contain', version)
     }, {
         validate: () => {
             cy.getCookie('PHPSESSID').should('exist')
+            cy.visit('/')
         }
     })
 })
 
 Cypress.Commands.add('logout', () => {
-    cy.clearCookie('PHPSESSID')
     cy.visit_version({page: "", parameters: "action=logout"})
     cy.get('html').should('contain', 'Log In')
 })
