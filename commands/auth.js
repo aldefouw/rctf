@@ -12,16 +12,27 @@ Cypress.Commands.add('fetch_login', () => {
 })
 
 Cypress.Commands.add('login', (options) => {
-    cy.logout()
     cy.session(options['username'], () => {
         cy.visit('/')
         cy.intercept('POST', '/').as('loginStatus')
         cy.get('input[name=username]').invoke('attr', 'value', options['username'])
         cy.get('input[name=password]').invoke('attr', 'value', options['password'])
         cy.get('button').contains('Log In').click()
+        cy.wait('@loginStatus')
     }, {
         validate: () => {
+            cy.checkCookieAndLogin('PHPSESSID', options)
             cy.visit('/')
+        }
+    })
+})
+
+Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
+    cy.getCookie(cookieName).then(cookie => {
+        if (!cookie) {
+           cy.login(options)
+        } else {
+            cy.wrap(cookie).should('exist')
         }
     })
 })
