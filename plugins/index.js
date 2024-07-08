@@ -22,65 +22,99 @@ const fs = require('fs')
 const csv = require('async-csv')
 const path = require('path')
 
-const createBundler = require("@bahmutov/cypress-esbuild-preprocessor")
-const {
-    addCucumberPreprocessorPlugin,
-    beforeRunHandler,
-    afterRunHandler,
-    beforeSpecHandler,
-    afterSpecHandler,
-    afterScreenshotHandler,
-} = require("@badeball/cypress-cucumber-preprocessor")
-const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocessor/esbuild")
+const { addCucumberPreprocessorPlugin, defineParameterType, Given, When, Then } = require("@badeball/cypress-cucumber-preprocessor")
+const { compile } = require("@badeball/cypress-cucumber-preprocessor/browserify")
 
-module.exports = (cypressOn, config) => {
+const { Transform, PassThrough } = require("stream");
+const browserifyPreprocessor = require("@cypress/browserify-preprocessor");
+const stream_1 = require("stream");
 
-    const on = require('cypress-on-fix')(cypressOn)
+function transform(configuration, filepath) {
+    if (!filepath.match(".feature$")) {
+        return new stream_1.PassThrough();
+    }
+    let buffer = Buffer.alloc(0);
+    return new stream_1.Transform({
+        transform(chunk, encoding, done) {
+            buffer = Buffer.concat([buffer, chunk]);
+            done();
+        },
+        async flush(done) {
+            try {
 
-    addCucumberPreprocessorPlugin(on, config, {
-        omitBeforeRunHandler: true,
-        omitAfterRunHandler: true,
-        omitBeforeSpecHandler: true,
-        omitAfterSpecHandler: true,
-        omitAfterScreenshotHandler: true,
-    })
+                let content = buffer.toString("utf8")
+                const lines = content.split('\n')
 
-    on("before:run", async (details) => {
-        beforeRunHandler(config);
+                // Map custom keywords to standard Gherkin keywords
+                const keywordMapping = {
+                    "Action: ": "Scenario: ",
+                }
 
-        // Your own `before:run` code goes here.
-    })
+                let inDataTable = false
+                let inMultilineString = false
 
-    on("after:run", async (results) => {
-       afterRunHandler(config);
+                const processedLines = lines.map(line => {
+                    // Detect multiline string start and end
+                    if (line.trim().startsWith('"""')) {
+                        inMultilineString = !inMultilineString
+                        return line
+                    }
 
-        // Your own `after:run` code goes here.
-    })
+                    // Detect data table start and end
+                    if (line.trim().startsWith('|') && !inMultilineString) {
+                        inDataTable = true
+                    } else if (!line.trim().startsWith('|') && inDataTable) {
+                        inDataTable = false
+                    }
 
-    on("before:spec", async (spec) => {
-        beforeSpecHandler(config, spec);
+                    // Only replace keyword if not in data table or multiline string
+                    if (!inDataTable && !inMultilineString) {
+                        for (const [customKeyword, standardKeyword] of Object.entries(keywordMapping)) {
+                            const regex = new RegExp(`^\\s*${customKeyword}`, 'g')
+                            line = line.replace(regex, standardKeyword)
+                        }
+                    }
+                    return line
+                })
 
-        // Your own `before:spec` code goes here.
-    })
+                content = processedLines.join('\n')
 
-    on("after:spec", async (spec, results) => {
-       afterSpecHandler(config, spec, results);
+                done(null, await compile(configuration, content, filepath));
+            }
+            catch (e) {
+                done(e);
+            }
+        },
+    });
+}
+function preprendTransformerToOptions(configuration, options) {
+    let wrappedTransform;
+    if (!options.browserifyOptions ||
+        !Array.isArray(options.browserifyOptions.transform)) {
+        wrappedTransform = [transform.bind(null, configuration)];
+    }
+    else {
+        wrappedTransform = [
+            transform.bind(null, configuration),
+            ...options.browserifyOptions.transform,
+        ];
+    }
+    return Object.assign(Object.assign({}, options), { browserifyOptions: Object.assign(Object.assign({}, (options.browserifyOptions || {})), { transform: wrappedTransform }) });
+}
+function preprocessor(configuration, options = browserifyPreprocessor.defaultOptions, { prependTransform = true } = {}) {
+    if (prependTransform) {
+        options = preprendTransformerToOptions(configuration, options)
+    }
+    return function (file) {
+        return browserifyPreprocessor(options)(file)
+    }
+}
 
-        // Your own `after:spec` code goes here.
-    })
+module.exports = (on, config) => {
 
-    on("after:screenshot", async (details) => {
-       afterScreenshotHandler(config, details);
+    addCucumberPreprocessorPlugin(on, config)
 
-        // Your own `after:screenshot` code goes here.
-    })
-
-    on(
-        "file:preprocessor",
-        createBundler({
-            plugins: [createEsbuildPlugin(config)],
-        })
-    )
+    on("file:preprocessor", preprocessor(config))
 
     on('task', {
 
