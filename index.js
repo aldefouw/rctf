@@ -6,10 +6,8 @@ require('@4tw/cypress-drag-drop')
 require('@foreachbe/cypress-tinymce')
 
 function preserve_cookies(){
-    Cypress.Cookies.defaults({
-        preserve: ['PHPSESSID', 'redcap_external_module_csrf_token']
-    })
-
+    cy.getCookie('PHPSESSID')
+    cy.getCookie('redcap_external_module_csrf_token')
     clearCookies()
 }
 

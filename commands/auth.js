@@ -12,12 +12,17 @@ Cypress.Commands.add('fetch_login', () => {
 })
 
 Cypress.Commands.add('login', (options) => {
-    cy.logout()
-    cy.visit('/')
-    cy.intercept('POST', '/').as('loginStatus')
-    cy.get('input[name=username]').invoke('attr', 'value', options['username'])
-    cy.get('input[name=password]').invoke('attr', 'value', options['password'])
-    cy.get('button').contains('Log In').click()
+    cy.session('loginSession', () => {
+        cy.visit('/')
+        cy.intercept('POST', '/').as('loginStatus')
+        cy.get('input[name=username]').invoke('attr', 'value', options['username'])
+        cy.get('input[name=password]').invoke('attr', 'value', options['password'])
+        cy.get('button').contains('Log In').click()
+    }, {
+        validate: () => {
+            cy.getCookie('PHPSESSID').should('exist')
+        }
+    })
 })
 
 Cypress.Commands.add('logout', () => {
