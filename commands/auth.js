@@ -27,7 +27,6 @@ Cypress.Commands.add('login', (options) => {
 })
 
 Cypress.Commands.add('logout', () => {
-    cy.clearAllSessionStorage()
     cy.visit_version({page: "", parameters: "action=logout"})
     cy.get('html').should('contain', 'Log In')
 })
