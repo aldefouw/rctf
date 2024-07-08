@@ -421,8 +421,8 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
 
     const user_rights = { "checkmark" : `img[src*="tick"]`, "x" : `img[src*="cross"]` }
 
-    let table_selector = 'table'
-    let table_body = 'table'
+    let table_selector = 'table#table-user_rights_roles_table'
+    let table_body = 'table#table-user_rights_roles_table'
     let no_col_match = false
 
     if(table === " of the Participant List table"){
