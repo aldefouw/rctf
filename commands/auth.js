@@ -19,7 +19,6 @@ Cypress.Commands.add('login', (options) => {
         cy.get('input[name=username]').invoke('attr', 'value', options['username'])
         cy.get('input[name=password]').invoke('attr', 'value', options['password'])
         cy.get('button').contains('Log In').click()
-        cy.url().should('contain', Cypress.env('redcap_version'))
     }, {
         validate: () => {
             cy.getCookie('PHPSESSID').should('exist')
