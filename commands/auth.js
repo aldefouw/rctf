@@ -12,7 +12,7 @@ Cypress.Commands.add('fetch_login', () => {
 })
 
 Cypress.Commands.add('login', (options) => {
-    cy.clearAllSessionStorage()
+    cy.logout()
     cy.session(options['username'], () => {
         cy.visit('/')
         cy.intercept('POST', '/').as('loginStatus')
@@ -28,6 +28,7 @@ Cypress.Commands.add('login', (options) => {
 })
 
 Cypress.Commands.add('logout', () => {
+    cy.clearAllSessionStorage()
     cy.visit_version({page: "", parameters: "action=logout"})
     cy.get('html').should('contain', 'Log In')
 })
