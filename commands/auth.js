@@ -2,28 +2,36 @@
 //# Commands       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z        #
 //#############################################################################
 
-Cypress.Commands.add('fetch_login', () => {
+Cypress.Commands.add('fetch_login', (session = true) => {
     let user = window.user_info.get_current_user()
     let pass = window.user_info.get_current_pass()
 
-    cy.login({ username: user, password:  pass })
+    cy.login({ username: user, password:  pass }, session)
 
     window.user_info.set_previous_user_type()
 })
 
-Cypress.Commands.add('login', (options) => {
-    cy.session(options['username'], () => {
-        cy.visit_version({page: "", parameters: "action=logout"})
-        cy.get('html').should('contain', 'Log In')
-        cy.get('input[name=username]').invoke('attr', 'value', options['username'])
-        cy.get('input[name=password]').invoke('attr', 'value', options['password'])
-        cy.get('button').contains('Log In').click()
-        cy.checkCookieAndLogin('PHPSESSID', options)
-    }, {
-        validate: () => {
+Cypress.Commands.add('login', (options, session) => {
+    if(session === false){
+        cy.login_steps(options)
+    } else {
+        cy.session(options['username'], () => {
+            cy.login_steps(options)
             cy.checkCookieAndLogin('PHPSESSID', options)
-        }
-    })
+        }, {
+            validate: () => {
+                cy.checkCookieAndLogin('PHPSESSID', options)
+            }
+        })
+    }
+})
+
+Cypress.Commands.add('login_steps', (options) =>{
+    cy.visit_version({page: "", parameters: "action=logout"})
+    cy.get('html').should('contain', 'Log In')
+    cy.get('input[name=username]').invoke('attr', 'value', options['username'])
+    cy.get('input[name=password]').invoke('attr', 'value', options['password'])
+    cy.get('button').contains('Log In').click()
 })
 
 Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {

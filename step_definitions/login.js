@@ -8,11 +8,15 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @description Logs in to REDCap using a seeded user type.
  */
 Given("I {loginTypes} to REDCap with the user {string}", (login_type, user) => {
-    if(login_type !== 'am still logged in') {
-        cy.logout()
+    if(login_type === 'am still logged in') {
         cy.set_user_type(user)
         cy.fetch_login()
+    } else if(login_type === 'attempt to login'){
+        cy.logout()
+        cy.set_user_type(user)
+        cy.fetch_login(false)
     } else {
+        cy.logout()
         cy.set_user_type(user)
         cy.fetch_login()
     }
