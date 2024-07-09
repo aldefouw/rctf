@@ -8,7 +8,7 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @description Activates a pop-up confirming that user wants to delete all data on a specific even within a record.
  */
 Given("I click the X to delete the data access group named {string}", (dag_name) => {
-    cy.table_cell_by_column_and_row_label("Delete", dag_name).then(($td) => {
+    cy.table_cell_by_column_and_row_label("Delete", dag_name, window.tableMappings['data access groups'][0], 'th', 'td', 0, window.tableMappings['data access groups'][1], true).then(($td) => {
         cy.wrap($td).find('a:visible:first').click({ waitForAnimations: false })
         cy.get('.ui-dialog').should('contain.text', 'Delete group')
     })
@@ -25,16 +25,18 @@ Given("I click the X to delete the data access group named {string}", (dag_name)
  * @description Clicks on a table cell that is identified by a particular text string specified.
  */
 Given(/^I click on (?:a|the) table cell containing the text "(.*?)"(?: in)?(?: the)? (.*?) table(?: and (.*?) "(.*?)")?$/, (text, table_type, enter_type = '', new_text = '') => {
+    let selector = window.tableMappings[table_type]
+
+    if(Array.isArray(window.tableMappings[table_type])) {
+        selector = window.tableMappings[table_type][0]
+    }
+
     if(table_type === 'data access groups'){
         cy.intercept({
             method: 'GET',
             url: '/redcap_v' + Cypress.env('redcap_version') + '/index.php?route=DataAccessGroupsController:getDagSwitcherTable&tablerowsonly=1&pid=*&rowoption=dags*'
         }).as('dag_data')
-    }
-    let selector = window.tableMappings[table_type]
-
-    if(Array.isArray(window.tableMappings[table_type])) {
-        selector = window.tableMappings[table_type][0]
+        selector = window.tableMappings[table_type][1]
     }
 
     cy.get(selector).within(() => {
