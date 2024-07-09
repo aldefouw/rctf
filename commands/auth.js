@@ -32,11 +32,11 @@ Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
             try {
                 expect(cookies).to.have.length.greaterThan(0);
                 expect(cookies[0]).to.have.property('name', cookieName)
-                cy.url().then((currentUrl) => {
-                    if (currentUrl.includes('/surveys/')) {
+                // cy.url().then((currentUrl) => {
+                //     if (currentUrl.includes('/surveys/')) {
                         cy.visit('/')
-                    }
-                })
+                //     }
+                // })
             } catch (error) {
                 if (retries > 0) {
                     cy.log(`Retrying... attempts left: ${retries}`)
