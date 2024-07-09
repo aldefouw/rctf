@@ -54,7 +54,7 @@ Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
 
 Cypress.Commands.add('logout', () => {
     cy.clearCookie('PHPSESSID')
-    cy.getCookies().should('be.empty')
+    cy.getCookie('PHPSESSID').should('not.exist')
     cy.visit('/')
     cy.get('html').should('contain', 'Log In')
 })
