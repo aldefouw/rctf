@@ -309,7 +309,7 @@ Given("I (should )see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButt
             cy.frameLoaded().then(() => { cy.iframe() }) :
             cy.get(`${window.elementChoices[base_element]}:has(${sel})`)
 
-        base.within(($elm) => {
+        base.first().within(($elm) => {
             return expect($elm).length.to.be.greaterThan(0)
         }).then((next_section) => {
 
