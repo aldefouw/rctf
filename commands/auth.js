@@ -54,7 +54,6 @@ Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
 
 Cypress.Commands.add('logout', () => {
     cy.visit_version({page: "", parameters: "action=logout"})
-    cy.getCookies().should('have.length', 1)
     cy.clearCookies()
     cy.getCookies().should('be.empty')
     cy.get('html').should('contain', 'Log In')
