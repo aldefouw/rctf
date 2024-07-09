@@ -5,16 +5,6 @@ require('cypress-iframe')
 require('@4tw/cypress-drag-drop')
 require('@foreachbe/cypress-tinymce')
 
-function preserve_cookies(){
-    cy.getCookie('PHPSESSID')
-    cy.getCookie('redcap_external_module_csrf_token')
-    clearCookies()
-}
-
-function clearCookies(){
-    window.lastCookie = [] //Clear out the cookies
-}
-
 function intercept_vanderbilt_requests(){
     //The following prevents constant requests to Vanderbilt since we're just testing
     cy.intercept({ method: 'GET', url: 'https://redcap.vanderbilt.edu/consortium/collect_stats.php?*'}, []).as('Collect Stats')
@@ -97,7 +87,6 @@ function rctf_initialize(preprocessor) {
     })
 
     beforeEach(() => {
-        preserve_cookies()
         window.registeredAlias = false
         Cypress.session.clearAllSavedSessions()
 

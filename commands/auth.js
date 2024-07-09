@@ -28,7 +28,9 @@ Cypress.Commands.add('login', (options) => {
 Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
     cy.getCookie(cookieName).then(cookie => {
         if (!cookie) {
-           cy.login(options)
+            cy.login(options).then(() => {
+                cy.getCookie(cookieName).should('exist')
+            })
         } else {
             cy.wrap(cookie).should('exist')
         }
