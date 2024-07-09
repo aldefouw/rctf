@@ -62,7 +62,7 @@ Cypress.Commands.add('base_db_seed', () => {
                                     }
 
                                     //Clear out all cookies
-                                    cy.clearCookies()
+                                    Cypress.session.clearAllSavedSessions()
 
                                     //Create a DB Seed Lock file
                                     cy.task('createInitialDbSeedLock')

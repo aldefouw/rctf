@@ -70,6 +70,7 @@ window.parameterTypes = {
     labeledElement: ['button', 'link', 'field', 'section break'],
     labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', 'within the Record Locking Customization table for the Data Collection Instrument named', 'the enabled survey icon link for the instrument row', 'the enabled survey icon link for the instrument row'],
     linkNames: ['link', 'tab', 'instrument', 'icon'],
+    loginTypes: ['attempt to login', 'am still logged in', 'login'],
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSeeDC: ['should see a Data Collection Instrument named', 'should NOT see a Data Collection Instrument named', 'should no longer see a Data Collection Instrument named'],
     notSee: ['', 'should NOT', 'should no longer'],

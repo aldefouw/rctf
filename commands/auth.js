@@ -13,33 +13,47 @@ Cypress.Commands.add('fetch_login', () => {
 
 Cypress.Commands.add('login', (options) => {
     cy.session(options['username'], () => {
-        cy.visit('/')
+        cy.visit_version({page: "", parameters: "action=logout"})
+        cy.get('html').should('contain', 'Log In')
         cy.get('input[name=username]').invoke('attr', 'value', options['username'])
         cy.get('input[name=password]').invoke('attr', 'value', options['password'])
         cy.get('button').contains('Log In').click()
+        cy.checkCookieAndLogin('PHPSESSID', options)
     }, {
         validate: () => {
             cy.checkCookieAndLogin('PHPSESSID', options)
-            cy.visit('/')
         }
     })
 })
 
 Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
-    cy.getCookie(cookieName).then(cookie => {
-        if (!cookie) {
-            cy.login(options).then(() => {
-                cy.getCookie(cookieName).should('exist')
-            })
-        } else {
-            cy.wrap(cookie).should('exist')
-        }
-    })
+    function checkCookies(retries = 5) {
+        cy.getCookies().then((cookies) => {
+            try {
+                expect(cookies).to.have.length.greaterThan(0);
+                expect(cookies[0]).to.have.property('name', cookieName)
+                cy.url().then((currentUrl) => {
+                    if (currentUrl.includes('/surveys/')) {
+                        cy.visit('/')
+                    }
+                })
+            } catch (error) {
+                if (retries > 0) {
+                    cy.log(`Retrying... attempts left: ${retries}`)
+                    cy.wait(2000)
+                    checkCookies(retries - 1)
+                } else {
+                    throw error
+                }
+            }
+        })
+    }
+
+    checkCookies()
 })
 
 Cypress.Commands.add('logout', () => {
     cy.visit_version({page: "", parameters: "action=logout"})
-    Cypress.session.clearAllSavedSessions()
     cy.get('html').should('contain', 'Log In')
 })
 

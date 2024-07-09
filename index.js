@@ -88,7 +88,6 @@ function rctf_initialize(preprocessor) {
 
     beforeEach(() => {
         window.registeredAlias = false
-        Cypress.session.clearAllSavedSessions()
 
         // cy.window().then((win) => {
         //     cy.spy(win, 'initFileSelectAllCheckbox').as('breadcrumbs')

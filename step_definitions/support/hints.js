@@ -179,6 +179,11 @@ defineParameterType({
         })
 
 defineParameterType({
+            name: 'loginTypes',
+            regexp: /|attempt to login|am still logged in|login/,
+        })
+
+defineParameterType({
             name: 'projectRequestLabel',
             regexp: /|Create Project|Send Request/,
         })

@@ -7,10 +7,15 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @param {string} user - the user we are logging in as (e.g. 'Test_User1' or 'Test_Admin' as specified in the cypress.env.json file)
  * @description Logs in to REDCap using a seeded user type.
  */
-Given("I (attempt to )(am still )(login )(logged in )to REDCap with the user {string}", (user) => {
-    cy.logout()
-    cy.set_user_type(user)
-    cy.fetch_login()
+Given("I {loginTypes} to REDCap with the user {string}", (login_type, user) => {
+    if(login_type !== 'am still logged in') {
+        cy.logout()
+        cy.set_user_type(user)
+        cy.fetch_login()
+    } else {
+        cy.set_user_type(user)
+        cy.fetch_login()
+    }
 })
 
 /**
