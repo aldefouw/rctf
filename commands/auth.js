@@ -56,7 +56,7 @@ Cypress.Commands.add('logout', () => {
     cy.clearCookie('PHPSESSID')
     cy.getCookie('PHPSESSID').should('not.exist')
     cy.visit('/')
-    cy.get('html').should('contain', 'Log In')
+    cy.contains('button', 'Log In').should('exist')
 })
 
 Cypress.Commands.add('set_user_type', (user_type) => {
