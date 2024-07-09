@@ -52,7 +52,7 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
         td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):first:visible`
     }
 
-    cy.get(selector).within(() => {
+    cy.get(selector).first().within(() => {
         cy.get(`${header_row_type}:contains('${column_label}'):visible`).parent('tr').then(($tr) => {
             $tr.find(header_row_type).each((thi, th) => {
                 // console.log(Cypress.$(th).text().trim().includes(orig_column_label))
@@ -71,7 +71,7 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
             }
         }
 
-        cy.get(selector).within(() => {
+        cy.get(selector).first().within(() => {
             cy.get(td_selector).then(($td) => {
                 $td.each(($tri, $tr) => {
                     cy.wrap($tr).each((tri, tr) => {
