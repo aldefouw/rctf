@@ -178,7 +178,7 @@ Given("I drag on the instrument named {string} to position {int}", (instrument, 
  */
 Given("I click on the {addField} input button below the field named {string}", (type, target) => {
     cy.get('tbody[class=formtbody]').children('tr:contains(' + target +')').contains(target)
-        .parents('tr').next().within(() => {
+        .parents('tr').next('tr').first().within(() => {
         cy.get('input[value="' + type + '"]').click()
     })
 })
