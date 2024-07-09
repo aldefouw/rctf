@@ -14,11 +14,9 @@ Cypress.Commands.add('fetch_login', () => {
 Cypress.Commands.add('login', (options) => {
     cy.session(options['username'], () => {
         cy.visit('/')
-        cy.intercept('POST', '/').as('loginStatus')
         cy.get('input[name=username]').invoke('attr', 'value', options['username'])
         cy.get('input[name=password]').invoke('attr', 'value', options['password'])
         cy.get('button').contains('Log In').click()
-        cy.wait('@loginStatus')
     }, {
         validate: () => {
             cy.checkCookieAndLogin('PHPSESSID', options)
