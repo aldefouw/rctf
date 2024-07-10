@@ -180,7 +180,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'loginTypes',
-            regexp: /|attempt to login|am still logged in|login/,
+            regexp: /|attempt to login|am still logged in|login|successfully login/,
         })
 
 defineParameterType({

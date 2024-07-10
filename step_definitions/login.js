@@ -11,7 +11,7 @@ Given("I {loginTypes} to REDCap with the user {string}", (login_type, user) => {
     if(login_type === 'am still logged in') {
         cy.set_user_type(user)
         cy.fetch_login()
-    } else if(login_type === 'attempt to login'){
+    } else if(login_type === 'attempt to login' || login_type === 'successfully login'){
         cy.logout()
         cy.set_user_type(user)
         cy.fetch_login(false)
