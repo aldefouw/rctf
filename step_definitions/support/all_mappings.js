@@ -96,7 +96,8 @@ window.parameterTypes = {
         ' to rename an instrument',
         ' in the "Add New Field" dialog box',
         ' in the "Edit Field" dialog box',
-        ' and will leave the tab open when I return to the REDCap project'
+        ' and will leave the tab open when I return to the REDCap project',
+        ' on the active Data Quality rule'
     ],
     select: ['selected', 'unselected'],
     tableName: ['', ' of the User Rights table', ' of the Reports table', ' of the Participant List table'],
