@@ -19,6 +19,7 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
     }
 
     cy.get('table#record_status_table').within(() => {
+
         cy.get('thead').within(() => {
             cy.get('tr').then(($first_tr) => {
                 Cypress.$.each($first_tr, (tri_row, tri_html) => {
@@ -37,6 +38,8 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
         //console.log(event_sections)
         //console.log(event_counter)
 
+        let current_event
+
         cy.get('th').then(($th) => {
             Cypress.$.each($th, (index, th) => {
                 cy.get('tr').then(($tr) => {
@@ -44,11 +47,28 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
 
                         //console.log(tri)
 
-                        if(tri === 1) {
+                        if(tri === 0 && event === null) {
+
                             cy.wrap(tr).within(() => {
                                 cy.get('th').then((th) => {
                                     Cypress.$.each(th, (thi, $thi) => {
-                                        const current_event = event_sections[event]
+
+                                        current_event = event_sections[instrument]
+
+                                        if($thi.innerText === instrument){
+                                            instrument_location = thi
+                                        }
+                                    })
+
+                                })
+                            })
+
+                        } else if (tri === 1 && event !== null){
+                            cy.wrap(tr).within(() => {
+                                cy.get('th').then((th) => {
+                                    Cypress.$.each(th, (thi, $thi) => {
+
+                                        current_event = event_sections[event]
 
                                         // console.log(thi)
                                         // console.log(current_event['start'])
@@ -74,13 +94,13 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
                                     //console.log(td[0].innerText.length)
                                     //console.log(td[0].innerText.trim().length)
 
-                                    //Here is where we locate the reocrd we're interested in
+                                    //Here is where we locate the record we're interested in
                                     if (td[0].innerText.trim() === record_id) {
                                         Cypress.$.each(td, (tdi, $td) => {
 
                                             //console.log(tdi)
 
-                                            if (tdi === instrument_location + 1) {
+                                            if (tdi === instrument_location + 1 || (event === null && tdi === instrument_location) ) {
 
                                                 //console.log('instrument location reached')
                                                 //console.log($td)

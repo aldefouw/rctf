@@ -135,7 +135,8 @@ Given("I (should )see the {string} icon for the {string} longitudinal instrument
    })
 })
 
-Given("I (should )see the {string} icon for the {string} longitudinal instrument on event {string} for record {string}", function (icon, instrument, event, record) {
+Given( /I (?:should )?see the "(.*)" icon for the "(.*)" (?:longitudinal )?instrument(?: on event "(.*)")? for record "(.*)"$/, (icon, instrument, event, record) => {
+   if(event === undefined){ event = null }
    cy.get_record_status_dashboard(event, instrument, record, '', false, icon)
 })
 
