@@ -205,7 +205,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'onlineDesignerButtons',
-            regexp: /(?: ("Enable"|"Disable"|"Choose action"|"Survey settings"|"Automated Invitations"|enabled survey icon|"View Report"|"Execute"|"Save"||))?/,
+            regexp: /(?: ("Enable"|"Disable"|"Choose action"|"Survey settings"|"Automated Invitations"|enabled survey icon|"View Report"|"Export Report"|"Stats & Charts"|"Execute"|"Save"||))?/,
         })
 
 defineParameterType({

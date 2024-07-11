@@ -403,7 +403,11 @@ Given('I {enterType} {string} (into)(is within) the input field labeled {string}
                     } else if (enter_type === "clear field and enter") {
                         elm.first().clear().type(text)
                     } else if (enter_type === "verify"){
-                        elm.invoke('val').should('include', text)
+                        if(window.dateFormats.hasOwnProperty(text)){
+                            //elm.invoke('val').should('match', window.dateFormats[text])
+                        } else {
+                            elm.invoke('val').should('include', text)
+                        }
                     }
                 })
             })
@@ -501,9 +505,22 @@ Given ('I {enterType} {string} in(to) the textarea field labeled {string}{baseEl
  * @param {string} label - the label of the field
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
-Given('I {enterType} {string} into the data entry form field labeled {string}', (enter_type, text, label) => {
+Given('I {enterType} {string} (is within)(into) the data entry form field labeled {string}', (enter_type, text, label) => {
     //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
-    if(enter_type === "clear field and enter"){
+    if(enter_type === "verify") {
+        let elm = cy.get(`label:contains(${JSON.stringify(label)})`)
+            .invoke('attr', 'id')
+            .then(($id) => {
+                cy.get('[name="' + $id.split('label-')[1] + '"]')
+            })
+
+        if(window.dateFormats.hasOwnProperty(text)){
+            elm.invoke('val').should('match', window.dateFormats[text])
+        } else {
+            elm.invoke('val').should('include', text)
+        }
+
+    } else if(enter_type === "clear field and enter"){
 
         if(text === ""){
             cy.get(`label:contains(${JSON.stringify(label)})`)
