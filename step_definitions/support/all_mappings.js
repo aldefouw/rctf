@@ -73,7 +73,7 @@ window.parameterTypes = {
     loginTypes: ['attempt to login', 'am still logged in', 'login', 'successfully login'],
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSeeDC: ['should see a Data Collection Instrument named', 'should NOT see a Data Collection Instrument named', 'should no longer see a Data Collection Instrument named'],
-    notSee: ['', 'should NOT', 'should no longer'],
+    notSee: ['', 'should NOT', 'should no longer', 'no longer'],
     ordering: ['ascending', 'descending'],
     onlineDesignerButtons: ['"Enable"', '"Disable"', '"Choose action"', '"Survey settings"', '"Automated Invitations"', 'enabled survey icon', '"View Report"', '"Execute"', '"Save"'],
     projectStatus: ['Production', 'Development', 'Analysis/Cleanup'],
