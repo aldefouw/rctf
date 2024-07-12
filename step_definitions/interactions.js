@@ -993,3 +993,31 @@ Given('I click on the {string} button for the field labeled {string}', (button_l
         cy.get(`button:contains(${JSON.stringify(button_label)}):visible`).click({no_csrf_check: true})
     })
 })
+
+/**
+ * @module Interactions
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I click on the {string} {labeledElement} within (a)(the) {tableTypes} table in the following row:
+ * @param {string} label - label on the element
+ * @param {string} element - link or button
+ * @param {string} table - description of the table
+ * @param {dataTable} table - row(s) from the table to help us identify the row
+ * @description Clicks on an element (link or button) within a specified row of a table
+ */
+Given("I click on the {string} {labeledElement} within (a)(the) {tableTypes} table in the following row:", (label, element, table = 'a', dataTable) => {
+    const rows = dataTable['rawTable']
+    const lastRow = rows[rows.length - 1]
+
+    const subsel = {
+                   'link': `a:contains(${label}):visible`,
+                   'button': `button:contains(${label}):visible,input[value="${JSON.stringify(label)}"]`
+                 }[element]
+
+    const selector = window.tableMappings[table]
+
+    const tds = lastRow.map(cell => `:contains(${JSON.stringify(cell)})`).join('')
+
+    cy.get(`${selector}:visible tr${tds}:visible ${subsel}`).then(($elm) => {
+        $elm.attr('target', '_self')
+    }).click()
+})
