@@ -163,7 +163,9 @@ window.elementChoices = {
     ' in the Edit survey responses column' : 'table#form_rights:visible',
     ' in the open date picker widget' : 'div.ui-datepicker',
     ' in the File Repository breadcrumb' : '#file-repository-table-parent:visible',
-    ' in the File Repository table' : '#file-repository-table:visible'
+    ' in the File Repository table' : '#file-repository-table:visible',
+    ' in the View Access section of User Access' : 'td[class=labelrc]:contains("View Access")',
+    ' in the Edit Access section of User Access' : 'td[class=labelrc]:contains("Edit Access")'
 }
 
 //IMPORTANT: Programmatically add the projectModules as element choices
