@@ -790,9 +790,23 @@ Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open
                 cy.wrap($select).scrollIntoView().
                 should('be.visible').
                 should('be.enabled').then(($t) => {
-                    cy.wait(500)
-                    cy.wrap($t).select(option)
-                    cy.wait(500)
+
+                    if(type === "dropdown") {
+                        cy.wait(500)
+                        cy.wrap($t).select(option)
+                        cy.wait(500)
+                    } else if (type === "multiselect"){
+                        let all_options = [option]
+
+                        const options = Cypress.$($t).find('option:selected')
+                        if(options.length) {
+                            options.each((index, element) => {
+                                all_options.push(Cypress.$(element).text())
+                            })
+                        }
+
+                        cy.wrap($t).select(all_options)
+                    }
                 })
             })
         })
