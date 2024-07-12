@@ -99,6 +99,11 @@ defineParameterType({
         })
 
 defineParameterType({
+            name: 'dateTimeType',
+            regexp: /|timestamp|date|datetime/,
+        })
+
+defineParameterType({
             name: 'dataViewingRights',
             regexp: /|No Access|Read Only|View & Edit|Edit survey responses/,
         })

@@ -116,3 +116,34 @@ Given("the downloaded CSV with filename {string}( should have)( has) the( ){head
          })
      })
 })
+
+/**
+ * @module CSV
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I verify the {dateTimeType} in column labeled {string} for record {string} has shifted in the latest downloaded "csv"
+ * @param {string} column_label - column in the CSV file
+ * @param {string} record_name - name of the record in the CSV file
+ * @description Verifies that a date has shifted from today's date
+ */
+Given("I verify the {dateTimeType} in column labeled {string} for record {string} has shifted today's date in the latest downloaded {string}", (date_time_type, column, record_name, format) => {
+    const today = new Date()
+    const formattedToday = today.toISOString().split('T')[0]
+
+    cy.task('fetchLatestDownload', { fileExtension: format }).then((latest_file) => {
+        cy.readFile(latest_file).then((fileContent) => {
+            const lines = fileContent.trim().split('\n')
+            const header = lines[0].trim().split(',')
+
+            const column_num = header.indexOf(column)
+            expect(column_num).to.be.greaterThan(-1, `Column '${column}' not found`)
+
+            const recordLine = lines.find(line => line.startsWith(record_name))
+            expect(recordLine, `Record '${record_name}' not found`).to.not.be.undefined
+
+            const row = recordLine.split(',')
+            const csv_value = row[column_num]
+
+            expect(csv_value).not.to.contain(formattedToday)
+        })
+    })
+})

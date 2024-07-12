@@ -29,6 +29,7 @@ window.parameterTypes = {
     checkBoxRadio: ['checkbox', 'radio'],
     clickType: ['click on', 'check', 'uncheck'],
     confirmation: ['accept', 'cancel'],
+    dateTimeType: ['timestamp', 'date', 'datetime'],
     dataViewingRights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
     disabled: ['is disabled'],
     dropdownType: ['dropdown', 'multiselect', 'checkboxes', 'radio'],
