@@ -285,6 +285,11 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
         cy.top_layer(`a:visible`, outer_element).within(() => {
             cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
         })
+    } else if(exactly === "for the Discrepant field labeled") {
+        outer_element = `table:visible tr:has(:contains(${JSON.stringify(text)})):visible`
+        cy.top_layer(`a:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        })
     } else if(exactly === "for the variable") {
         outer_element = `table:visible tr:has(:contains(${JSON.stringify(`Variable: ${text}`)})):visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
