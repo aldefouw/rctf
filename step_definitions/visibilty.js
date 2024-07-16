@@ -801,3 +801,43 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 Given("I (should )see the pdf has loaded in the iframe", () => {
     cy.frameLoaded()
 })
+
+/**
+ * @module Visibility
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I (should )(NOT) see the lock image for Record ID {string}
+ * @param {string} notSee -
+ * @param {string} recordId - ID of the record we are focused on
+ *
+ * @description Determine whether the lock image is visible or not for a given record
+ */
+Given("I (should ){notSee}( )see the lock image for Record ID {string}", (not, record_id) => {
+    cy.get('div#record_display_name').then((record_id) =>{
+        if(not === "should NOT" || not === "should no longer" || not === "no longer"){
+            expect(record_id).to.not.have.descendants('img[src*=lock]')
+        } else {
+            expect(record_id).to.have.descendants('img[src*=lock]')
+        }
+    })
+})
+
+
+/**
+ * @module Visibility
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I (should )(NOT) see the lock image for the Data Collection Instrument labeled {string} for event {string} on the Record Home Page
+ * @param {string} notSee -
+ * @param {string} recordId - ID of the record we are focused on
+ * @param {string} instrument - instrument we are focused on
+ * @param {string} event - event we are focused on
+ * @description Determine whether the lock image is visible or not for a given record
+ */
+Given("I (should ){notSee} see the lock image on the Record Home Page for the Data Collection Instrument labeled {string} for event {string}", (not, instrument, event) => {
+    cy.table_cell_by_column_and_row_label(event, instrument, '#event_grid_table').then((record_id) => {
+        if(not === "should NOT" || not === "should no longer" || not === "no longer"){
+            expect(record_id).to.not.have.descendants('img[src*=lock]')
+        } else {
+            expect(record_id).to.have.descendants('img[src*=lock]')
+        }
+    })
+})
