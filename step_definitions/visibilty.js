@@ -811,6 +811,8 @@ Given("I (should )see the pdf has loaded in the iframe", () => {
  * @description Determine whether the lock image is visible or not for a given record
  */
 Given("I (should ){notSee}( )see the lock image for Record ID {string}", (not, record_id) => {
+    cy.not_loading()
+
     cy.get('div#record_display_name').then((record_id) =>{
         if(not === "should NOT" || not === "should no longer" || not === "no longer"){
             expect(record_id).to.not.have.descendants('img[src*=lock]')
@@ -832,6 +834,8 @@ Given("I (should ){notSee}( )see the lock image for Record ID {string}", (not, r
  * @description Determine whether the lock image is visible or not for a given record
  */
 Given("I (should ){notSee} see the lock image on the Record Home Page for the Data Collection Instrument labeled {string} for event {string}", (not, instrument, event) => {
+    cy.not_loading()
+
     cy.table_cell_by_column_and_row_label(event, instrument, '#event_grid_table').then((record_id) => {
         if(not === "should NOT" || not === "should no longer" || not === "no longer"){
             expect(record_id).to.not.have.descendants('img[src*=lock]')
