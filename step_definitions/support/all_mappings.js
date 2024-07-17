@@ -69,7 +69,7 @@ window.parameterTypes = {
         'Save & Add New Instance',
     ],
     labeledElement: ['button', 'link', 'field', 'section break'],
-    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', 'within the Record Locking Customization table for the Data Collection Instrument named', 'the enabled survey icon link for the instrument row', 'the enabled survey icon link for the instrument row', 'for the Discrepant field labeled'],
+    labeledExactly: ['labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', 'within the Record Locking Customization table for the Data Collection Instrument named', 'the enabled survey icon link for the instrument row', 'the enabled survey icon link for the instrument row', 'for the Discrepant field labeled', 'within the Lock Record Custom Text column for Data Collection instrument row labeled'],
     linkNames: ['link', 'tab', 'instrument', 'icon'],
     loginTypes: ['attempt to login', 'am still logged in', 'login', 'successfully login'],
     projectRequestLabel: ['Create Project', 'Send Request'],

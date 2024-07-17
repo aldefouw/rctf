@@ -431,7 +431,7 @@ Given('I {enterType} {string} (into)(is within) the input field labeled {string}
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 
-Given ('I {enterType} {string} in(to) the textarea field labeled {string}{baseElement}', (enter_type, text, label, base_element) => {
+Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {string}{baseElement}', (enter_type, text, labeled_exactly, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
 
     let element = `textarea:first`
