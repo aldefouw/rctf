@@ -583,7 +583,7 @@ Given('I clear the field labeled {string}', (label) => {
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Selects a checkbox field by its label
  */
-Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}{iframeVisibility}", (event_name, check, type, labeled_exactly, label, base_element, iframe) => {
+Given("(for the Event Name \")(for the Column Name \"){optionalString}(\", I )(I ){clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}{iframeVisibility}", (event_name, check, type, labeled_exactly, label, base_element, iframe) => {
     cy.not_loading()
 
     const elm = (iframe === " in the iframe") ? cy.frameLoaded().then(() => { cy.iframe() }) : null
@@ -597,6 +597,7 @@ Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {check
         label_selector = `tr:contains(${JSON.stringify(label)}):visible`
         element_selector = `tr:contains(${JSON.stringify(label)}):visible td input[type=${type}]:visible:not([disabled])`
     }
+
     //Special case: "Repeating Instruments and events" popup to select instruments by checkbox
     if(event_name.length > 0){
         label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
@@ -616,7 +617,21 @@ Given("(for the Event Name \"){optionalString}(\", I )(I ){clickType} the {check
         })
     }
 
-    if(iframe === " in the iframe") {
+    if(labeled_exactly === "within the Record Locking Customization table for the Data Collection Instrument named"){
+
+        cy.get(`${window.tableMappings['record locking']}:visible tr:contains(${JSON.stringify(event_name)}):visible` ).then(($tr) => {
+            cy.wrap($tr).find('td').each(($td, index) => {
+                if($td.text().includes(event_name)){
+                    element_selector = `td:nth-child(${index + 1}) input[type=${type}]:visible:not([disabled])`
+                }
+            })
+        }).then(() => {
+            outer_element = `${window.tableMappings['record locking']}:visible`
+            label_selector = `tr:contains(${JSON.stringify(label)}):visible`
+            clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
+        })
+
+    } else if(iframe === " in the iframe") {
         elm.within(() => { clickElement(label_selector, outer_element, element_selector, label, labeled_exactly) })
     } else {
         clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
