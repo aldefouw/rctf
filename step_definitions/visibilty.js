@@ -117,11 +117,13 @@ Given("I should see the {dropdownType} field labeled {string} with the options b
  * @param {string} check - available options: 'checked', 'unchecked'
  * @description Selects a checkbox field by its label
  */
-Given("I should see a checkbox labeled {string} that is {check}", (label, check) => {
-    let label_selector = `:contains(${JSON.stringify(label)}):visible`
+Given("I (should )see a {checkBoxRadio} {labeledExactly} {string} that is {check}", (type, labeled_exactly, label, check) => {
+    let label_selector = `:has(:contains(${JSON.stringify(label)}):visible):has(input[type=checkbox]:visible)`
     let element_selector = `input[type=checkbox]:visible`
+
     cy.top_layer(label_selector).within(() => {
-        cy.get_labeled_element(element_selector, label).should(check === "checked" ? "be.checked" : "not.be.checked")
+        let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
+        selector.scrollIntoView().should(check === "checked" ? "be.checked" : "not.be.checked")
     })
 })
 
@@ -221,7 +223,7 @@ Given("I (should )see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButt
     let base
     let subsel = ''
 
-    if(el !== ''){ subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header'}[el] }
+    if(el !== ''){ subsel = {'link': 'a', 'button': 'button', 'field': 'tr', 'section break': 'td.header', 'checkbox': 'input[type=checkbox]'}[el] }
 
     //It's possible for the survey icon to appear even if the instrument itself is not a link
     if(el === 'link' && online_buttons !== undefined && online_buttons.includes('survey icon')){
@@ -399,7 +401,7 @@ Given("I (should )see the date( and time) {string} in the field labeled {string}
 Given("I should NOT see( ){articleType}( ){labeledElement} {labeledExactly} {string}{baseElement}", (article_type, el, labeled_exactly, text, base_element) => {
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
-    let subsel = {'link':'a', 'button':'button', 'field': 'tr'}[el]
+    let subsel = {'link':'a', 'button':'button', 'field': 'tr','checkbox':'input'}[el]
     let sel = `${subsel}:contains("${text}"):visible` + (el === 'button' ? `,input[value="${text}"]:visible` : '')
     cy.wait(2000)
     cy.get_top_layer(window.elementChoices[base_element], ($e) => {

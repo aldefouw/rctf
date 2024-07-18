@@ -164,18 +164,23 @@ defineParameterType({
         })
 
 defineParameterType({
+            name: 'inputType',
+            regexp: /|input|password/,
+        })
+
+defineParameterType({
             name: 'instrumentSaveOptions',
             regexp: /|Save & Stay|Save & Exit Record|Save & Go To Next Record|Save & Exit Form|Save & Go To Next Form|Save & Go To Next Instance|Save & Add New Instance/,
         })
 
 defineParameterType({
             name: 'labeledElement',
-            regexp: /|button|link|field|section break/,
+            regexp: /|button|link|field|section break|checkbox/,
         })
 
 defineParameterType({
             name: 'labeledExactly',
-            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named|for Data Quality Rule #|within the Record Locking Customization table for the Data Collection Instrument named|the enabled survey icon link for the instrument row|the enabled survey icon link for the instrument row|for the Discrepant field labeled|for the Lock Record Custom Text column for Data Collection instrument row labeled/,
+            regexp: /|labeled|labeled exactly|in the row labeled|for the instrument row labeled|for the variable|for the File Repository file named|for Data Quality Rule #|within the Record Locking Customization table for the Data Collection Instrument named|the enabled survey icon link for the instrument row|the enabled survey icon link for the instrument row|for the Discrepant field labeled|within the Record Locking Customization table for the Data Collection Instrument named/,
         })
 
 defineParameterType({
