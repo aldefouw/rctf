@@ -34,7 +34,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs:build": "./node_modules/.bin/documentation build /step_definitions/* -f html --theme node_modules/redcap_cypress_doc_theme/index.js -o docs",
     "generate:hints": "node write_hints.js",
-    "development:install": "npm install --save-dev @cypress/browserify-preprocessor"
+    "install:dev": "NODE_ENV=development npm install --save-dev @cypress/browserify-preprocessor",
+    "install:prod": "NODE_ENV=production npm install --omit=optional"
   },
   "repository": {
     "type": "git",
