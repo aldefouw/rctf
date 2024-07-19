@@ -190,7 +190,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'loginTypes',
-            regexp: /|attempt to login|am still logged in|login|successfully login/,
+            regexp: /|attempt to login to REDCap with|am still logged in to REDCap with|login to REDCap with|successfully login to REDCap with|provide E-Signature credentials for/,
         })
 
 defineParameterType({

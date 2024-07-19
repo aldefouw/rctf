@@ -7,14 +7,18 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @param {string} user - the user we are logging in as (e.g. 'Test_User1' or 'Test_Admin' as specified in the cypress.env.json file)
  * @description Logs in to REDCap using a seeded user type.
  */
-Given("I {loginTypes} to REDCap with the user {string}", (login_type, user) => {
-    if(login_type === 'am still logged in') {
+Given("I {loginTypes} the user {string}", (login_type, user) => {
+    if(login_type === 'am still logged in to REDCap with\'') {
         cy.set_user_type(user)
         cy.fetch_login()
-    } else if(login_type === 'attempt to login' || login_type === 'successfully login'){
+    } else if(login_type === 'attempt to login to REDCap with' || login_type === 'successfully login to REDCap with'){
         cy.logout()
         cy.set_user_type(user)
         cy.fetch_login(false)
+    } else if(login_type === 'provide E-Signature credentials for'){
+        cy.set_user_type(user)
+        cy.get('input[id=esign_username]').invoke('attr', 'value', window.user_info.get_current_user())
+        cy.get('input[id=esign_password]').invoke('attr', 'value', window.user_info.get_current_pass())
     } else {
         cy.logout()
         cy.set_user_type(user)
