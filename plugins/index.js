@@ -22,31 +22,32 @@ const fs = require('fs')
 const csv = require('async-csv')
 const path = require('path')
 
-if (process.env.NODE_ENV === 'development') {
-    const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor")
-    const { preprocessor } = require("@badeball/cypress-cucumber-preprocessor/browserify")
-} else {
-    const createBundler = require("@bahmutov/cypress-esbuild-preprocessor")
-    const {
-        addCucumberPreprocessorPlugin,
-        beforeRunHandler,
-        afterRunHandler,
-        beforeSpecHandler,
-        afterSpecHandler,
-        afterScreenshotHandler,
-    } = require("@badeball/cypress-cucumber-preprocessor")
-    const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocessor/esbuild")
-}
-
 module.exports = (cypressOn, config) => {
     let on = cypressOn
 
     if (process.env.NODE_ENV === 'development') {
+
+        const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor")
+        const { preprocessor } = require("@badeball/cypress-cucumber-preprocessor/browserify")
+
         addCucumberPreprocessorPlugin(on, config)
         on("file:preprocessor", preprocessor(config))
 
     } else {
+
+        const createBundler = require("@bahmutov/cypress-esbuild-preprocessor")
+        const {
+            addCucumberPreprocessorPlugin,
+            beforeRunHandler,
+            afterRunHandler,
+            beforeSpecHandler,
+            afterSpecHandler,
+            afterScreenshotHandler,
+        } = require("@badeball/cypress-cucumber-preprocessor")
+        const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocessor/esbuild")
+
         on = require('cypress-on-fix')(cypressOn)
+
         addCucumberPreprocessorPlugin(on, config, {
             omitBeforeRunHandler: true,
             omitAfterRunHandler: true,
@@ -54,44 +55,44 @@ module.exports = (cypressOn, config) => {
             omitAfterSpecHandler: true,
             omitAfterScreenshotHandler: true,
         })
-    }
 
-    on("before:run", async (details) => {
-        beforeRunHandler(config);
+        on(
+            "file:preprocessor",
+            createBundler({
+                plugins: [createEsbuildPlugin(config)],
+            })
+        )
 
-        // Your own `before:run` code goes here.
-    })
+        on("before:run", async (details) => {
+            beforeRunHandler(config);
 
-    on("after:run", async (results) => {
-        afterRunHandler(config);
-
-        // Your own `after:run` code goes here.
-    })
-
-    on("before:spec", async (spec) => {
-        beforeSpecHandler(config, spec);
-
-        // Your own `before:spec` code goes here.
-    })
-
-    on("after:spec", async (spec, results) => {
-        afterSpecHandler(config, spec, results);
-
-        // Your own `after:spec` code goes here.
-    })
-
-    on("after:screenshot", async (details) => {
-        afterScreenshotHandler(config, details);
-
-        // Your own `after:screenshot` code goes here.
-    })
-
-    on(
-        "file:preprocessor",
-        createBundler({
-            plugins: [createEsbuildPlugin(config)],
+            // Your own `before:run` code goes here.
         })
-    )
+
+        on("after:run", async (results) => {
+            afterRunHandler(config);
+
+            // Your own `after:run` code goes here.
+        })
+
+        on("before:spec", async (spec) => {
+            beforeSpecHandler(config, spec);
+
+            // Your own `before:spec` code goes here.
+        })
+
+        on("after:spec", async (spec, results) => {
+            afterSpecHandler(config, spec, results);
+
+            // Your own `after:spec` code goes here.
+        })
+
+        on("after:screenshot", async (details) => {
+            afterScreenshotHandler(config, details);
+
+            // Your own `after:screenshot` code goes here.
+        })
+    }
 
     on('task', {
 
