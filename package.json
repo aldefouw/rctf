@@ -10,7 +10,6 @@
     "@cypress/browserify-preprocessor": "3.0.2",
     "async-csv": "^2.1.3",
     "compare-versions": "3.6.0",
-    "cypress-iframe": "^1.0.1",
     "cypress-on-fix": "^1.0.3",
     "cypress-wait-until": "^3.0.1",
     "sed-lite": "0.8.4",
