@@ -22,28 +22,39 @@ const fs = require('fs')
 const csv = require('async-csv')
 const path = require('path')
 
-const createBundler = require("@bahmutov/cypress-esbuild-preprocessor")
-const {
-    addCucumberPreprocessorPlugin,
-    beforeRunHandler,
-    afterRunHandler,
-    beforeSpecHandler,
-    afterSpecHandler,
-    afterScreenshotHandler,
-} = require("@badeball/cypress-cucumber-preprocessor")
-const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocessor/esbuild")
+if (process.env.NODE_ENV === 'development') {
+    const { addCucumberPreprocessorPlugin } = require("@badeball/cypress-cucumber-preprocessor")
+    const { preprocessor } = require("@badeball/cypress-cucumber-preprocessor/browserify")
+} else {
+    const createBundler = require("@bahmutov/cypress-esbuild-preprocessor")
+    const {
+        addCucumberPreprocessorPlugin,
+        beforeRunHandler,
+        afterRunHandler,
+        beforeSpecHandler,
+        afterSpecHandler,
+        afterScreenshotHandler,
+    } = require("@badeball/cypress-cucumber-preprocessor")
+    const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocessor/esbuild")
+}
 
 module.exports = (cypressOn, config) => {
+    let on = cypressOn
 
-    const on = require('cypress-on-fix')(cypressOn)
+    if (process.env.NODE_ENV === 'development') {
+        addCucumberPreprocessorPlugin(on, config)
+        on("file:preprocessor", preprocessor(config))
 
-    addCucumberPreprocessorPlugin(on, config, {
-        omitBeforeRunHandler: true,
-        omitAfterRunHandler: true,
-        omitBeforeSpecHandler: true,
-        omitAfterSpecHandler: true,
-        omitAfterScreenshotHandler: true,
-    })
+    } else {
+        on = require('cypress-on-fix')(cypressOn)
+        addCucumberPreprocessorPlugin(on, config, {
+            omitBeforeRunHandler: true,
+            omitAfterRunHandler: true,
+            omitBeforeSpecHandler: true,
+            omitAfterSpecHandler: true,
+            omitAfterScreenshotHandler: true,
+        })
+    }
 
     on("before:run", async (details) => {
         beforeRunHandler(config);
