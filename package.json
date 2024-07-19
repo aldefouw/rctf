@@ -22,9 +22,6 @@
     "glob": "^9.3.5",
     "reflect-metadata": "0.2.2"
   },
-  "optionalDependencies": {
-    "@cypress/browserify-preprocessor": "^3.0.2"
-  },
   "devDependencies": {
     "cypress-on-fix": "^1.0.3",
     "documentation": "git://github.com/documentationjs/documentation#97e9361",
