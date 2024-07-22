@@ -280,7 +280,17 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
         cy.get('body').invoke('append', loadScript);
     }
 
-    if(exactly === "for Data Quality Rule #") {
+    if(exactly === "for the field labeled") {
+        let contains = ''
+        text.split(' ').forEach((val) => {
+            contains += `:has(:contains(${JSON.stringify(val)}))`
+        })
+
+        outer_element = `tr${contains}:visible`
+        cy.top_layer(`a:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        })
+    } else if(exactly === "for Data Quality Rule #") {
         outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
             cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})

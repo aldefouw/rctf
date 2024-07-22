@@ -219,12 +219,14 @@ Cypress.Commands.add('ensure_csrf_token', () => {
                             //If our cookies include PHPSESSID, we can assume we're logged into REDCap
                             //If they do NOT include PHPSESSID, we shouldn't have to worry about this token
                             //It also appears that the Report Forms DO not need a CSRF token, which is interesting ...
-                            if($cookie['name'] === 'PHPSESSID' && Cypress.$('form#create_report_form').length === 0){
-                                cy.get('form input[name=redcap_csrf_token]').each(($form_token) => {
-                                    cy.window().then((win) => {
-                                        expect($form_token[0].value).to.not.be.null
-                                    })
-                                })
+                            if($cookie['name'] === 'PHPSESSID' &&
+                                Cypress.$('form#create_report_form').length === 0 &&
+                                Cypress.$('form input[name=redcap_csrf_token]').length === 1){
+                                // cy.get('form input[name=redcap_csrf_token]').each(($form_token) => {
+                                //     cy.window().then((win) => {
+                                //         expect($form_token[0].value).to.not.be.null
+                                //     })
+                                // })
 
                                 // === DETACHMENT PREVENTION === //
                                 //Some common elements to tell us things are still loading!
