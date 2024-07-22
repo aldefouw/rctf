@@ -21,6 +21,7 @@ const sed_lite = require('sed-lite').sed
 const fs = require('fs')
 const csv = require('async-csv')
 const path = require('path')
+const pdf = require('pdf-parse')
 
 module.exports = (cypressOn, config) => {
     let on = cypressOn
@@ -95,6 +96,16 @@ module.exports = (cypressOn, config) => {
     }
 
     on('task', {
+
+        readPdf({pdf_file}){
+            return new Promise((resolve) => {
+                const filePath = path.resolve(pdf_file)
+                const dataBuffer = fs.readFileSync(filePath)
+                pdf(dataBuffer).then(function (data){
+                    resolve(data)
+                })
+            })
+        },
 
         currentSnapshotInfo({url, user, pass}){
             let snapshot_url_path = shell.pwd() + '/test_db/latest_snapshot.info'
@@ -244,14 +255,18 @@ module.exports = (cypressOn, config) => {
             const files = fs.readdirSync(downloadsDir)
 
             // Filter files by extension
-            const filteredFiles = files.filter(file => path.extname(file) === `.${fileExtension}`);
+            const filteredFiles = files.filter(file => path.extname(file) === `.${fileExtension}`)
 
-            // Sort files by modification time to get the latest one
-            const latestFile = filteredFiles
-                .map(file => ({ file, mtime: fs.statSync(path.join(downloadsDir, file)).mtime }))
-                .sort((a, b) => b.mtime - a.mtime)[0].file
-
-            return `${downloadsDir}${latestFile}`
+            //If no filtered files are found ...
+            if (filteredFiles.length === 0) {
+                return ''
+            } else {
+                // Sort files by modification time to get the latest one
+                const latestFile = filteredFiles
+                    .map(file => ({ file, mtime: fs.statSync(path.join(downloadsDir, file)).mtime }))
+                    .sort((a, b) => b.mtime - a.mtime)[0].file
+                return `${downloadsDir}${latestFile}`
+            }
         },
 
         fileExists(filePath) {

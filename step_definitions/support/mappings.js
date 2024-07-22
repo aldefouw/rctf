@@ -251,7 +251,8 @@ window.onlineDesignerFieldIcons = {
     '"view"' : 'a:visible:contains(view)',
     '"export"' : 'a:visible:contains(export)',
     '"exclude"' : 'a:visible:contains(exclude)',
-    '"remove exclusion"' : 'a:visible:contains(remove exclusion)'
+    '"remove exclusion"' : 'a:visible:contains(remove exclusion)',
+    '"Add signature"' : 'a:visible:contains("Add signature")'
 }
 
 window.participantListIcons = {

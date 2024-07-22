@@ -127,12 +127,20 @@ Given("I {notSeeDC} {string} for the Event named {string}", (not_see, instrument
    })
 })
 
-Given("I (should )see the {string} icon for the {string} longitudinal instrument on event {string}", (icon, instrument, event) => {
-   cy.table_cell_by_column_and_row_label(event, instrument, 'table#event_grid_table').then(($td) => {
-      cy.wrap($td).find('a:visible:first').then((link_location) => {
-         expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
+Given('I (should )see the {string} icon for the {string} longitudinal instrument( for instance ){optionalString} on event {string}', (icon, instrument, instance = '', event ) => {
+   if(instance === ''){
+      cy.table_cell_by_column_and_row_label(event, instrument, 'table#event_grid_table').then(($td) => {
+         cy.wrap($td).find('a:visible:first').then((link_location) => {
+            expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
+         })
       })
-   })
+   } else {
+      cy.table_cell_by_column_and_row_label(instrument, instance, `div#repeating_forms_table_parent table:contains(${JSON.stringify(event)})`).then(($td) => {
+         cy.wrap($td).parent('tr:first').find('a:visible:first').then((link_location) => {
+            expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
+         })
+      })
+   }
 })
 
 Given( /I (?:should )?see the "(.*)" icon for the "(.*)" (?:longitudinal )?instrument(?: on event "(.*)")? for record "(.*)"$/, (icon, instrument, event, record) => {

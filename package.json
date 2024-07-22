@@ -1,6 +1,6 @@
 {
   "name": "rctf",
-  "version": "1.0.91",
+  "version": "1.0.92",
   "description": "These are the supporting files that underpin the REDCap Cypress Test Framework.",
   "main": "index.js",
   "dependencies": {
@@ -13,7 +13,8 @@
     "cypress-on-fix": "^1.0.3",
     "cypress-wait-until": "^3.0.1",
     "sed-lite": "0.8.4",
-    "shelljs": "0.8.5"
+    "shelljs": "0.8.5",
+    "pdf-parse": "^1.1.1"
   },
   "peerDependencies": {
     "cypress": "^13.13.0"

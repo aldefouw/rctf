@@ -261,7 +261,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Clicks on an anchor element with a specific text label.
  */
-Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
+Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
     before_click_monitor(link_type)
 
     cy.not_loading()
@@ -280,7 +280,17 @@ Given("I click on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkName
         cy.get('body').invoke('append', loadScript);
     }
 
-    if(exactly === "for Data Quality Rule #") {
+    if(exactly === "for the field labeled") {
+        let contains = ''
+        text.split(' ').forEach((val) => {
+            contains += `:has(:contains(${JSON.stringify(val)}))`
+        })
+
+        outer_element = `tr${contains}:visible`
+        cy.top_layer(`a:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        })
+    } else if(exactly === "for Data Quality Rule #") {
         outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
             cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
@@ -385,11 +395,11 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
             let elm = cy.get(select)
 
             if(enter_type === "enter"){
-                elm.type(text)
+                elm.scrollIntoView().type(text)
             } else if (enter_type === "clear field and enter") {
-                elm.clear().type(text)
+                elm.scrollIntoView().clear().type(text)
             } else if (enter_type === "verify"){
-                elm.invoke('val').should('include', text)
+                elm.scrollIntoView().invoke('val').should('include', text)
             }
         })
 
@@ -421,7 +431,7 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
                         if(window.dateFormats.hasOwnProperty(text)){
                             //elm.invoke('val').should('match', window.dateFormats[text])
                         } else {
-                            elm.invoke('val').should('include', text)
+                            elm.first().invoke('val').should('include', text)
                         }
                     }
                 })
@@ -521,53 +531,62 @@ Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {strin
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 Given('I {enterType} {string} (is within)(into) the data entry form field labeled {string}', (enter_type, text, label) => {
-    //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
-    if(enter_type === "verify") {
-        let elm = cy.get(`label:contains(${JSON.stringify(label)})`)
-            .invoke('attr', 'id')
-            .then(($id) => {
-                cy.get('[name="' + $id.split('label-')[1] + '"]')
-            })
+    let contains = ''
+    label.split(' ').forEach((val) => {
+        contains += `:has(:contains(${JSON.stringify(val)}))`
+        label = val
+    })
+    let outer_element = `tr${contains}:visible`
 
-        if(window.dateFormats.hasOwnProperty(text)){
-            elm.invoke('val').should('match', window.dateFormats[text])
+    cy.get(outer_element).within(() => {
+        //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
+        if(enter_type === "verify") {
+            let elm = cy.get(`label:contains(${JSON.stringify(label)})`)
+                .invoke('attr', 'id')
+                .then(($id) => {
+                    cy.get('[name="' + $id.split('label-')[1] + '"]')
+                })
+
+            if(window.dateFormats.hasOwnProperty(text)){
+                elm.invoke('val').should('match', window.dateFormats[text])
+            } else {
+                elm.invoke('val').should('include', text)
+            }
+
+        } else if(enter_type === "clear field and enter"){
+
+            if(text === ""){
+                cy.get(`label:contains(${JSON.stringify(label)})`)
+                    .invoke('attr', 'id')
+                    .then(($id) => {
+                        cy.get('[name="' + $id.split('label-')[1] + '"]')
+                    })
+                    .click()
+                    .clear()
+                    .blur() //Remove focus after we are done so alerts pop up
+            } else {
+                cy.get(`label:contains(${JSON.stringify(label)})`)
+                    .invoke('attr', 'id')
+                    .then(($id) => {
+                        cy.get('[name="' + $id.split('label-')[1] + '"]')
+                    })
+                    .click()
+                    .clear()
+                    .type(text)
+                    .blur() //Remove focus after we are done so alerts pop up
+            }
+
         } else {
-            elm.invoke('val').should('include', text)
-        }
-
-    } else if(enter_type === "clear field and enter"){
-
-        if(text === ""){
             cy.get(`label:contains(${JSON.stringify(label)})`)
                 .invoke('attr', 'id')
                 .then(($id) => {
                     cy.get('[name="' + $id.split('label-')[1] + '"]')
                 })
                 .click()
-                .clear()
-                .blur() //Remove focus after we are done so alerts pop up
-        } else {
-            cy.get(`label:contains(${JSON.stringify(label)})`)
-                .invoke('attr', 'id')
-                .then(($id) => {
-                    cy.get('[name="' + $id.split('label-')[1] + '"]')
-                })
-                .click()
-                .clear()
                 .type(text)
                 .blur() //Remove focus after we are done so alerts pop up
         }
-
-    } else {
-        cy.get(`label:contains(${JSON.stringify(label)})`)
-            .invoke('attr', 'id')
-            .then(($id) => {
-                cy.get('[name="' + $id.split('label-')[1] + '"]')
-            })
-            .click()
-            .type(text)
-            .blur() //Remove focus after we are done so alerts pop up
-    }
+    })
 })
 
 /**

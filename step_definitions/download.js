@@ -53,3 +53,57 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
         }
     })
 })
+
+Given("I should see the following values in the most recently downloaded PDF file:", (dataTable) => {
+    function findDateFormat(str) {
+        for (const format in window.dateFormats) {
+            const regex = window.dateFormats[format]
+            const match = str.includes(format)
+            if (match) {
+                expect(window.dateFormats).to.haveOwnProperty(format)
+                return str.replace(format, '')
+            }
+        }
+        return null
+    }
+
+    function waitForFile(fileExtension, timeout = 30000) {
+        const startTime = Date.now()
+
+        const checkFile = (resolve, reject) => {
+            cy.task('fetchLatestDownload', { fileExtension }).then((latest_file) => {
+                if (latest_file !== '') {
+                    resolve(latest_file)
+                } else if (Date.now() - startTime > timeout) {
+                    reject(new Error('File not found within timeout period'))
+                } else {
+                    cy.wait(500).then(() => checkFile(resolve, reject))
+                }
+            })
+        }
+
+        return new Cypress.Promise((resolve, reject) => {
+            checkFile(resolve, reject)
+        })
+    }
+
+    waitForFile('pdf').then((latest_file) => {
+        cy.task('readPdf', { pdf_file: latest_file }).then((pdf) => {
+            dataTable['rawTable'].forEach((row, row_index) => {
+                row.forEach((dataTableCell) => {
+                    const result = findDateFormat(dataTableCell)
+                    if (result === null) {
+                        expect(pdf.text).to.include(dataTableCell)
+                    } else {
+                        result.split(' ').forEach((item) => {
+                            expect(pdf.text).to.include(item)
+                        })
+                    }
+                })
+            })
+        })
+    }).catch((error) => {
+        cy.log(error.message)
+        throw error
+    })
+})
