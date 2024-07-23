@@ -53,3 +53,36 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
         }
     })
 })
+
+Given("I should see the following values in the most recently downloaded PDF file:", (dataTable) => {
+    function findDateFormat(str) {
+        for (const format in window.dateFormats) {
+            const regex = window.dateFormats[format]
+            const match = str.includes(format)
+            if (match) {
+                expect(window.dateFormats).to.haveOwnProperty(format)
+                return str.replace(format, '')
+            }
+        }
+        return null
+    }
+
+    cy.task('fetchLatestDownload', ({fileExtension: 'pdf'})).then((latest_file) => {
+        cy.task('readPdf', ({pdf_file: latest_file})).then((pdf) => {
+            dataTable['rawTable'].forEach((row, row_index) => {
+                row.forEach((dataTableCell) => {
+                    const result = findDateFormat(dataTableCell)
+                    if(result === null){
+                        expect(pdf.text).to.include(dataTableCell)
+                    } else {
+                        result.split(' ').forEach((items) => {
+                            expect(pdf.text).to.include(items)
+                        })
+                    }
+                })
+            })
+
+            //cy.log(pdf.text)
+        })
+    })
+})

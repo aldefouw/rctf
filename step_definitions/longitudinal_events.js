@@ -135,7 +135,7 @@ Given('I (should )see the {string} icon for the {string} longitudinal instrument
          })
       })
    } else {
-      cy.table_cell_by_column_and_row_label(instrument, instance, `div#repeating_forms_table_parent table:contains(${event})`).then(($td) => {
+      cy.table_cell_by_column_and_row_label(instrument, instance, `div#repeating_forms_table_parent table:contains(${JSON.stringify(event)})`).then(($td) => {
          cy.wrap($td).parent('tr:first').find('a:visible:first').then((link_location) => {
             expect(link_location).to.have.descendants(window.recordStatusIcons[icon])
          })
