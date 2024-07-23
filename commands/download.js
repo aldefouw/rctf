@@ -1,7 +1,8 @@
 require('cypress-wait-until')
 
 function replaceFilename(file, date){
-    return file.replace('hhmm', `${date.substring(12, 14)}${date.substring(15, 17)}`)
+    return file.replace('hhmmss', `${date.substring(12, 14)}${date.substring(15, 17)}${date.substring(18, 20)}`)
+               .replace('hhmm', `${date.substring(12, 14)}${date.substring(15, 17)}`)
                .replace('yyyy', date.substring(6, 10))
                .replace('mm', date.substring(0, 2))
                .replace('hh', date.substring(11, 13))
