@@ -159,11 +159,26 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
  * @description Visually verifies the text within a data entry form field
  */
 Given("I should see {string} in the data entry form field {string}", function (field_value, field_name) {
-    cy.get(`label:contains(${JSON.stringify(field_name)})`)
-        .invoke('attr', 'id')
-        .then(($id) => {
-            cy.get('[name="' + $id.split('label-')[1] + '"]')
-        }).should('contain.value', field_value)
+    let contains = ''
+    let last_label = field_name
+    field_name.split(' ').forEach((val) => {
+        contains += `:has(:contains(${JSON.stringify(val)}))`
+        last_label = val
+    })
+    let outer_element = `tr${contains}:visible`
+
+    cy.get(outer_element).within(() => {
+        cy.get(`label:contains(${JSON.stringify(last_label)})`)
+            .invoke('attr', 'id')
+            .then(($id) => {
+                let elm = cy.get('[name="' + $id.split('label-')[1] + '"]')
+                if (window.dateFormats.hasOwnProperty(field_value)){
+                    elm.invoke('val').should('match', window.dateFormats[field_value])
+                } else {
+                    elm.should('contain.value', field_value)
+                }
+            })
+    })
 })
 
 /**
