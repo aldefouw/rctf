@@ -67,7 +67,27 @@ Given("I should see the following values in the most recently downloaded PDF fil
         return null
     }
 
-    cy.task('fetchLatestDownload', ({fileExtension: 'pdf'})).then((latest_file) => {
+    function waitForFile(fileExtension, timeout = 30000) {
+        return new Cypress.Promise((resolve, reject) => {
+            const startTime = Date.now()
+
+            const checkFile = () => {
+                cy.task('fetchLatestDownload', { fileExtension }).then((latest_file) => {
+                    if (latest_file !== undefined) {
+                        resolve(latest_file)
+                    } else if (Date.now() - startTime > timeout) {
+                        reject(new Error('File not found within timeout period'))
+                    } else {
+                        setTimeout(checkFile, 500)
+                    }
+                })
+            }
+
+            checkFile()
+        })
+    }
+
+    waitForFile('pdf').then((latest_file) => {
         cy.task('readPdf', ({pdf_file: latest_file})).then((pdf) => {
             dataTable['rawTable'].forEach((row, row_index) => {
                 row.forEach((dataTableCell) => {
@@ -81,8 +101,7 @@ Given("I should see the following values in the most recently downloaded PDF fil
                     }
                 })
             })
-
-            //cy.log(pdf.text)
         })
     })
+
 })
