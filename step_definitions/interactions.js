@@ -536,7 +536,7 @@ Given('I {enterType} {string} (is within)(into) the data entry form field labele
         contains += `:has(:contains(${JSON.stringify(val)}))`
         label = val
     })
-    let outer_element = `tr${contains}:visible:first`
+    let outer_element = `tr${contains}:has(input[type=text]):visible:first`
 
     cy.get(outer_element).within(() => {
         //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
