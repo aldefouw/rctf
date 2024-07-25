@@ -165,7 +165,7 @@ Given("I should see {string} in the data entry form field {string}", function (f
         contains += `:has(:contains(${JSON.stringify(val)}))`
         last_label = val
     })
-    let outer_element = `tr${contains}:visible`
+    let outer_element = `tr${contains}:has(input[type=text]):visible:first`
 
     cy.get(outer_element).within(() => {
         cy.get(`label:contains(${JSON.stringify(last_label)})`)
