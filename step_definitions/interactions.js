@@ -395,11 +395,11 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
             let elm = cy.get(select)
 
             if(enter_type === "enter"){
-                elm.type(text)
+                elm.scrollIntoView().type(text)
             } else if (enter_type === "clear field and enter") {
-                elm.clear().type(text)
+                elm.scrollIntoView().clear().type(text)
             } else if (enter_type === "verify"){
-                elm.invoke('val').should('include', text)
+                elm.scrollIntoView().invoke('val').should('include', text)
             }
         })
 
@@ -431,7 +431,7 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
                         if(window.dateFormats.hasOwnProperty(text)){
                             //elm.invoke('val').should('match', window.dateFormats[text])
                         } else {
-                            elm.invoke('val').should('include', text)
+                            elm.first().invoke('val').should('include', text)
                         }
                     }
                 })
@@ -531,53 +531,62 @@ Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {strin
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 Given('I {enterType} {string} (is within)(into) the data entry form field labeled {string}', (enter_type, text, label) => {
-    //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
-    if(enter_type === "verify") {
-        let elm = cy.get(`label:contains(${JSON.stringify(label)})`)
-            .invoke('attr', 'id')
-            .then(($id) => {
-                cy.get('[name="' + $id.split('label-')[1] + '"]')
-            })
+    let contains = ''
+    label.split(' ').forEach((val) => {
+        contains += `:has(:contains(${JSON.stringify(val)}))`
+        label = val
+    })
+    let outer_element = `tr${contains}:visible`
 
-        if(window.dateFormats.hasOwnProperty(text)){
-            elm.invoke('val').should('match', window.dateFormats[text])
+    cy.get(outer_element).within(() => {
+        //Note that we CLICK on the field (to select it) BEFORE we type in it - otherwise the text ends up somewhere else!
+        if(enter_type === "verify") {
+            let elm = cy.get(`label:contains(${JSON.stringify(label)})`)
+                .invoke('attr', 'id')
+                .then(($id) => {
+                    cy.get('[name="' + $id.split('label-')[1] + '"]')
+                })
+
+            if(window.dateFormats.hasOwnProperty(text)){
+                elm.invoke('val').should('match', window.dateFormats[text])
+            } else {
+                elm.invoke('val').should('include', text)
+            }
+
+        } else if(enter_type === "clear field and enter"){
+
+            if(text === ""){
+                cy.get(`label:contains(${JSON.stringify(label)})`)
+                    .invoke('attr', 'id')
+                    .then(($id) => {
+                        cy.get('[name="' + $id.split('label-')[1] + '"]')
+                    })
+                    .click()
+                    .clear()
+                    .blur() //Remove focus after we are done so alerts pop up
+            } else {
+                cy.get(`label:contains(${JSON.stringify(label)})`)
+                    .invoke('attr', 'id')
+                    .then(($id) => {
+                        cy.get('[name="' + $id.split('label-')[1] + '"]')
+                    })
+                    .click()
+                    .clear()
+                    .type(text)
+                    .blur() //Remove focus after we are done so alerts pop up
+            }
+
         } else {
-            elm.invoke('val').should('include', text)
-        }
-
-    } else if(enter_type === "clear field and enter"){
-
-        if(text === ""){
             cy.get(`label:contains(${JSON.stringify(label)})`)
                 .invoke('attr', 'id')
                 .then(($id) => {
                     cy.get('[name="' + $id.split('label-')[1] + '"]')
                 })
                 .click()
-                .clear()
-                .blur() //Remove focus after we are done so alerts pop up
-        } else {
-            cy.get(`label:contains(${JSON.stringify(label)})`)
-                .invoke('attr', 'id')
-                .then(($id) => {
-                    cy.get('[name="' + $id.split('label-')[1] + '"]')
-                })
-                .click()
-                .clear()
                 .type(text)
                 .blur() //Remove focus after we are done so alerts pop up
         }
-
-    } else {
-        cy.get(`label:contains(${JSON.stringify(label)})`)
-            .invoke('attr', 'id')
-            .then(($id) => {
-                cy.get('[name="' + $id.split('label-')[1] + '"]')
-            })
-            .click()
-            .type(text)
-            .blur() //Remove focus after we are done so alerts pop up
-    }
+    })
 })
 
 /**
