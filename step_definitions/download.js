@@ -62,6 +62,11 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
     //Make sure DataTables has loaded before we do anything here
     cy.wait_for_datatables().assertWindowProperties()
 
+    //Make sure the page is not loading
+    if(Cypress.$('#file-repository-table_processing:visible').length){
+        cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
+    }
+
     const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
     const element_selector = `td i.fa-file-pdf`
 
@@ -75,7 +80,12 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
 Given("I (should )see the following values in the downloaded PDF for Record {string} and Survey {string}", (record, survey, dataTable) => {
     //Make sure DataTables has loaded before we do anything here
     cy.wait_for_datatables().assertWindowProperties()
-    
+
+    //Make sure the page is not loading
+    if(Cypress.$('#file-repository-table_processing:visible').length){
+        cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
+    }
+
     const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
     const element_selector = `td i.fa-file-pdf`
     let pdf_file = null
