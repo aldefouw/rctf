@@ -64,6 +64,11 @@ function after_click_monitor(type){
         cy.wait('@online_designer')
     } else if (type === " on the active Data Quality rule"){
         cy.wait('@data_quality_rule')
+        if(Cypress.$('.editlogic textarea').length){
+            cy.get('.editlogic').then(($logic) => {
+                cy.wrap($logic).should('not.have.descendants', 'textarea,button')
+            })
+        }
     } else if (type === " and cancel the confirmation window") {
         cy.on('window:confirm', (str) => {
             return true //subsequent windows go back to default behavior
@@ -111,7 +116,7 @@ function after_click_monitor(type){
  * @param {string} articleType - available options: 'a', 'the'
  * @param {string} onlineDesignerButtons - available options: '"Enable"', '"Disable"', '"Choose action"', '"Survey settings"', '"Automated Invitations"', 'enabled survey icon', '"View Report"', '"Export Data"', '"Stats & Charts"', '"Execute"', '"Save"'
  * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'last'
- * @param {string} labeledExactly - available options: 'labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', 'within the Record Locking Customization table for the Data Collection Instrument named', 'the enabled survey icon link for the instrument row', 'the enabled survey icon link for the instrument row', 'for the Discrepant field labeled'
+ * @param {string} labeledExactly - available options: 'labeled', 'labeled exactly', 'in the row labeled', 'for the instrument row labeled', 'for the variable', 'for the File Repository file named', 'for Data Quality Rule #', 'within the Record Locking Customization table for the Data Collection Instrument named', 'the enabled survey icon link for the instrument row', 'the enabled survey icon link for the instrument row', 'for the Discrepant field labeled', 'within the Record Locking Customization table for the Data Collection Instrument named', 'for the field labeled'
  * @param {string} saveButtonRouteMonitoring - available options: ' on the dialog box for the Repeatable Instruments and Events module', ' on the Designate Instruments for My Events page', ' on the Online Designer page', ' and cancel the confirmation window', ' and accept the confirmation window', ' in the dialog box to request a change in project status', ' to rename an instrument', ' in the "Add New Field" dialog box', ' in the "Edit Field" dialog box', ' and will leave the tab open when I return to the REDCap project', ' on the active Data Quality rule'
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' on the Add/Edit Branching Logic dialog box', ' in the Add/Edit Branching Logic dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the open date picker widget', ' in the File Repository breadcrumb', ' in the File Repository table', ' in the View Access section of User Access', ' in the Edit Access section of User Access', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @param {string} iframeVisibility - available options: '', ' in the iframe'
@@ -119,135 +124,137 @@ function after_click_monitor(type){
  * @description Clicks on a button element with a specific text label.
  */
 Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}", (article_type, online_designer_button, ordinal, exactly, text, button_type, base_element, iframe, download) => {
-    let ord = 0
-    if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
+    cy.then(() => {
+        before_click_monitor(button_type)
+    }).then(() => {
+        let ord = 0
+        if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
-    before_click_monitor(button_type)
+        // if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
+        //     cy.intercept({
+        //         method: 'POST',
+        //         url: '/redcap_v' + Cypress.env('redcap_version') + '/Design/branching_logic_builder.php?pid=*'
+        //     }).as('branching_logic')
+        // }
 
-    // if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
-    //     cy.intercept({
-    //         method: 'POST',
-    //         url: '/redcap_v' + Cypress.env('redcap_version') + '/Design/branching_logic_builder.php?pid=*'
-    //     }).as('branching_logic')
-    // }
+        if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+            cy.intercept({
+                method: 'POST',
+                url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
+            }).as('enable_survey')
+        }
 
-    if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
-        }).as('enable_survey')
-    }
+        if(text === "Disable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+            cy.intercept({
+                method: 'POST',
+                url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
+            }).as('disable_survey')
+            window.survey_disable_attempt = true
+        }
 
-    if(text === "Disable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
-        }).as('disable_survey')
-        window.survey_disable_attempt = true
-    }
+        if(download.includes("to download a file")) {
+            const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>'
+            cy.get('body').invoke('append', loadScript)
+        }
 
-    if(download.includes("to download a file")) {
-        const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>';
-        cy.get('body').invoke('append', loadScript);
-    }
+        let outer_element = window.elementChoices[base_element]
 
-    let outer_element = window.elementChoices[base_element]
+        let force = base_element === ' in the dialog box' ? { force: true } : {}
 
-    let force = base_element === ' in the dialog box' ? { force: true } : {}
-    
-    if (iframe === " in the iframe" || outer_element === 'iframe'){
-        const base = cy.frameLoaded().then(() => { cy.iframe() })
+        if (iframe === " in the iframe" || outer_element === 'iframe'){
+            const base = cy.frameLoaded().then(() => { cy.iframe() })
 
-        if(outer_element === 'iframe'){
-            if(exactly === 'labeled exactly'){
-                let sel = 'button:visible,input[value*=""]:visible'
+            if(outer_element === 'iframe'){
+                if(exactly === 'labeled exactly'){
+                    let sel = 'button:visible,input[value*=""]:visible'
 
-                base.within(() => {
-                        cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-                })
-            } else {
-                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
-
-                base.within(() => {
-                    cy.get(sel).eq(ord).click(force)
-                })
-            }
-        } else {
-
-            if(exactly === 'labeled exactly'){
-                let sel = 'button:visible,input[value*=""]:visible'
-
-                base.within(() => {
-                    cy.top_layer(sel, outer_element).within(() => {
+                    base.within(() => {
                         cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
                     })
-                })
-            } else {
-                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+                } else {
+                    let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
 
-                base.within(() => {
-                    cy.top_layer(sel, outer_element).within(() => {
+                    base.within(() => {
                         cy.get(sel).eq(ord).click(force)
                     })
-                })
+                }
+            } else {
+
+                if(exactly === 'labeled exactly'){
+                    let sel = 'button:visible,input[value*=""]:visible'
+
+                    base.within(() => {
+                        cy.top_layer(sel, outer_element).within(() => {
+                            cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
+                        })
+                    })
+                } else {
+                    let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+
+                    base.within(() => {
+                        cy.top_layer(sel, outer_element).within(() => {
+                            cy.get(sel).eq(ord).click(force)
+                        })
+                    })
+                }
+
             }
 
-        }
-
-    } else {
-
-        if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
-            exactly === "for Data Quality Rule #") {
-            outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
-            text = online_designer_button.replace(/"/g, '')
-
-        } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
-            exactly === 'within the Record Locking Customization table for the Data Collection Instrument named') {
-            outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
-            text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
-
-        //This is the key to the Online Designer buttons being identified!
-        } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button)){
-            outer_element = `table:visible tr:has(td:has(div:has(div:contains("${text}"))))`
-            text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
-        }
-
-        if(exactly === 'labeled exactly') {
-            let sel = `button:contains("${text}"):visible,input[value*=""]:visible`
-
-            cy.top_layer(sel, outer_element).within(() => {
-                cy.get(':button:visible,input[value*=""]:visible').contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-            })
-
         } else {
-            let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
 
-            cy.top_layer(sel, outer_element).within(() => {
-                cy.get(sel).eq(ord).then(($button) => {
-                    if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
-                        cy.open_survey_in_same_tab($button, !(button_type !== undefined && button_type === " and will leave the tab open when I return to the REDCap project"), (text === 'Log out+ Open survey'))
-                    } else {
-                        cy.wrap($button).click(force)
-                    }
+            if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
+                exactly === "for Data Quality Rule #") {
+                outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
+                text = online_designer_button.replace(/"/g, '')
+
+            } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
+                exactly === 'within the Record Locking Customization table for the Data Collection Instrument named') {
+                outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
+                text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
+
+                //This is the key to the Online Designer buttons being identified!
+            } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button)){
+                outer_element = `table:visible tr:has(td:has(div:has(div:contains("${text}"))))`
+                text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
+            }
+
+            if(exactly === 'labeled exactly') {
+                let sel = `button:contains("${text}"):visible,input[value*=""]:visible`
+
+                cy.top_layer(sel, outer_element).within(() => {
+                    cy.get(':button:visible,input[value*=""]:visible').contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
                 })
-            })
+
+            } else {
+                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+
+                cy.top_layer(sel, outer_element).within(() => {
+                    cy.get(sel).eq(ord).then(($button) => {
+                        if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
+                            cy.open_survey_in_same_tab($button, !(button_type !== undefined && button_type === " and will leave the tab open when I return to the REDCap project"), (text === 'Log out+ Open survey'))
+                        } else {
+                            cy.wrap($button).click(force)
+                        }
+                    })
+                })
+            }
         }
-    }
 
-    if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
-        cy.wait('@enable_survey')
-    }
+        if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+            cy.wait('@enable_survey')
+        }
 
-    if(text === "Disable" && base_element === ' in the dialog box' && window.survey_disable_attempt){
-        cy.wait('@disable_survey')
-        window.survey_disable_attempt = false
-    }
+        if(text === "Disable" && base_element === ' in the dialog box' && window.survey_disable_attempt){
+            cy.wait('@disable_survey')
+            window.survey_disable_attempt = false
+        }
 
-    if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
-        cy.wait(2000)
-    }
-
-    after_click_monitor(button_type)
+        if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
+            cy.wait(2000)
+        }
+    }).then(() => {
+        after_click_monitor(button_type)
+    })
 })
 
 /**

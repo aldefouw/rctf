@@ -58,6 +58,15 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
     downloadFile(text)
 })
 
+
+/**
+ * @module Download
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I download the PDF by clicking on the link for Record {string} and Survey {string} in the File Repository table
+ * @param {string} record - the ID of the record the PDF is associated with
+ * @param {string} survey - the Survey / Event of the record the PDF is associated with
+ * @description Downloads a PDF file from the PDF Archive for a particular record ID and survey
+ */
 Given("I download the PDF by clicking on the link for Record {string} and Survey {string} in the File Repository table", (record, survey) => {
     //Make sure DataTables has loaded before we do anything here
     cy.wait_for_datatables().assertWindowProperties()
@@ -77,6 +86,15 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
     })
 })
 
+
+/**
+ * @module Download
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I (should) see the following values in the downloaded PDF for Record {string} and Survey {string}
+ * @param {string} record - the ID of the record the PDF is associated with
+ * @param {string} survey - the Survey / Event of the record the PDF is associated with
+ * @description Verifies the values within a PDF in the PDF Archive
+ */
 Given("I (should )see the following values in the downloaded PDF for Record {string} and Survey {string}", (record, survey, dataTable) => {
     //Make sure DataTables has loaded before we do anything here
     cy.wait_for_datatables().assertWindowProperties()
