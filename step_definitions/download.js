@@ -64,6 +64,8 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
 
     cy.top_layer(element_selector, row_selector).within(() => {
         cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
+            cy.wait('@file_list')
+            cy.wait('@file_breadcrumb')
             cy.wrap($a).click()
         })
     })
