@@ -67,7 +67,7 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
         cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
 
-    const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(2):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
+    const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(3):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
     const element_selector = `td i.fa-file-pdf`
 
     cy.top_layer(element_selector, base_element).within(() => {
@@ -86,7 +86,7 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
         cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
 
-    const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(2):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
+    const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(3):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
     const element_selector = `td i.fa-file-pdf`
     let pdf_file = null
 
