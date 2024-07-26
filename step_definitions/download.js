@@ -91,7 +91,9 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
 
         const checkFile = (resolve, reject) => {
             cy.fileExists(pdf_file).then((file) => {
-                if (file !== undefined) {
+                if (file === undefined) {
+                    cy.wait(500).then(() => checkFile(resolve, reject))
+                } else if(file){
                     resolve(file)
                 } else if (Date.now() - startTime > timeout) {
                     reject(new Error('File not found within timeout period'))
