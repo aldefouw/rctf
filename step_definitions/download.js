@@ -1,17 +1,10 @@
 const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
-/**
- * @module Download
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I download a file by clicking on the link labeled {string}
- * @param {string} text - the text on the anchor element you want to click
- * @description Downloads a file from an anchor element with a specific text label.
- */
-Given("I download a file by clicking on the link labeled {string}", (text) => {
+function downloadFile(text){
+
     // We do not actually click on the link because new windows and Cypress do not work.
     // Instead, we sideload a request and save it where it would go
-
-    cy.get('a:contains(' + text + '):visible').then((f) => {
+    cy.get(`a:contains(${JSON.stringify(text)}):visible`).then((f) => {
 
         if(f.attr('onclick').includes("fileRepoDownload")){
 
@@ -52,9 +45,35 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
             })
         }
     })
+}
+
+/**
+ * @module Download
+ * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
+ * @example I download a file by clicking on the link labeled {string}
+ * @param {string} text - the text on the anchor element you want to click
+ * @description Downloads a file from an anchor element with a specific text label.
+ */
+Given("I download a file by clicking on the link labeled {string}", (text) => {
+    downloadFile(text)
 })
 
-Given("I should see the following values in the most recently downloaded PDF file:", (dataTable) => {
+Given("I download the PDF by clicking on the link for Record {string} and Survey {string} in the File Repository table", (record, survey) => {
+    const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
+    const element_selector = `td i.fa-file-pdf`
+
+    cy.top_layer(element_selector, row_selector).within(() => {
+        cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
+            cy.wrap($a).click()
+        })
+    })
+})
+
+Given("I (should )see the following values in the downloaded PDF for Record {string} and Survey {string}", (record, survey, dataTable) => {
+    const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
+    const element_selector = `td i.fa-file-pdf`
+    let pdf_file = null
+
     function findDateFormat(str) {
         for (const format in window.dateFormats) {
             const regex = window.dateFormats[format]
@@ -67,13 +86,13 @@ Given("I should see the following values in the most recently downloaded PDF fil
         return null
     }
 
-    function waitForFile(fileExtension, timeout = 30000) {
+    function waitForFile(filename, timeout = 30000) {
         const startTime = Date.now()
 
         const checkFile = (resolve, reject) => {
-            cy.task('fetchLatestDownload', { fileExtension }).then((latest_file) => {
-                if (latest_file !== '') {
-                    resolve(latest_file)
+            cy.fileExists(pdf_file).then((file) => {
+                if (file !== undefined) {
+                    resolve(file)
                 } else if (Date.now() - startTime > timeout) {
                     reject(new Error('File not found within timeout period'))
                 } else {
@@ -87,23 +106,30 @@ Given("I should see the following values in the most recently downloaded PDF fil
         })
     }
 
-    waitForFile('pdf').then((latest_file) => {
-        cy.task('readPdf', { pdf_file: latest_file }).then((pdf) => {
-            dataTable['rawTable'].forEach((row, row_index) => {
-                row.forEach((dataTableCell) => {
-                    const result = findDateFormat(dataTableCell)
-                    if (result === null) {
-                        expect(pdf.text).to.include(dataTableCell)
-                    } else {
-                        result.split(' ').forEach((item) => {
-                            expect(pdf.text).to.include(item)
+    cy.top_layer(element_selector, row_selector).within(() => {
+        cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
+
+            pdf_file = `cypress/downloads/${$a.text()}`
+
+            waitForFile(pdf_file).then((fileExists) => {
+                if(fileExists){
+                    cy.task('readPdf', { pdf_file: pdf_file }).then((pdf) => {
+                        dataTable['rawTable'].forEach((row, row_index) => {
+                            row.forEach((dataTableCell) => {
+                                const result = findDateFormat(dataTableCell)
+                                if (result === null) {
+                                    expect(pdf.text).to.include(dataTableCell)
+                                } else {
+                                    result.split(' ').forEach((item) => {
+                                        expect(pdf.text).to.include(item)
+                                    })
+                                }
+                            })
                         })
-                    }
-                })
+                    })
+                }
             })
         })
-    }).catch((error) => {
-        cy.log(error.message)
-        throw error
     })
+
 })
