@@ -67,10 +67,10 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
         cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
 
-    const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
+    const base_element = `${window.tableMappings['file repository']}:visible tr:has(a:contains(${JSON.stringify(record)})):has(:contains(${JSON.stringify(survey)}))`
     const element_selector = `td i.fa-file-pdf`
 
-    cy.top_layer(element_selector, row_selector).within(() => {
+    cy.top_layer(element_selector, base_element).within(() => {
         cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
             cy.wrap($a).click()
         })
@@ -86,7 +86,7 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
         cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
 
-    const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
+    const base_element = `${window.tableMappings['file repository']}:visible tr:has(a:contains(${JSON.stringify(record)})):has(:contains(${JSON.stringify(survey)}))`
     const element_selector = `td i.fa-file-pdf`
     let pdf_file = null
 
@@ -124,7 +124,7 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
         })
     }
 
-    cy.top_layer(element_selector, row_selector).within(() => {
+    cy.top_layer(element_selector, base_element).within(() => {
         cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
 
             pdf_file = `cypress/downloads/${$a.text()}`
