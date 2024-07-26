@@ -46,25 +46,15 @@ module.exports = (cypressOn, config) => {
     })
 
 
-    if (process.env.NODE_ENV === 'development') {
-        const bundler = createBundler({
-            plugins: [createEsbuildPlugin(config)],
-        })
+    const bundler = createBundler({
+        plugins: [createEsbuildPlugin(config)],
+    })
 
-        on('file:preprocessor', (file) => {
-            // Ensure shouldWatch is set to true if Cypress is running in watch mode
-            file.shouldWatch = config.isTextTerminal === false
-            return bundler(file)
-        })
-    } else {
-        on(
-            "file:preprocessor",
-            createBundler({
-                plugins: [createEsbuildPlugin(config)]
-            })
-        )
-    }
-
+    on('file:preprocessor', (file) => {
+        // Ensure shouldWatch is set to true if Cypress is running in watch mode
+        file.shouldWatch = config.isTextTerminal === false
+        return bundler(file)
+    })
 
     on("before:run", async (details) => {
         beforeRunHandler(config);
