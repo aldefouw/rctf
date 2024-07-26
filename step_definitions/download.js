@@ -59,19 +59,23 @@ Given("I download a file by clicking on the link labeled {string}", (text) => {
 })
 
 Given("I download the PDF by clicking on the link for Record {string} and Survey {string} in the File Repository table", (record, survey) => {
+    //Make sure DataTables has loaded before we do anything here
+    cy.wait_for_datatables().assertWindowProperties()
+
     const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
     const element_selector = `td i.fa-file-pdf`
 
     cy.top_layer(element_selector, row_selector).within(() => {
         cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
-            cy.wait('@file_list')
-            cy.wait('@file_breadcrumb')
             cy.wrap($a).click()
         })
     })
 })
 
 Given("I (should )see the following values in the downloaded PDF for Record {string} and Survey {string}", (record, survey, dataTable) => {
+    //Make sure DataTables has loaded before we do anything here
+    cy.wait_for_datatables().assertWindowProperties()
+    
     const row_selector = `tr:has(:contains(${JSON.stringify(record)}):contains(${JSON.stringify(survey)})):visible`
     const element_selector = `td i.fa-file-pdf`
     let pdf_file = null
