@@ -131,123 +131,133 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
     //     }).as('branching_logic')
     // }
 
-    if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
-        }).as('enable_survey')
-    }
+    return new Cypress.Promise(resolve => {
+        if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+            cy.intercept({
+                method: 'POST',
+                url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
+            }).as('enable_survey')
+        }
 
-    if(text === "Disable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
-        }).as('disable_survey')
-        window.survey_disable_attempt = true
-    }
+        if(text === "Disable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+            cy.intercept({
+                method: 'POST',
+                url: '/redcap_v' + Cypress.env('redcap_version') + '/ProjectSetup/modify_project_setting_ajax.php?pid=*'
+            }).as('disable_survey')
+            window.survey_disable_attempt = true
+        }
 
-    if(download.includes("to download a file")) {
-        const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>';
-        cy.get('body').invoke('append', loadScript);
-    }
+        if(download.includes("to download a file")) {
+            const loadScript = '<script> setTimeout(() => location.reload(), 2000); </script>'
+            cy.get('body').invoke('append', loadScript)
+        }
 
-    let outer_element = window.elementChoices[base_element]
+        let outer_element = window.elementChoices[base_element]
 
-    let force = base_element === ' in the dialog box' ? { force: true } : {}
-    
-    if (iframe === " in the iframe" || outer_element === 'iframe'){
-        const base = cy.frameLoaded().then(() => { cy.iframe() })
+        let force = base_element === ' in the dialog box' ? { force: true } : {}
 
-        if(outer_element === 'iframe'){
-            if(exactly === 'labeled exactly'){
-                let sel = 'button:visible,input[value*=""]:visible'
+        if (iframe === " in the iframe" || outer_element === 'iframe'){
+            const base = cy.frameLoaded().then(() => { cy.iframe() })
 
-                base.within(() => {
+            if(outer_element === 'iframe'){
+                if(exactly === 'labeled exactly'){
+                    let sel = 'button:visible,input[value*=""]:visible'
+
+                    base.within(() => {
                         cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-                })
-            } else {
-                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
-
-                base.within(() => {
-                    cy.get(sel).eq(ord).click(force)
-                })
-            }
-        } else {
-
-            if(exactly === 'labeled exactly'){
-                let sel = 'button:visible,input[value*=""]:visible'
-
-                base.within(() => {
-                    cy.top_layer(sel, outer_element).within(() => {
-                        cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
+                        resolve
                     })
-                })
-            } else {
-                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+                } else {
+                    let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
 
-                base.within(() => {
-                    cy.top_layer(sel, outer_element).within(() => {
+                    base.within(() => {
                         cy.get(sel).eq(ord).click(force)
+                        resolve
+                    })
+                }
+            } else {
+
+                if(exactly === 'labeled exactly'){
+                    let sel = 'button:visible,input[value*=""]:visible'
+
+                    base.within(() => {
+                        cy.top_layer(sel, outer_element).within(() => {
+                            cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
+                            resolve
+                        })
+                    })
+                } else {
+                    let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+
+                    base.within(() => {
+                        cy.top_layer(sel, outer_element).within(() => {
+                            cy.get(sel).eq(ord).click(force)
+                            resolve
+                        })
+                    })
+                }
+
+            }
+
+        } else {
+
+            if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
+                exactly === "for Data Quality Rule #") {
+                outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
+                text = online_designer_button.replace(/"/g, '')
+
+            } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
+                exactly === 'within the Record Locking Customization table for the Data Collection Instrument named') {
+                outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
+                text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
+
+                //This is the key to the Online Designer buttons being identified!
+            } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button)){
+                outer_element = `table:visible tr:has(td:has(div:has(div:contains("${text}"))))`
+                text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
+            }
+
+            if(exactly === 'labeled exactly') {
+                let sel = `button:contains("${text}"):visible,input[value*=""]:visible`
+
+                cy.top_layer(sel, outer_element).within(() => {
+                    cy.get(':button:visible,input[value*=""]:visible').contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
+                    resolve
+                })
+
+            } else {
+                let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
+
+                cy.top_layer(sel, outer_element).within(() => {
+                    cy.get(sel).eq(ord).then(($button) => {
+                        if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
+                            cy.open_survey_in_same_tab($button, !(button_type !== undefined && button_type === " and will leave the tab open when I return to the REDCap project"), (text === 'Log out+ Open survey'))
+                            resolve
+                        } else {
+                            cy.wrap($button).click(force)
+                            resolve
+                        }
                     })
                 })
             }
-
         }
 
-    } else {
-
-        if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
-            exactly === "for Data Quality Rule #") {
-            outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
-            text = online_designer_button.replace(/"/g, '')
-
-        } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button) &&
-            exactly === 'within the Record Locking Customization table for the Data Collection Instrument named') {
-            outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
-            text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
-
-        //This is the key to the Online Designer buttons being identified!
-        } else if(window.parameterTypes['onlineDesignerButtons'].includes(online_designer_button)){
-            outer_element = `table:visible tr:has(td:has(div:has(div:contains("${text}"))))`
-            text = online_designer_button.replace(/"/g, '') //Replace the button quotes with an empty string
+        if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
+            cy.wait('@enable_survey')
         }
 
-        if(exactly === 'labeled exactly') {
-            let sel = `button:contains("${text}"):visible,input[value*=""]:visible`
-
-            cy.top_layer(sel, outer_element).within(() => {
-                cy.get(':button:visible,input[value*=""]:visible').contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-            })
-
-        } else {
-            let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
-
-            cy.top_layer(sel, outer_element).within(() => {
-                cy.get(sel).eq(ord).then(($button) => {
-                    if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
-                        cy.open_survey_in_same_tab($button, !(button_type !== undefined && button_type === " and will leave the tab open when I return to the REDCap project"), (text === 'Log out+ Open survey'))
-                    } else {
-                        cy.wrap($button).click(force)
-                    }
-                })
-            })
+        if(text === "Disable" && base_element === ' in the dialog box' && window.survey_disable_attempt){
+            cy.wait('@disable_survey')
+            window.survey_disable_attempt = false
         }
-    }
 
-    if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
-        cy.wait('@enable_survey')
-    }
+        if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
+            cy.wait(2000)
+        }
+    }).then(() => {
+        after_click_monitor(button_type)
+    })
 
-    if(text === "Disable" && base_element === ' in the dialog box' && window.survey_disable_attempt){
-        cy.wait('@disable_survey')
-        window.survey_disable_attempt = false
-    }
-
-    if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
-        cy.wait(2000)
-    }
-
-    after_click_monitor(button_type)
 })
 
 /**
