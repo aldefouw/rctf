@@ -64,6 +64,11 @@ function after_click_monitor(type){
         cy.wait('@online_designer')
     } else if (type === " on the active Data Quality rule"){
         cy.wait('@data_quality_rule')
+        if(Cypress.$('.editlogic textarea').length){
+            cy.get('.editlogic').then(($logic) => {
+                cy.wrap($logic).should('not.have.descendants', 'textarea,button')
+            })
+        }
     } else if (type === " and cancel the confirmation window") {
         cy.on('window:confirm', (str) => {
             return true //subsequent windows go back to default behavior
