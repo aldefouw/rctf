@@ -119,19 +119,19 @@ function after_click_monitor(type){
  * @description Clicks on a button element with a specific text label.
  */
 Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button {labeledExactly} {string}{saveButtonRouteMonitoring}{baseElement}{iframeVisibility}{toDownloadFile}", (article_type, online_designer_button, ordinal, exactly, text, button_type, base_element, iframe, download) => {
-    let ord = 0
-    if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
+    cy.then(() => {
+        before_click_monitor(button_type)
+    }).then(() => {
+        let ord = 0
+        if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
-    before_click_monitor(button_type)
+        // if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
+        //     cy.intercept({
+        //         method: 'POST',
+        //         url: '/redcap_v' + Cypress.env('redcap_version') + '/Design/branching_logic_builder.php?pid=*'
+        //     }).as('branching_logic')
+        // }
 
-    // if(base_element === " on the Add/Edit Branching Logic dialog box" || base_element === " in the Add/Edit Branching Logic dialog box"){
-    //     cy.intercept({
-    //         method: 'POST',
-    //         url: '/redcap_v' + Cypress.env('redcap_version') + '/Design/branching_logic_builder.php?pid=*'
-    //     }).as('branching_logic')
-    // }
-
-    return new Cypress.Promise(resolve => {
         if(text === "Enable" && base_element === ' in the "Use surveys in this project?" row in the "Main project settings" section'){
             cy.intercept({
                 method: 'POST',
@@ -165,14 +165,12 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 
                     base.within(() => {
                         cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-                        resolve
                     })
                 } else {
                     let sel = `button:contains("${text}"):visible,input[value*="${text}"]:visible`
 
                     base.within(() => {
                         cy.get(sel).eq(ord).click(force)
-                        resolve
                     })
                 }
             } else {
@@ -183,7 +181,6 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
                     base.within(() => {
                         cy.top_layer(sel, outer_element).within(() => {
                             cy.get(sel).contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-                            resolve
                         })
                     })
                 } else {
@@ -192,7 +189,6 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
                     base.within(() => {
                         cy.top_layer(sel, outer_element).within(() => {
                             cy.get(sel).eq(ord).click(force)
-                            resolve
                         })
                     })
                 }
@@ -222,7 +218,6 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 
                 cy.top_layer(sel, outer_element).within(() => {
                     cy.get(':button:visible,input[value*=""]:visible').contains(new RegExp("^" + text + "$", "g")).eq(ord).click(force)
-                    resolve
                 })
 
             } else {
@@ -232,10 +227,8 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
                     cy.get(sel).eq(ord).then(($button) => {
                         if(text.includes("Open public survey")){ //Handle the "Open public survey" and "Open public survey + Logout" cases
                             cy.open_survey_in_same_tab($button, !(button_type !== undefined && button_type === " and will leave the tab open when I return to the REDCap project"), (text === 'Log out+ Open survey'))
-                            resolve
                         } else {
                             cy.wrap($button).click(force)
-                            resolve
                         }
                     })
                 })
@@ -257,7 +250,6 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
     }).then(() => {
         after_click_monitor(button_type)
     })
-
 })
 
 /**
