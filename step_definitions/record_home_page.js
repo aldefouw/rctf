@@ -10,7 +10,6 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance'
  * @description Clicks on an instrument / event pairing to add a record on the Record Home Page
  */
-
 Given('I click the (bubble)("X" icon)( to ){addOrSelect}( )(a record for the)(for the row labeled)( ){string}( longitudinal)( instrument) on (the)( )(event)( column labeled)( ){string}{cellAction}', (verb, instrument, event, cell_action = '') => {
     let repeating = false
 

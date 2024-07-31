@@ -142,9 +142,6 @@ Given('I {userRightAction} all Basic Rights within the open User Rights dialog b
 
 })
 
-// Achieves same result as Adam's "I grant {dataViewingRights} level of Data Entry Rights on the {string} instrument for the username {string} for project ID {int}"
-// However, the old method uses a cy.visit which we are trying to move away from. This also eliminates unnecessary parameters,
-// but requires that the user rights configuration dialog is open
 /**
  * @module UserRights
  * @author Corey DeBacker <debacker@wisc.edu>

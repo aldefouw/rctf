@@ -24,7 +24,6 @@ Given("I click on the bubble for the {string} data collection instrument for {re
  * @param {string} cellAction - available options: ' and click the new instance link', ' and click on the bubble', ' and click the repeating instrument bubble for the first instance', ' and click the repeating instrument bubble for the second instance', ' and click the repeating instrument bubble for the third instance'
  * @description Clicks on a bubble within the Record Status Dashboard based upon record ID and the longitudinal data instrument specified within an event.
  */
-
 Given("I locate the bubble for the {string} instrument on event {string} for record ID {string}{cellAction}", (instrument, event, record_id, cell_action) => {
     cy.get_record_status_dashboard(event, instrument, record_id, cell_action)
 })
@@ -37,7 +36,6 @@ Given("I locate the bubble for the {string} instrument on event {string} for rec
  * @param {string} arm_name - name of the arm as displayed in the dropdown menu (e.g. Arm 1: Arm 1)
  * @description Selects a specific record from the Add / Edit record page
  */
-
 Given(/I select record ID "(.*)" from arm name "(.*)" on the (Add|View) \/ Edit record page$/, (record_id, arm_name) => {
     cy.get('select#arm_name').select(arm_name)
     cy.get('select#record').select(record_id)
@@ -51,12 +49,9 @@ Given(/I select record ID "(.*)" from arm name "(.*)" on the (Add|View) \/ Edit 
  * @param {string} event - name of the event displayed on the Record Home Page
  * @description Activates a pop-up confirming that user wants to delete all data on a specific even within a record
  */
-
 Given("I click the X to delete all data related to the event named {string}", (event) => {
     cy.table_cell_by_column_and_row_label(event, "Delete all data on event").then(($td) => {
         cy.wrap($td).find('a:visible:first').click()
         cy.get('.ui-dialog').should('contain.text', 'DELETE ALL DATA ON THIS EVENT INSTANCE')
     })
 })
-
-

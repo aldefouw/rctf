@@ -8,7 +8,6 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @param {string} admin_user - the name of the user you are setting the privilege for
  * @description Enables the privilege for the administrator based upon user.
  */
-
 Given('I {enableDisable} the Administrator Privilege {string} for the administrator {string}', (action, privilege, admin_user) => {
     cy.intercept({ method: 'POST', url: '*saveAdminPriv*'}).as('admin_privileges')
 
@@ -102,7 +101,6 @@ Given('I click on the "{toDoTableIcons}" icon for the "{toDoRequestTypes}" reque
  * @param {string} toDoTableTypes - available options: 'Pending Requests', 'Low Priority Pending Requests', 'Completed & Archived Requests'
  * @description Identifies Request Type within the To-Do-List page based upon Project Name, and Table Name specified.
  */
-
 Given('I (should )see the "{toDoRequestTypes}" request created for the project named {string} within the "{toDoTableTypes}" table', (request_type, project_name, table_name) => {
     cy.get(`.${window.toDoListTables[table_name]}`).within(() => {
         cy.get(`.request-container:contains("${project_name}"):has(.type:contains("${request_type}"))`)
