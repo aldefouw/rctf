@@ -227,3 +227,16 @@ Given("I verify the Data Collection Instrument named {string} is disabled for th
 Given("I verify the Data Collection Instrument named {string} is unmodifiable for the Event named {string}", (instrument_name, event_name) => {
    cy.adjust_or_verify_instrument_event(instrument_name, event_name, false, true, true)
 })
+
+/**
+ * @module LongitudinalProjectSetup
+ * @author Mintoo Xavier <min2xavier@gmail.com>
+ * @example I should NOT see the Delete image for the event named {string}
+ * @param {string} eventName - name of event in row where X would be
+ * @description Verifies the Delete image for the event is not present
+ */
+Given("I should NOT see the Delete image for the Event named {string}", (event_name) => {
+   cy.get(window.tableMappings['define events']).find('td').contains(event_name).parents('tr').within((tr) => {
+      expect(tr).to.not.have.descendants(window.onlineDesignerFieldIcons['Delete'])
+   })
+})
