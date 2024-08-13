@@ -51,7 +51,7 @@ module.exports = (cypressOn, config) => {
 
     on('file:preprocessor', (file) => {
         // Determine if Cypress is running in interactive mode (i.e. npx cypress open)
-        const interactiveMode = config.isTextTerminal
+        const interactiveMode = !config.isTextTerminal
 
         //This will attempt to watch files locally if in 'npx cypress open' mode
         file.shouldWatch = interactiveMode
