@@ -24,9 +24,7 @@
     "reflect-metadata": "0.2.2"
   },
   "devDependencies": {
-    "cypress-on-fix": "^1.0.3",
-    "documentation": "git://github.com/documentationjs/documentation#97e9361",
-    "redcap_cypress_doc_theme": "git://github.com/aldefouw/redcap_cypress_doc_theme#777b0a0"
+    "cypress-on-fix": "^1.0.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
