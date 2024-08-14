@@ -49,25 +49,10 @@ module.exports = (cypressOn, config) => {
         plugins: [createEsbuildPlugin(config)],
     })
 
-    on('file:preprocessor', (file) => {
-        // Determine if Cypress is running in interactive mode (i.e. npx cypress open)
-        const interactiveMode = !config.isTextTerminal
-
-        //This will attempt to watch files locally if in 'npx cypress open' mode
-        file.shouldWatch = interactiveMode
-
-        //This is the path where the file is cached / bundled
-        const bundlePath = file.outputPath
-
-        //Let's check to make sure this file is really here
-        if(interactiveMode || fs.existsSync(bundlePath)){
-            return bundler(file)
-
-        // If not in interactive mode OR file does not exist, turn off watching
-        } else {
-            file.shouldWatch = false
-            return bundler(file)
-        }
+    on('file:preprocessor', async (file) => {
+        //Attempt to watch files locally if we're in `npx cypress open` mode
+        file.shouldWatch = !config.isTextTerminal
+        return await bundler(file)
     })
 
     on("before:run", async (details) => {
