@@ -6,7 +6,7 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  * @example I upload a {string} format file located at {string}, by clicking the button near {string} to browse for the file, and clicking the button labeled {string} to upload the file
  * @param {string} format - the format of the file that is being uploaded (e.g. csv)
  * @param {string} file_location - the location of the file being uploaded (e.g. import_files/core/filename.csv)
- * @param {string} uplaod_label - text near the upload label
+ * @param {string} upload_label - text near the upload label
  * @param {string} button_label - text on the button you click to upload
  * @description Imports well-formed REDCap data import file (of specific type) to a specific project given a Project ID.
  */
