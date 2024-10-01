@@ -306,9 +306,8 @@ Given("I (should )see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButt
             return expect($elm).length.to.be.greaterThan(0)
         }).then((next_section) => {
 
-            if (window.elementChoices[base_element] === 'iframe' || base_element === ' in the dialog box') {
+            if (iframe === " in the iframe" || window.elementChoices[base_element] === 'iframe' || base_element === ' in the dialog box') {
                 base.within(($elm) => {
-
                     cy.wrap($elm).find(sel).should('contain', text)
 
                     if (disabled_text === "is disabled") {
