@@ -513,7 +513,7 @@ Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {strin
                               cy.wrap($parent).parent().find(element).
                                 click({force: true}).
                                 invoke('attr', 'contenteditable', 'true').
-                                type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
+                                type(`{selectall} {backspace} {backspace} ${text}`, {force: true, delay: 100})
                             } else {
                                 cy.wrap($parent).parent().find(element).clear().type(text)
                             }
