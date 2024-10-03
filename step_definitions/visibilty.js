@@ -11,17 +11,20 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 Given("I {notSee} see {string}{baseElement}", (not_see, text, base_element = '') => {
     cy.not_loading()
 
-    //If we don't detect it anywhere
-    if(Cypress.$(`${window.elementChoices[base_element]}:contains(${JSON.stringify(text)})`).length === 0){
-        expect('html').to.not.contain(text)
-    //If we do detect the text, let us make sure it is not visible on-screen
-    } else {
-        cy.contains(text).then(($elm) => {
-            cy.wait_to_hide_or_detach($elm).then(() => {
-                expect('html').to.not.contain(text)
+    cy.get(window.elementChoices[base_element]).then($elm => {
+        const numberOfOccurences = $elm.find(`:contains(${JSON.stringify(text)})`).length
+        //If we don't detect it anywhere
+        if(numberOfOccurences === 0){
+            expect('html').to.not.contain(text)
+        //If we do detect the text, let us make sure it is not visible on-screen
+        } else {
+            cy.contains(text).then(($elm) => {
+                cy.wait_to_hide_or_detach($elm).then(() => {
+                    expect('html').to.not.contain(text)
+                })
             })
-        })
-    }
+        }
+    })
 })
 
 /**
