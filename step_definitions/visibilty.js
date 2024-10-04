@@ -12,9 +12,14 @@ Given("I {notSee} see {string}{baseElement}", (not_see, text, base_element = '')
     cy.not_loading()
 
     cy.get(window.elementChoices[base_element]).then($elm => {
-        const numberOfOccurences = $elm.find(`:contains(${JSON.stringify(text)})`).length
+        /**
+         * We use innerText.indexOf() rather than the ':contains()' selector
+         * to avoid matching text within hidden tags and <script> tags
+         * that is not actually displayed.
+         */
+        const index = $elm.get(0).innerText.indexOf(text)
         //If we don't detect it anywhere
-        if(numberOfOccurences === 0){
+        if(index === -1){
             expect('html').to.not.contain(text)
         //If we do detect the text, let us make sure it is not visible on-screen
         } else {
