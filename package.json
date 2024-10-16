@@ -24,10 +24,11 @@
     "reflect-metadata": "0.2.2"
   },
   "devDependencies": {
-    "cypress-on-fix": "^1.0.3"
+    "cypress-on-fix": "^1.0.3",
+    "sinon": "^19.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm install http-server --no-save --silent && npx http-server ./tests/ -p 6060 && npx cypress open",
     "docs:build": "./node_modules/.bin/documentation build /step_definitions/* -f html --theme node_modules/redcap_cypress_doc_theme/index.js -o docs",
     "generate:hints": "node write_hints.js",
     "install:dev": "NODE_ENV=development npm install --save-dev @cypress/browserify-preprocessor",
