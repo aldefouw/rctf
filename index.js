@@ -50,16 +50,20 @@ function rctf_initialize(preprocessor) {
 
     //This is where we initialize the stuff we need in a basic install
     before(() => {
+        const isTestMode = Cypress.env('testMode') || false
         load_support_files()
-        set_user_info()
         intercept_vanderbilt_requests()
-        set_timezone()
-        reset_database()
+        if(isTestMode){
+            cy.visit('/')
+        } else {
+            set_user_info()
+            set_timezone()
+            reset_database()
+        }
         window.lastAlert = []
     })
 
     BeforeStep((options) => {
-
         //Get last alert
         cy.on('window:alert', (str) => {
             if(!window.lastAlert.includes(str)){
