@@ -930,7 +930,7 @@ Given("I close the iframe window", () => {
  * @description Closes the pop up
  */
 Given("I close the popup", () => {
-    cy.get('button').contains("Close").click()
+    cy.click_on_dialog_button("Close")
 })
 
 /**
