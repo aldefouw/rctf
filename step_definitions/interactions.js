@@ -925,6 +925,16 @@ Given("I close the iframe window", () => {
 
 /**
  * @module Interactions
+ * @author Sumon Chattopadhyay <sumon.chattopadhyay@utah.edu>
+ * @example I close the popup
+ * @description Closes the pop up
+ */
+Given("I close the popup", () => {
+    cy.get('button').contains("Close").click()
+})
+
+/**
+ * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I click on the table heading column labeled {string}
  * @param {string} column - the text to enter into the field
