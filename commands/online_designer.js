@@ -2,6 +2,23 @@
 //# Commands       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z        #
 //#############################################################################
 
+function getFieldAction(type) {
+    switch (type.toLowerCase()) {
+      case 'edit':
+        return 'edit-field';
+      case 'branching logic':
+        return 'branchinglogic';
+      case 'copy':
+        return 'copy-field';
+      case 'move':
+        return 'move-field';
+      case 'delete':
+        return 'delete-field';
+      default:
+        throw new Error(`Unsupported field action type: ${type}`);
+    }
+  }
+
 Cypress.Commands.add('add_field', (field_name, type) => {
     cy.get('input#btn-last').click().then(() => {
         cy.get('select#field_type').select(type).should('have.value', type).then(() => {
@@ -17,7 +34,7 @@ Cypress.Commands.add('click_on_design_field_function', (type, field) => {
     cy.get('td[class=frmedit_row]').
     contains(field).
     parents('tr').
-    find('img[title="' + type + '"]').
+    find(`a[data-field-action="${getFieldAction(type)}"]`).
     click()
 })
 
