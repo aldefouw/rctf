@@ -63,7 +63,18 @@ Given('I (should )see the {dropdownType} field labeled {string} with the option 
         cy.top_layer(label_selector)
 
     outer_element.within(() => {
-        cy.get_labeled_element(element_selector, label).find(':selected').should('have.text', option)
+        if(type === "multiselect"){
+            cy.get_labeled_element(element_selector, label)
+                .find(':selected')
+                .then((options) => {
+                    const selected = Cypress.$(options).map((index, option) => {
+                        return option.innerText
+                    }).get()
+                    expect(selected).to.include(option)
+                })
+        } else {
+            cy.get_labeled_element(element_selector, label).find(':selected').should('have.text', option)
+        }
     })
 })
 
