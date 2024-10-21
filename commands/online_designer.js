@@ -90,39 +90,94 @@ Cypress.Commands.add('select_field_choices', (timeout = 10000) => {
 
 Cypress.Commands.add('select_radio_by_label', ($name, $value, $click = true, $selected = true ) => {
     //const radio_labels = cy.set_field_value_by_label($name, $value, 'input', '', '___radio')
-    cy.get(`tr:visible:has(:contains(${JSON.stringify($name)}))`).first().within(() => {
-        const $label = Cypress.$(`label[class=mc]:contains(${$value})`);
 
-        if ($label.length) {
-            // If label is found
-            if ($click) {
-                cy.get(`label[class=mc]:contains(${$value})`).click()
-            } else {
-                cy.get(`label[class=mc]:contains(${$value})`).parent().find('input[type=radio]')
-                    .should('have.attr', $selected ? 'checked' : 'unchecked')
-            }
-        } else {
-            // Fallback to the nearest radio button - whether that is next or previous parent
-            cy.contains($value).then($text => {
-                const parent = Cypress.$($text).parent()
-                let radio = parent
+    let checkboxElm = null
 
-                if(!parent.find('input[type=radio]').length) {
-                    const prev = parent.prev(':has(input[type=radio])')
-                    const next = parent.next(':has(input[type=radio])')
-                    radio = next.length ? next : prev
-                }
+    const tableOccurences = Cypress.$(`tr:visible:has(:contains(${JSON.stringify($name)}))`)
 
-                if (radio.length) {
-                    if ($click) {
-                        cy.wrap(radio).find('input[type=radio]').click();
-                    } else {
-                        cy.wrap(radio).find('input[type=radio]').should('have.attr', $selected ? 'checked' : 'unchecked');
-                    }
+    if(tableOccurences.length === 0){
+        const label = Cypress.$(`label:contains(${JSON.stringify($value)})`)
+
+        if(label.length){
+            cy.wrap(label).then((label) => {
+                const radioId = label.attr('for')
+                checkboxElm = cy.get(`#${radioId}`)
+                if ($click) {
+                    checkboxElm.click()
+                } else {
+                    checkboxElm.should('have.attr', $selected ? 'checked' : 'unchecked')
                 }
             })
+
+        //This is the case where we have some really poorly formed HTML where all we have is HTML that is mixed inside a DIV
+        } else {
+
+            cy.contains($value)
+                .invoke('prop', 'innerHTML')
+                .then((html) => {
+                    const parts = html.split($value) // Split the innerHTML based on the $value
+                    let foundRadio
+
+                    if (parts[0]) {
+                        const leftSide = parts[0]
+                        foundRadio = Cypress.$(`<div>${leftSide}</div>`).find('input[type="radio"]').last()
+                    }
+
+                    if (!foundRadio && parts[1]) {
+                        const rightSide = parts[1]
+                        foundRadio = Cypress.$(`<div>${rightSide}</div>`).find('input[type="radio"]').first()
+                    }
+
+                    if (foundRadio.length) {
+                        checkboxElm = cy.get(`input[id=${foundRadio.prop('id')}]`)
+                        if ($click) {
+                            checkboxElm.click()
+                        } else {
+                            checkboxElm.should('have.attr', $selected ? 'checked' : 'unchecked')
+                        }
+                    }
+                })
         }
-    })
+
+    } else {
+
+        cy.wrap(tableOccurences).first().within(() => {
+            const $label = Cypress.$(`label[class=mc]:contains(${$value})`);
+
+            if ($label.length) {
+                // If label is found
+                if ($click) {
+                    cy.get(`label[class=mc]:contains(${$value})`).click()
+                } else {
+                    cy.get(`label[class=mc]:contains(${$value})`).parent().find('input[type=radio]')
+                        .should('have.attr', $selected ? 'checked' : 'unchecked')
+                }
+            } else {
+                // Fallback to the nearest radio button - whether that is next or previous parent
+                cy.contains($value).then($text => {
+                    const parent = Cypress.$($text).parent()
+                    let radio = parent
+
+                    if(!parent.find('input[type=radio]').length) {
+                        const prev = parent.prev(':has(input[type=radio])')
+                        const next = parent.next(':has(input[type=radio])')
+                        radio = next.length ? next : prev
+                    }
+
+                    if (radio.length) {
+                        if ($click) {
+                            cy.wrap(radio).find('input[type=radio]').click();
+                        } else {
+                            cy.wrap(radio).find('input[type=radio]').should('have.attr', $selected ? 'checked' : 'unchecked');
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+
+
 })
 
 Cypress.Commands.add('select_text_by_label', ($name, $value) => {
