@@ -43,7 +43,9 @@ Feature: Well Formed HTML selection
 
   Scenario: Select a checkbox without field context
     Given I check the checkbox labeled "Checkbox 2"
+    And I check the checkbox labeled "Checkbox 1"
     Then I should see a checkbox labeled "Checkbox 2" that is checked
+    Then I should see a checkbox labeled "Checkbox 1" that is checked
 
   Scenario: Adjust a slider
     #Given I move the slider field labeled "Slider:" to the position of 3
