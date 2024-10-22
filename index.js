@@ -54,7 +54,21 @@ function rctf_initialize(preprocessor) {
         load_support_files()
         intercept_vanderbilt_requests()
         if(isTestMode){
-            cy.visit('/')
+
+            //When running in "npx cypress open" mode, always get latest feature tests from RCTF
+            if (Cypress.config('isInteractive')) {
+                cy.exec(`npm run rctf:get_step_features`).then((response) => {
+                    cy.waitUntil(() => {
+                        return response.code === 0
+                    }).then(() => {
+                        cy.visit('/')
+                    })
+                })
+            //When running in "npx cypress run" mode
+            } else {
+                cy.visit('/')
+            }
+
         } else {
             set_user_info()
             set_timezone()
