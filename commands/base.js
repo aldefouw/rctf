@@ -35,13 +35,20 @@ Cypress.Commands.add('wait_to_hide_or_detach', (selector, options = {}) => {
 })
 
 Cypress.Commands.add('wait_for_datatables', () => {
-    cy.window().should((win) => {
-        expect(win.$).to.be.a('function')
-    })
+    const isTestMode = Cypress.env('testMode') || false
 
-    return cy.window().then((win) => {
-        return win.$('.dataTable:first:visible').dataTable()
-    })
+    if(isTestMode){
+        return false
+    } else {
+        cy.window().should((win) => {
+            expect(win.$).to.be.a('function')
+        })
+
+        return cy.window().then((win) => {
+            return win.$('.dataTable:first:visible').dataTable()
+        })
+    }
+
 })
 
 Cypress.Commands.add('waitForInitDtEvent', () => {

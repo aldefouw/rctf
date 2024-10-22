@@ -538,7 +538,9 @@ Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the followin
 
     //If records do NOT exist, do not bother looking for data tables to load!
     if(records.length === 0){
-        cy.wait_for_datatables().assertWindowProperties()
+        cy.wait_for_datatables().then((response) => {
+            if(response !== false) response.assertWindowProperties()
+        })
     }
 
     let selector = window.tableMappings[table_type]
