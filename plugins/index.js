@@ -32,6 +32,31 @@ const {
     afterScreenshotHandler,
 } = require("@badeball/cypress-cucumber-preprocessor")
 const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocessor/esbuild")
+const { esbuildPluginIstanbul } = require("esbuild-plugin-istanbul");
+
+const jsPlugin = esbuildPluginIstanbul({
+    filter: /\.[cm]?js$/,
+    loader: "js",
+    name: "istanbul-loader-js",
+});
+
+const jsxPlugin = esbuildPluginIstanbul({
+    filter: /\.jsx$/,
+    loader: "jsx",
+    name: "istanbul-loader-jsx",
+});
+
+const tsPlugin = esbuildPluginIstanbul({
+    filter: /\.[cm]?ts$/,
+    loader: "ts",
+    name: "istanbul-loader-ts",
+});
+
+const tsxPlugin = esbuildPluginIstanbul({
+    filter: /\.tsx$/,
+    loader: "tsx",
+    name: "istanbul-loader-tsx",
+})
 
 module.exports = (cypressOn, config) => {
     let on = cypressOn
@@ -48,7 +73,13 @@ module.exports = (cypressOn, config) => {
     })
 
     const bundler = createBundler({
-        plugins: [createEsbuildPlugin(config)],
+        plugins: [
+            createEsbuildPlugin(config),
+            jsPlugin,
+            jsxPlugin,
+            tsPlugin,
+            tsxPlugin
+        ],
     })
 
     on('file:preprocessor', async (file) => {
