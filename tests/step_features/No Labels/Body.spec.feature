@@ -45,8 +45,17 @@ Feature: No Label HTML/Body selection
     # Does not error but it does not check the correct stuff either ... needs similar strategy to radio options in https://github.com/aldefouw/rctf/commit/9858530
     Given I check the checkbox labeled "Checkbox 2"
     And I check the checkbox labeled "Checkbox 1"
-    Then I should see a checkbox labeled "Checkbox 2" that is checked
-    And I should see a checkbox labeled "Checkbox 1" that is checked
+    Then I should see a checkbox labeled "Checkbox 1" that is checked
+    And I should see a checkbox labeled "Checkbox 2" that is checked
+
+  Scenario: Uncheck a checkbox without field context
+    Given I see a checkbox labeled "Checkbox 1" that is checked
+    And I uncheck the checkbox labeled "Checkbox 1"
+    Then I should see a checkbox labeled "Checkbox 1" that is unchecked
+
+    Given I see a checkbox labeled "Checkbox 2" that is checked
+    And I uncheck the checkbox labeled "Checkbox 2"
+    Then I should see a checkbox labeled "Checkbox 2" that is unchecked
 
   Scenario: Adjust a slider
     #Given I move the slider field labeled "Slider:" to the position of 3
