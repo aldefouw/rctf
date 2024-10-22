@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page for Cypress</title>
+    <title>Text Visibility</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,21 +34,20 @@
     </style>
 </head>
 <body>
-<h1>Well Formed</h1>
-<a href="well-formed/body.html">Well Formed Body</a>
-<br />
-<a href="well-formed/dialog.html">Well Formed Dialog</a>
+<h1>Text Visibility Page</h1>
 
+<div>Text I should see</div>
+<div style="display: none;">Text I should NOT see</div>
 
-<h1>No Label</h1>
-<a href="no-label/body.html">No Label Body</a>
-<br />
-<a href="no-label/dialog.html">No Label Dialog</a>
+<div role="dialog">
+    <div>Dialog Text I should see</div>
+    <div style="display: none;">Dialog Text I should NOT see</div>
+</div>
 
-<h1>Visibility</h1>
-<a href="visibility/text.html">Text Visibility</a>
+<div class="tooltip">
+    <div>Tooltip Text I should see</div>
+    <div style="display: none;">Tooltip Text I should NOT see</div>
+</div>
 
-<h1>Tables</h1>
-<a href="table/logging.html">REDCap Logging Table</a>
 </body>
 </html>
