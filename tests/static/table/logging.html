@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Label HTML</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group span {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            user-select: none;
+        }
+        .tab.active {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>REDCap Logging Table</h1>
+
+<div class="dataTables_processing" style="display: none;">
+    This simulates dataTables processing being done processing.
+</div>
+
+<table class="form_border" style="table-layout: fixed;width:100%;"><tbody><tr>
+    <td class="header" style="border-width:1px;text-align:center;padding:2px 4px 2px 4px;width:150px;">Time / Date</td>
+    <td class="header" style="border-width:1px;text-align:center;padding:2px 4px 2px 4px;width:120px;">Username</td>
+    <td class="header" style="border-width:1px;text-align:center;padding:2px 4px 2px 4px;width:120px;">Action</td>
+    <td class="header" style="border-width:1px;text-align:center;padding:2px 4px 2px 4px;">List of Data Changes<br>OR Fields Exported</td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_admin
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="green">Add user</font><br>test_admin
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        user = 'test_admin'
+    </td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_admin
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="#000066">Update record</font><br>4 <span style="color:#777;">(Event 1 (Arm 1: Arm 1))</span>
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        [instance = 3],<br>
+        record_id = '4'
+    </td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_admin
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="#000066">Update record</font><br>4 <span style="color:#777;">(Event 1 (Arm 1: Arm 1))</span>
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        [instance = 2],<br>
+        record_id = '4'
+    </td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_admin
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="#000066">Update record</font><br>3 <span style="color:#777;">(Event 1 (Arm 1: Arm 1))</span>
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        [instance = 2],<br>
+        record_id = '3'
+    </td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_admin
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="#000066">Update record</font><br>2 <span style="color:#777;">(Event 1 (Arm 1: Arm 1))</span>
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        [instance = 2],<br>
+        record_id = '2'
+    </td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_user
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="#000066">Update record</font><br>1 <span style="color:#777;">(Event 2 (Arm 1: Arm 1))</span>
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        [instance = 2],<br>
+        record_id = '1'
+    </td></tr><tr>
+    <td ts="20241009161848" class="logt" style="width:150px;">
+        10/09/2024 4:18pm
+    </td>
+    <td class="logt" style="width:120px;word-break:break-all;">
+        test_admin
+    </td>
+    <td class="logt" style="width:120px;">
+        <font color="#000066">Manage/Design</font><br>
+    </td>
+    <td class="logt" style="text-align:left;word-break:break-all;">
+        Create project using REDCap XML file
+    </td></tr></tbody></table>
+
+</body>
+</html>
