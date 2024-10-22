@@ -1,10 +1,10 @@
-Feature: Well Formed HTML selection
+Feature: Well Formed HTML/Body selection
 
   As a REDCap tester
   I want to see that I can interact with well-formed HTML properly
 
   Scenario: Go to Well Formed HTML page
-    Given I click on the link labeled "Well Formed HTML"
+    Given I click on the link labeled "Well Formed Body"
     Then I should see "Well Formed HTML"
 
   Scenario: Click on a button

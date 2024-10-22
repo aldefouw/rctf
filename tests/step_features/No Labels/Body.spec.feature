@@ -1,10 +1,10 @@
-Feature: Well Formed HTML selection
+Feature: No Label HTML/Body selection
 
   As a REDCap tester
   I want to see that I can interact with legacy HTML properly
 
   Scenario: Go to Well Formed HTML page
-    Given I click on the link labeled "No Label HTML"
+    Given I click on the link labeled "No Label Body"
     Then I should see "No Label HTML"
 
   Scenario: Click on a button
