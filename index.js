@@ -1,3 +1,5 @@
+require('@cypress/code-coverage/support')
+
 window.compareVersions = require('compare-versions')
 window.escapeStringRegexp = require('escape-string-regexp')
 

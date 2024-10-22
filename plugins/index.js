@@ -37,6 +37,8 @@ module.exports = (cypressOn, config) => {
     let on = cypressOn
     on = require('cypress-on-fix')(cypressOn)
 
+    require('@cypress/code-coverage/task')(on, config)
+
     addCucumberPreprocessorPlugin(on, config, {
         omitBeforeRunHandler: true,
         omitAfterRunHandler: true,
