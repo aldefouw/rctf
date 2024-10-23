@@ -45,8 +45,6 @@ function load_support_files(){
 function rctf_initialize(preprocessor) {
 
     const { Given, BeforeStep, defineParameterType } = preprocessor
-
-
     load_core_step_definitions(Given, defineParameterType)
 
     //This is where we initialize the stuff we need in a basic install
