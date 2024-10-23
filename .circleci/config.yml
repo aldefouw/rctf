@@ -1,0 +1,96 @@
+orbs:
+  codecov: codecov/codecov@4.0.1
+
+workflows:
+  version: 2
+  workflows:
+    jobs:
+      - run-tests:
+          context: RCTF Unit Tests
+#      - html-reports:
+#          context: HTML Reports
+#          requires:
+#            - run-tests
+
+jobs:
+  run-tests:
+    machine:
+      image: ubuntu-2404:2024.05.1 # Machine image updates: https://circleci.com/developer/machine/image/ubuntu-2404
+      resource_class: large
+#    parallelism: 28
+    steps:
+      - run:
+          name: Get REDCap Source
+          command: |
+            git clone --branch v14.7.0 https://github.com/aldefouw/redcap_cypress
+      - run:
+          name: Configure Cypress environment
+          command: |
+            cd /home/circleci/project/redcap_cypress
+            sed s/PID/$PROJECT_ID/g cypress.config.js.example > cypress.config.js
+            mv cypress.env.json.example cypress.env.json
+      - run:
+          name: Install Cypress
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use stable
+            npm run clean
+      - run:
+          name: Launch Test Server
+          command: |
+            npm run rctf:test_server
+      - run:
+          name: Run Tests
+          command: |
+            npm run rctf:run_step_tests
+      - run:
+          name: Debug Workspace Contents
+          command: ls -l /home/circleci/project/redcap_cypress/step-coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - redcap_cypress/step-coverage
+      - store_artifacts:
+          path: /home/circleci/project/redcap_cypress/step-coverage
+          destination: /home/circleci/project/redcap_cypress/step-coverage
+
+#  html-reports:
+#    machine:
+#      image: ubuntu-2404:2024.05.1 # Machine image updates: https://circleci.com/developer/machine/image/ubuntu-2404
+#      resource_class: large
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: /home/circleci/project/redcap_cypress/step-coverage
+#      - run:
+#          name: Get REDCap Source
+#          command: |
+#            cd /home/circleci/project/
+#            git clone --branch redcap-cypress https://github.com/aldefouw/redcap_source
+#      - run:
+#          name: Start Docker REDCap Container
+#          command: |
+#            cd /home/circleci/project/redcap_docker
+#            docker-compose up -d
+#      - run:
+#          name: Coverage Report
+#          command: |
+#            docker exec -i redcap_docker-app-1 php /var/www/html/phpcov.phar merge --html /tmp/path/coverage-report/html-report /tmp/path/coverage
+#      - run:
+#          name: Push to Repository
+#          command: |
+#            sudo zip -r "/home/circleci/project/redcap_source/html-report-${REDCAP_VERSION}.zip" /home/circleci/project/coverage-report/html-report/*
+#            cd /home/circleci/project/redcap_source
+#            git add "html-report-${REDCAP_VERSION}.zip"
+#            git commit -m "Add latest HTML Report for version ${REDCAP_VERSION}"
+#            git push origin redcap-cypress
+
+#      - store_artifacts:
+#          path: /home/circleci/project/redcap_cypress/step-coverage
+#          destination: /home/circleci/project/redcap_cypress/step-coverage
+#
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - redcap_cypress/step-coverage
