@@ -7,10 +7,6 @@ workflows:
     jobs:
       - run-tests:
           context: RCTF Unit Tests
-#      - html-reports:
-#          context: HTML Reports
-#          requires:
-#            - run-tests
 
 jobs:
   run-tests:
@@ -69,11 +65,12 @@ jobs:
       - run:
           name: Move Step Coverage to RCTF
           command: |            
-            mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/rctf/step-coverage
+            mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/rctf/docs
             cd /home/circleci/project/rctf/
             git add .
+            git checkout test-coverage
             git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-            git push origin
+            git push origin test-coverage
       - persist_to_workspace:
           root: .
           paths:
@@ -81,43 +78,3 @@ jobs:
       - store_artifacts:
           path: /home/circleci/project/rctf/step-coverage
           destination: /home/circleci/project/rctf/step-coverage
-
-#  html-reports:
-#    machine:
-#      image: ubuntu-2404:2024.05.1 # Machine image updates: https://circleci.com/developer/machine/image/ubuntu-2404
-#      resource_class: large
-#    steps:
-#      - checkout
-#      - attach_workspace:
-#          at: /home/circleci/project/redcap_cypress/step-coverage
-#      - run:
-#          name: Get REDCap Source
-#          command: |
-#            cd /home/circleci/project/
-#            git clone --branch redcap-cypress https://github.com/aldefouw/redcap_source
-#      - run:
-#          name: Start Docker REDCap Container
-#          command: |
-#            cd /home/circleci/project/redcap_docker
-#            docker-compose up -d
-#      - run:
-#          name: Coverage Report
-#          command: |
-#            docker exec -i redcap_docker-app-1 php /var/www/html/phpcov.phar merge --html /tmp/path/coverage-report/html-report /tmp/path/coverage
-#      - run:
-#          name: Push to Repository
-#          command: |
-#            sudo zip -r "/home/circleci/project/redcap_source/html-report-${REDCAP_VERSION}.zip" /home/circleci/project/coverage-report/html-report/*
-#            cd /home/circleci/project/redcap_source
-#            git add "html-report-${REDCAP_VERSION}.zip"
-#            git commit -m "Add latest HTML Report for version ${REDCAP_VERSION}"
-#            git push origin redcap-cypress
-
-#      - store_artifacts:
-#          path: /home/circleci/project/redcap_cypress/step-coverage
-#          destination: /home/circleci/project/redcap_cypress/step-coverage
-#
-#      - persist_to_workspace:
-#          root: .
-#          paths:
-#            - redcap_cypress/step-coverage
