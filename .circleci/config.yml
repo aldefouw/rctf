@@ -24,6 +24,7 @@ jobs:
           name: Move contents to sub-directory
           command: |
             mkdir -p rctf
+            find . -maxdepth 1 ! -name 'rctf' -exec mv {} rctf/ \;
       - run:
           name: NVM & NPM initialization
           command: |
