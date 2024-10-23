@@ -21,7 +21,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Move contents to sub-directory
+          name: Checkout latest RCTF from current branch
           command: |
             mkdir -p rctf
             find . -maxdepth 1 ! -name 'rctf' -exec mv {} rctf/ \;
@@ -71,7 +71,8 @@ jobs:
           command: |            
             mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/rctf/step-coverage
             cd /home/circleci/project/rctf/
-            git commit -m "Add latest Code Coverage report for RCTF"
+            git add .
+            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
             git push origin
       - persist_to_workspace:
           root: .
