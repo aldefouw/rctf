@@ -38,24 +38,6 @@ const jsPlugin = esbuildPluginIstanbul({
     filter: /\.[cm]?js$/,
     loader: "js",
     name: "istanbul-loader-js",
-});
-
-const jsxPlugin = esbuildPluginIstanbul({
-    filter: /\.jsx$/,
-    loader: "jsx",
-    name: "istanbul-loader-jsx",
-});
-
-const tsPlugin = esbuildPluginIstanbul({
-    filter: /\.[cm]?ts$/,
-    loader: "ts",
-    name: "istanbul-loader-ts",
-});
-
-const tsxPlugin = esbuildPluginIstanbul({
-    filter: /\.tsx$/,
-    loader: "tsx",
-    name: "istanbul-loader-tsx",
 })
 
 module.exports = (cypressOn, config) => {
@@ -75,10 +57,7 @@ module.exports = (cypressOn, config) => {
     const bundler = createBundler({
         plugins: [
             createEsbuildPlugin(config),
-            jsPlugin,
-            jsxPlugin,
-            tsPlugin,
-            tsxPlugin
+            jsPlugin
         ],
     })
 
