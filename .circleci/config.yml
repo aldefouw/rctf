@@ -47,6 +47,7 @@ jobs:
           name: Run Tests
           command: |
             cd /home/circleci/project/redcap_cypress
+            lsof -i :6060
             npm run rctf:run_step_tests
       - run:
           name: Debug Workspace Contents
