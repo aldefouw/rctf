@@ -71,11 +71,7 @@ jobs:
           command: |            
             mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/rctf/docs
             mv /home/circleci/project/redcap_cypress/.nyc_output/out.json /home/circleci/project/rctf/docs/out.json
-#            cd /home/circleci/project/rctf/
-#            git checkout -b test-coverage
-#            git add .
-#            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-#            git push origin test-coverage
+
       - persist_to_workspace:
           root: .
           paths:
@@ -93,8 +89,7 @@ jobs:
           name: Push to Repository
           command: |
             mv /home/circleci/project/rctf/docs /home/circleci/project/docs 
-            
-#            git checkout -b test-coverage
-#            git add .
-#            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-#            git push origin test-coverage  -
+            git checkout -b test-coverage
+            git add .
+            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
+            git push origin test-coverage  - f
