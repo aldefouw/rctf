@@ -80,18 +80,18 @@ jobs:
           paths:
             - rctf/docs
 
-    html-reports:
-      machine:
-        image: ubuntu-2404:2024.05.1 # Machine image updates: https://circleci.com/developer/machine/image/ubuntu-2404
-        resource_class: large
-      steps:
-        - attach_workspace:
-            at: /home/circleci/project/rctf/
-        - run:
-            name: Push to Repository
-            command: |
-              cd /home/circleci/project/rctf/
-              git checkout -b test-coverage
-              git add .
-              git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-              git push origin test-coverage  -     
+  html-reports:
+    machine:
+      image: ubuntu-2404:2024.05.1 # Machine image updates: https://circleci.com/developer/machine/image/ubuntu-2404
+      resource_class: large
+    steps:
+      - attach_workspace:
+          at: /home/circleci/project/rctf/
+      - run:
+          name: Push to Repository
+          command: |
+            cd /home/circleci/project/rctf/
+            git checkout -b test-coverage
+            git add .
+            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
+            git push origin test-coverage  -     
