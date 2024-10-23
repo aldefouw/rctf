@@ -24,7 +24,6 @@ jobs:
           name: Move contents to sub-directory
           command: |
             mkdir -p rctf
-            mv * rctf/
       - run:
           name: NVM & NPM initialization
           command: |
