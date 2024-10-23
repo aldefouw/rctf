@@ -42,8 +42,8 @@ jobs:
           name: Launch Test Server
           command: |
             cd /home/circleci/project/redcap_cypress
-            npm run rctf:install_server
-            npm run rctf:run_server
+            npm install http-server --no-save --silent 
+            npx http-server node_modules/rctf/tests/static/ -p 6060 > http-server.log 2>&1 &
       - run:
           name: Run Tests
           command: |
