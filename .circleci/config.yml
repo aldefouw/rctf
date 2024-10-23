@@ -41,10 +41,12 @@ jobs:
       - run:
           name: Launch Test Server
           command: |
+            cd /home/circleci/project/redcap_cypress
             npm run rctf:test_server
       - run:
           name: Run Tests
           command: |
+            cd /home/circleci/project/redcap_cypress
             npm run rctf:run_step_tests
       - run:
           name: Debug Workspace Contents
