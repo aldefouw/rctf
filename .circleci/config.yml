@@ -70,6 +70,7 @@ jobs:
           name: Move Step Coverage to RCTF
           command: |            
             mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/rctf/docs
+            mv /home/circleci/project/redcap_cypress/.nyc_output/out.json /home/circleci/project/rctf/docs/out.json
 #            cd /home/circleci/project/rctf/
 #            git checkout -b test-coverage
 #            git add .
@@ -85,13 +86,15 @@ jobs:
       image: ubuntu-2404:2024.05.1 # Machine image updates: https://circleci.com/developer/machine/image/ubuntu-2404
       resource_class: large
     steps:
+      - checkout
       - attach_workspace:
-          at: /home/circleci/project/rctf/
+          at: /home/circleci/project/
       - run:
           name: Push to Repository
           command: |
-            cd /home/circleci/project/rctf/
-            git checkout -b test-coverage
-            git add .
-            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-            git push origin test-coverage  -     
+            mv /home/circleci/project/rctf/docs /home/circleci/project/docs 
+            
+#            git checkout -b test-coverage
+#            git add .
+#            git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
+#            git push origin test-coverage  -
