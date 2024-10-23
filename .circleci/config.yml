@@ -42,7 +42,7 @@ jobs:
           name: Launch Test Server
           command: |
             cd /home/circleci/project/redcap_cypress
-            npm run rctf:test_server
+            npm run rctf:test_server 
       - run:
           name: Run Tests
           command: |
