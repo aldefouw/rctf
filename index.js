@@ -46,7 +46,7 @@ function rctf_initialize(preprocessor) {
 
     const { Given, BeforeStep, defineParameterType } = preprocessor
 
-    intercept_vanderbilt_requests()
+
     load_core_step_definitions(Given, defineParameterType)
 
     //This is where we initialize the stuff we need in a basic install
@@ -69,6 +69,7 @@ function rctf_initialize(preprocessor) {
             }
 
         } else {
+            intercept_vanderbilt_requests()
             set_user_info()
             set_timezone()
             reset_database()
