@@ -47,7 +47,7 @@ jobs:
           name: Run Tests
           command: |
             cd /home/circleci/project/redcap_cypress
-            npm run rctf:run_step_tests
+            npm run rctf:run_official_step_tests
       - run:
           name: Debug Workspace Contents
           command: ls -l /home/circleci/project/redcap_cypress/step-coverage
