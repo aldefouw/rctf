@@ -42,13 +42,13 @@ jobs:
           name: Launch Test Server
           command: |
             cd /home/circleci/project/redcap_cypress
-            npm run rctf:test_server
+            npm install http-server --no-save --silent 
+            npx http-server node_modules/rctf/tests/static/ -p 6060 > http-server.log 2>&1 &
       - run:
           name: Run Tests
           command: |
             cd /home/circleci/project/redcap_cypress
-            npm install http-server --no-save --silent 
-            npx http-server node_modules/rctf/tests/static/ -p 6060 > http-server.log 2>&1 &
+            npm run rctf:run_step_tests
       - run:
           name: Debug Workspace Contents
           command: ls -l /home/circleci/project/redcap_cypress/step-coverage
