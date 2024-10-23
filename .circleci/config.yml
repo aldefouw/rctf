@@ -20,7 +20,7 @@ jobs:
 #    parallelism: 28
     steps:
       - run:
-          name: Get REDCap Source
+          name: Get REDCap Cypress
           command: |
             git clone --branch v14.7.0 https://github.com/aldefouw/redcap_cypress
       - run:
@@ -29,6 +29,7 @@ jobs:
             cd /home/circleci/project/redcap_cypress
             sed s/PID/$PROJECT_ID/g cypress.config.js.example > cypress.config.js
             mv cypress.env.json.example cypress.env.json
+            ls -l /home/circleci/project/redcap_cypress/
       - run:
           name: Install Cypress
           command: |
