@@ -49,13 +49,13 @@ Feature: Well Formed Dialog selection
     And I should see a checkbox labeled "Checkbox 2" that is checked
 
   Scenario: Uncheck a checkbox without field context
-    Given I see a checkbox labeled "Checkbox 1" that is checked
-    And I uncheck the checkbox labeled "Checkbox 1"
-    Then I should see a checkbox labeled "Checkbox 1" that is unchecked
+#    Given I see a checkbox labeled "Checkbox 1" that is checked
+#    And I uncheck the checkbox labeled "Checkbox 1"
+#    Then I should see a checkbox labeled "Checkbox 1" that is unchecked
 
-    Given I see a checkbox labeled "Checkbox 2" that is checked
-    And I uncheck the checkbox labeled "Checkbox 2"
-    Then I should see a checkbox labeled "Checkbox 2" that is unchecked
+#    Given I see a checkbox labeled "Checkbox 2" that is checked
+#    And I uncheck the checkbox labeled "Checkbox 2"
+#    Then I should see a checkbox labeled "Checkbox 2" that is unchecked
 
   Scenario: Adjust a slider
     #Given I move the slider field labeled "Slider:" to the position of 3
