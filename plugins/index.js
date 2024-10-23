@@ -83,8 +83,7 @@ module.exports = (cypressOn, config) => {
     })
 
     on('file:preprocessor', async (file) => {
-        //Attempt to watch files locally if we're in `npx cypress open` mode
-        file.shouldWatch = !config.isTextTerminal
+        file.shouldWatch = true
         return await bundler(file)
     })
 
