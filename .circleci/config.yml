@@ -7,7 +7,7 @@ workflows:
     jobs:
       - run-tests:
           context: RCTF Unit Tests
-       - html-reports:
+      - html-reports:
           context: HTML Reports
           requires:
             - run-tests
