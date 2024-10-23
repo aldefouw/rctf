@@ -46,15 +46,12 @@ function rctf_initialize(preprocessor) {
 
     const { Given, BeforeStep, defineParameterType } = preprocessor
 
-    load_support_files()
-    load_core_commands()
+    intercept_vanderbilt_requests()
     load_core_step_definitions(Given, defineParameterType)
 
     //This is where we initialize the stuff we need in a basic install
     before(() => {
         const isTestMode = Cypress.env('testMode') || false
-        load_support_files()
-        intercept_vanderbilt_requests()
         if(isTestMode){
 
             //When running in "npx cypress open" mode, always get latest feature tests from RCTF
