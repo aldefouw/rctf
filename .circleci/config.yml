@@ -19,6 +19,11 @@ jobs:
       resource_class: large
 #    parallelism: 28
     steps:
+      - checkout
+      - run: NVM & NPM initialization
+        command: |
+          export NVM_DIR="/opt/circleci/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
       - run:
           name: Get REDCap Cypress
           command: |
@@ -33,8 +38,6 @@ jobs:
       - run:
           name: Install Cypress
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /home/circleci/project/redcap_cypress
             nvm use stable
             npm run clean
@@ -51,14 +54,16 @@ jobs:
             npm run rctf:run_official_step_tests
       - run:
           name: Debug Workspace Contents
-          command: ls -l /home/circleci/project/redcap_cypress/step-coverage
+          command: |
+            ls -l /home/circleci/project/redcap_cypress/step-coverage
+            mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/step-coverage
       - persist_to_workspace:
           root: .
           paths:
-            - redcap_cypress/step-coverage
+            - step-coverage
       - store_artifacts:
-          path: /home/circleci/project/redcap_cypress/step-coverage
-          destination: /home/circleci/project/redcap_cypress/step-coverage
+          path: /home/circleci/project/step-coverage
+          destination: /home/circleci/project/step-coverage
 
 #  html-reports:
 #    machine:
