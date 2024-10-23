@@ -25,6 +25,7 @@ jobs:
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use stable
       - run:
           name: Get REDCap Cypress
           command: |
@@ -40,7 +41,6 @@ jobs:
           name: Install Cypress
           command: |
             cd /home/circleci/project/redcap_cypress
-            nvm use stable
             npm run clean
       - run:
           name: Launch Test Server
