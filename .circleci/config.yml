@@ -23,7 +23,7 @@ jobs:
           name: Get REDCap Cypress
           command: |
             git clone --branch v14.7.0 https://github.com/aldefouw/redcap_cypress
-      - run:
+      - run: 
           name: Configure Cypress environment
           command: |
             cd /home/circleci/project/redcap_cypress
