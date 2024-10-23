@@ -20,7 +20,8 @@ jobs:
 #    parallelism: 28
     steps:
       - checkout
-      - run: NVM & NPM initialization
+      - run:
+        name: NVM & NPM initialization
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
