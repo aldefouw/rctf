@@ -92,4 +92,4 @@ jobs:
             git checkout -b test-coverage
             git add .
             git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-            git push origin test-coverage  - f
+            git push origin test-coverage -f
