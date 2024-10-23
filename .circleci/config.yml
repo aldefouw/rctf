@@ -70,11 +70,4 @@ jobs:
             git add .
             git checkout test-coverage
             git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
-            git push origin test-coverage
-      - persist_to_workspace:
-          root: .
-          paths:
-            - rctf/step-coverage
-      - store_artifacts:
-          path: /home/circleci/project/rctf/step-coverage
-          destination: /home/circleci/project/rctf/step-coverage
+            git push origin test-coverage -f
