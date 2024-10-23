@@ -21,14 +21,22 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Move contents to sub-directory
+          command: |
+            mkdir -p rctf
+            mv * rctf/
+      - run:
           name: NVM & NPM initialization
           command: |
+            cd /home/circleci/project/rctf
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use stable
+            npm link
       - run:
           name: Get REDCap Cypress
           command: |
+            cd /home/circleci/project/
             git clone --branch v14.7.0 https://github.com/aldefouw/redcap_cypress
       - run: 
           name: Configure Cypress environment
@@ -42,6 +50,7 @@ jobs:
           command: |
             cd /home/circleci/project/redcap_cypress
             npm run clean
+            npm link rctf
       - run:
           name: Launch Test Server
           command: |
@@ -57,14 +66,20 @@ jobs:
           name: Debug Workspace Contents
           command: |
             ls -l /home/circleci/project/redcap_cypress/step-coverage
-            mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/step-coverage
+      - run:
+          name: Move Step Coverage to RCTF
+          command: |            
+            mv /home/circleci/project/redcap_cypress/step-coverage /home/circleci/project/rctf/step-coverage
+            cd /home/circleci/project/rctf/
+            git commit -m "Add latest Code Coverage report for RCTF"
+            git push origin
       - persist_to_workspace:
           root: .
           paths:
-            - step-coverage
+            - rctf/step-coverage
       - store_artifacts:
-          path: /home/circleci/project/step-coverage
-          destination: /home/circleci/project/step-coverage
+          path: /home/circleci/project/rctf/step-coverage
+          destination: /home/circleci/project/rctf/step-coverage
 
 #  html-reports:
 #    machine:
