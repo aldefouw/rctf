@@ -21,11 +21,11 @@ jobs:
     steps:
       - checkout
       - run:
-        name: NVM & NPM initialization
-        command: |
-          export NVM_DIR="/opt/circleci/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm use stable
+          name: NVM & NPM initialization
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use stable
       - run:
           name: Get REDCap Cypress
           command: |
