@@ -62,7 +62,7 @@ module.exports = (cypressOn, config) => {
     })
 
     on('file:preprocessor', async (file) => {
-        file.shouldWatch = true
+        file.shouldWatch = !config.isTextTerminal
         return await bundler(file)
     })
 
