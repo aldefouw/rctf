@@ -62,7 +62,6 @@ module.exports = (cypressOn, config) => {
     })
 
     on('file:preprocessor', async (file) => {
-        file.shouldWatch = true
         return await bundler(file)
     })
 
