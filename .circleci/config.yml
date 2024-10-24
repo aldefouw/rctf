@@ -32,8 +32,6 @@ jobs:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use stable
-            npm install
-            npm link
       - run:
           name: Get REDCap Cypress
           command: |
@@ -51,7 +49,6 @@ jobs:
           command: |
             cd /home/circleci/project/redcap_cypress
             npm run clean
-            npm link rctf
       - run:
           name: Launch Test Server
           command: |
@@ -61,7 +58,11 @@ jobs:
       - run:
           name: Run Tests
           command: |
+            cd /home/circleci/project/rctf
+            npm install
+            npm link
             cd /home/circleci/project/redcap_cypress
+            npm link rctf
             npm run rctf:run_official_step_tests
       - run:
           name: Debug Workspace Contents
