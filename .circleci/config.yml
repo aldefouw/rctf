@@ -91,6 +91,7 @@ jobs:
           name: Push to Repository
           command: |
             git checkout test-coverage
+            rm -rf /home/circleci/project/docs/latest
             mkdir /home/circleci/project/docs/latest
             mv /home/circleci/project/rctf/docs /home/circleci/project/docs/latest
             sh update_test_coverage_pages.sh
