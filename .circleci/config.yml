@@ -90,9 +90,10 @@ jobs:
       - run:
           name: Push to Repository
           command: |
+            git checkout test-coverage
+            mkdir /home/circleci/project/docs/latest
             mv /home/circleci/project/rctf/docs /home/circleci/project/docs/latest
-            
-            git checkout -b test-coverage
+            sh update_test_coverage_pages.sh
             git add .
             git commit -m "Add latest Code Coverage report for RCTF [skip ci]"
             git push origin test-coverage -f
