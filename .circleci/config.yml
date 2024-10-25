@@ -63,7 +63,7 @@ jobs:
             npm link
             cd /home/circleci/project/redcap_cypress
             npm link rctf
-            npm run rctf:run_official_step_tests
+            npm run rctf:run_official_step_tests 
       - run:
           name: Debug Workspace Contents
           command: |
