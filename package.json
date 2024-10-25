@@ -1,6 +1,6 @@
 {
   "name": "rctf", 
-  "version": "1.0.99",
+  "version": "1.0.100",
   "description": "These are the supporting files that underpin the REDCap Cypress Test Framework.",
   "main": "index.js",
   "dependencies": {
@@ -30,7 +30,7 @@
     "sinon": "^19.0.2"
   },
   "scripts": {
-    "test": "npm install http-server --no-save --silent && npx http-server ./tests/ -p 6060 && npx cypress open",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "docs:build": "./node_modules/.bin/documentation build /step_definitions/* -f html --theme node_modules/redcap_cypress_doc_theme/index.js -o docs",
     "generate:hints": "node write_hints.js",
     "install:dev": "NODE_ENV=development npm install --save-dev @cypress/browserify-preprocessor",
