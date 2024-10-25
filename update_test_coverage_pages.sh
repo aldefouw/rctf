@@ -14,7 +14,7 @@ cp -R "$LATEST_DIR"/* $TARGET_DIR
 if [ ! -f "$INDEX_FILE" ]; then
     echo "<html><head><title>Test Coverage Reports</title></head><body>" > "$INDEX_FILE"
     echo "<h1>Test Coverage Reports</h1><ul>" >> "$INDEX_FILE"
-    echo "<li>${CURRENT_DATE} - <a href='./latest/index.html'>Latest</a></li>" >> "$INDEX_FILE"
+    echo "<li>${CURRENT_DATE} - <a href='./latest/docs/index.html'>Latest</a></li>" >> "$INDEX_FILE"
 else
     # If the index.html exists, just add the new entry to the existing list
     # Remove the closing tags temporarily
@@ -22,7 +22,7 @@ else
 fi
 
 # Add the new entry for the current commit hash
-echo "<li>${CURRENT_DATE} - <a href='./${COMMIT_HASH}/index.html'>${COMMIT_HASH}</a></li>" >> "$INDEX_FILE"
+echo "<li>${CURRENT_DATE} - <a href='./${COMMIT_HASH}/docs/index.html'>${COMMIT_HASH}</a></li>" >> "$INDEX_FILE"
 
 # End the HTML file
 echo "</ul></body></html>" >> "$INDEX_FILE"
