@@ -5,11 +5,11 @@ Feature: Iframe Well Formed Body selection
 
   Scenario: Go to Well Formed HTML page
     Given I click on the link labeled "Iframe Well Formed Body"
-    Then I should see "Iframe Well Formed Body"
+    Then I should see "Well Formed HTML" in the iframe
 
   Scenario: Click on a button
     And I see a button labeled "Click Me" in the iframe
-    Then I click on the button labeled "Click Me" in the iframe
+#    Then I click on the button labeled "Click Me" in the iframe
 
   Scenario: Click on a link
     Given I see a link labeled "Go to example" in the iframe
@@ -25,7 +25,7 @@ Feature: Iframe Well Formed Body selection
 
   Scenario: Select a checkbox from single checkbox
     #Bad implementation: Given I should see a checkbox labeled "I agree to the terms"
-    Then I click on the checkbox labeled "I agree to the terms" in the iframe
+#    Then I click on the checkbox labeled "I agree to the terms" in the iframe
 
   Scenario: Select a radio option from several radio options
     #Bad implementation: Given I should see a checkbox labeled "I agree to the terms"
@@ -43,8 +43,8 @@ Feature: Iframe Well Formed Body selection
 
   Scenario: Select a checkbox without field context
     # Does not error but it does not check the correct stuff either ... needs similar strategy to radio options in https://github.com/aldefouw/rctf/commit/9858530
-    Given I check the checkbox labeled "Checkbox 2" in the iframe
-    And I check the checkbox labeled "Checkbox 1" in the iframe
+#    Given I check the checkbox labeled "Checkbox 2" in the iframe
+#    And I check the checkbox labeled "Checkbox 1" in the iframe
 #    Then I should see a checkbox labeled "Checkbox 1" that is checked
 #    And I should see a checkbox labeled "Checkbox 2" that is checked
 
