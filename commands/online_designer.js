@@ -14,10 +14,13 @@ Cypress.Commands.add('add_field', (field_name, type) => {
 })
 
 Cypress.Commands.add('click_on_design_field_function', (type, field) => {
+    let fieldAction = window.fieldAction[type.toLowerCase()]
+
     cy.get('td[class=frmedit_row]').
     contains(field).
     parents('tr').
-    find('img[title="' + type + '"]').
+    find(`img[title="${type}"],a[data-field-action="${fieldAction}"]`).
+    first().
     click()
 })
 
