@@ -10,6 +10,7 @@ Feature: No Label HTML/Body selection
   Scenario: Click on a button
     And I see a button labeled "Click Me"
     Then I click on the button labeled "Click Me"
+    And I should NOT see a button labeled "Click Me Invisible"
 
   Scenario: Click on a link
     Given I see a link labeled "Go to example"
