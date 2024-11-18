@@ -30,3 +30,11 @@ Feature: Should NOT see
     Given I see "Table Row Columns"
     Then I should see a "ROW #2 VALUE #2" within the "Row 2" row of the column labeled "Column 2"
     And I should see "ROW #1 VALUE #1" in a table
+
+  Scenario: Data Entry Form Field Visibility
+    Given I see "Standard Input Field"
+    Then I should see "Test Value" in the data entry form field "Standard Input Field"
+
+  Scenario: Data Entry Form - Date Field Visibility
+    Given I see "datetime YMD HMSS"
+    Then I should see the date and time "2023-08-01 00:00:00" in the field labeled "datetime YMD HMSS"
