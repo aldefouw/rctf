@@ -123,18 +123,6 @@ Given("I (should )see a {checkBoxRadio} {labeledExactly} {string} that is {check
 /**
  * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I should see the radio labeled {string} with option {string} {select}
- * @param {string} label - the text that should be displayed in an alert box
- * @param {string} select - available options: 'selected', 'unselected'
- * @description Visually verifies that the alert box contains text
- */
-Given("I should see the radio labeled {string} with option {string} {select}", (label, option, selected) => {
-    cy.select_radio_by_label(label, option, false, selected === 'selected')
-})
-
-/**
- * @module Visibility
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I (should )see a dialog containing the following text: {string}
  * @param {string} text - the text that should be displayed in a dialog box
  * @description Visually verifies that the dialog box contains text
