@@ -31,16 +31,29 @@ Feature: Well Formed HTML/Body selection
     #Bad implementation: Given I should see a checkbox labeled "I agree to the terms"
     Then I select the radio option "Option 2" for the field labeled "Radio Buttons:"
     #Then I click on the checkbox labeled "I agree to the terms"
+    And I should see the radio field labeled "Radio Buttons:" with the options below
+      | Option 1 |
+      | Option 2 |
+      | Option 3 |
 
   Scenario: Select an option from the dropdown
     Given I select "Option 2" in the dropdown field labeled "Dropdown:"
     Then I should see the dropdown field labeled "Dropdown:" with the option "Option 2" selected
+    And I should see the dropdown field labeled "Dropdown:" with the options below
+      | Option 1 |
+      | Option 2 |
+      | Option 3 |
 
   Scenario: Select options from the multiselect
     Given I select "Option 1" in the multiselect field labeled "Multiselect:"
     And I select "Option 2" in the multiselect field labeled "Multiselect:"
     Then I should see the multiselect field labeled "Multiselect:" with the option "Option 1" selected
     And I should see the multiselect field labeled "Multiselect:" with the option "Option 2" selected
+    And I should see the dropdown field labeled "Multiselect:" with the options below
+      | Option 1 |
+      | Option 2 |
+      | Option 3 |
+      | Option 4 |
 
   Scenario: Select a checkbox without field context
     # Does not error but it does not check the correct stuff either ... needs similar strategy to radio options in https://github.com/aldefouw/rctf/commit/9858530
