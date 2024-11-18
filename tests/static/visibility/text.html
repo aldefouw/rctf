@@ -9,25 +9,30 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group span {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
+
         .tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
         }
+
         .tab {
             padding: 10px;
             border: 1px solid #ccc;
             cursor: pointer;
             user-select: none;
         }
+
         .tab.active {
             background-color: #ddd;
         }
@@ -80,6 +85,42 @@
             </td>
             <td>
                 ROW #2 VALUE #2
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="data_entry_form" style="margin-top: 20px;">
+    Data Entry Form Field:
+    <table>
+        <tr id="test-tr" sq_id="test" hasval="1">
+            <td>
+                <label class="label-fl fl" id="label-test">
+                    <div data-kind="field-label">
+                        <div data-mlm-field="test" data-mlm-type="label"> Standard Input Field</div>
+                    </div>
+                </label></td>
+            <td><span data-kind="field-value"><input autocomplete="new-password"
+                                                     aria-labelledby="label-test"
+                                                     class="x-form-text x-form-field "
+                                                     type="text" name="test"
+                                                     value="Test Value" tabindex="0"></span>
+            </td>
+        </tr>
+
+
+        <tr id="test-date-tr" sq_id="test-date" hasval="1">
+            <td>
+                <label class="label-fl fl" id="label-test-date">
+                    <div data-kind="field-label">
+                        <div data-mlm-field="test-date" data-mlm-type="label">datetime YMD HMSS</div>
+                    </div>
+                </label></td>
+            <td><span data-kind="field-value"><input autocomplete="new-password"
+                                                     aria-labelledby="label-test-date"
+                                                     class="x-form-text x-form-field "
+                                                     type="text" name="test-date"
+                                                     value="2023-08-01 00:00:00" tabindex="0"></span>
             </td>
         </tr>
     </table>
