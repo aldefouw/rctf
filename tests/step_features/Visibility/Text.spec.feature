@@ -6,6 +6,7 @@ Feature: Should NOT see
   Scenario: Go to Visibility page
     Given I click on the link labeled "Text Visibility"
     Then I should see "Text Visibility Page"
+    And I should see "Text Visibility" in the title
 
   Scenario: HTML: Verify text that is visible AND invisible
     Given I see "Text I should see"
