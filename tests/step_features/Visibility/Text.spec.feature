@@ -18,8 +18,15 @@ Feature: Should NOT see
 
   Scenario: Dialog Box: Verify text that is visible AND invisible
     Given I see "Dialog Text I should see" in the dialog box
+    # Next line does the same thing with a different step definition
+    And I should see a dialog containing the following text: "Dialog Text I should see"
     Then I should NOT see "Dialog Text I should NOT see" in the dialog box
 
   Scenario: Tooltip: Verify text that is visible AND invisible
     Given I see "Tooltip Text I should see" in the tooltip
     Then I should NOT see "Tooltip Text I should NOT see" in the tooltip
+
+  Scenario: Table Visibility, Columns, Rows
+    Given I see "Table Row Columns"
+    Then I should see a "ROW #2 VALUE #2" within the "Row 2" row of the column labeled "Column 2"
+    And I should see "ROW #1 VALUE #1" in a table
