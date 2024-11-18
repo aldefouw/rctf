@@ -269,3 +269,11 @@ window.tableHtmlElements = {
     '[lock icon]': { selector: 'img[src*=lock]', condition: 'exist' },
     '[e-signed icon]': { selector: 'img[src*=shield]', condition: 'exist' }
 }
+
+window.fieldAction = {
+    'edit': 'edit-field',
+    'branching logic': 'branchinglogic',
+    'copy': 'copy-field',
+    'move': 'move-field',
+    'delete': 'delete-field'
+}

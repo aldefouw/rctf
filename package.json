@@ -1,5 +1,5 @@
 {
-  "name": "rctf", 
+  "name": "rctf",
   "version": "1.0.100",
   "description": "These are the supporting files that underpin the REDCap Cypress Test Framework.",
   "main": "index.js",
