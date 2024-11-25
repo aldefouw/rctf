@@ -80,3 +80,7 @@ Feature: No Label HTML/Body selection
 
   Scenario: Type in an input field
     Given I enter "Some Input Text" into the input field labeled "Input Field:"
+
+  Scenario: Clear an input field
+# This will not work currently because poorly structured HTML cannot find the correct field
+#    Given I clear the field labeled "Input Field:"
