@@ -676,35 +676,6 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
 
 /**
  * @module Interactions
- * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
- * @example I click on the input element labeled {string}
- * @param {string} clickType - available options: 'click on', 'check', 'uncheck'
- * @param {string} elmType - available options: 'input', 'list item', 'checkbox', 'span'
- * @param {string} label - the label associated with the checkbox field
- * @description Selects a checkbox field by its label
- */
-Given("I {clickType} the {elmType} element labeled {string}", (click_type, element_type, label) => {
-    cy.contains(label).then(($label) => {
-        if(element_type === 'input'){
-            cy.wrap($label).parent().find('input').click()
-        } else if(element_type === 'checkbox'){
-            if(click_type === "click on"){
-                cy.wrap($label).parent().find('input[type=checkbox]').click()
-            } else if (click_type === "check"){
-                cy.wrap($label).parent().find('input[type=checkbox]').check()
-            } else if (click_type === "uncheck"){
-                cy.wrap($label).parent().find('input[type=checkbox]').uncheck()
-            }
-        } else if (element_type === "list item"){
-            cy.get('li').contains(label).click()
-        } else if (element_type === "span"){
-            cy.get('span').contains(label).click()
-        }
-    })
-})
-
-/**
- * @module Interactions
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I set the input file field named {string} to the file at path {string}
  * @param {string} name - the name attribute of the input file field
