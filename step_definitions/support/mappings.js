@@ -241,13 +241,13 @@ window.fileRepoIcons = {
 }
 
 window.onlineDesignerFieldIcons = {
-    'Edit' : `img[src*=pencil]`,
-    'Branching Logic': `img[src*=branch]`,
-    'Copy' : `img[src*=copy]`,
-    'Move' : `img[src*=move]`,
-    'Stop' : 'img[src*=stop]',
-    'Delete Field': `img[src*=cross]`,
-    'Delete': `img[src*=cross]`,
+    'Edit' : `a[data-field-action=edit-field],img[src*=pencil]`,
+    'Branching Logic': `a[data-field-action=branchinglogic],img[src*=branch]`,
+    'Copy' : `a[data-field-action=copy-field],img[src*=copy]`,
+    'Move' : `a[data-field-action=move-field],img[src*=move]`,
+    'Stop' : 'a[data-field-action=stopaction],img[src*=stop]',
+    'Delete Field': `a[data-field-action=delete-field],img[src*=cross]`,
+    'Delete': `a[data-field-action=delete-field],img[src*=cross]`,
     '"view"' : 'a:visible:contains(view)',
     '"export"' : 'a:visible:contains(export)',
     '"exclude"' : 'a:visible:contains(exclude)',
@@ -268,4 +268,12 @@ window.tableHtmlElements = {
     '[text box]': { selector: 'textarea', condition: 'exist'},
     '[lock icon]': { selector: 'img[src*=lock]', condition: 'exist' },
     '[e-signed icon]': { selector: 'img[src*=shield]', condition: 'exist' }
+}
+
+window.fieldAction = {
+    'edit': 'edit-field',
+    'branching logic': 'branchinglogic',
+    'copy': 'copy-field',
+    'move': 'move-field',
+    'delete': 'delete-field'
 }
