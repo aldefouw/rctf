@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@4tw/cypress-drag-drop": "^2.2.5",
-    "@badeball/cypress-cucumber-preprocessor": "^21.0.3",
+    "@badeball/cypress-cucumber-preprocessor": "^20.1.2",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.4",
     "@foreachbe/cypress-tinymce": "^1.0.0",
     "async-csv": "^2.1.3",
