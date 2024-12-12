@@ -304,6 +304,9 @@ Given("I should see (a )(the )field named {string} {beforeAfter} field named {st
  * @description Creates a new field in the Online Designer
  */
 Given("I add a new {fieldType} field labeled {string} with variable name {string} and click on the {string} button", (field_type, field_text, variable_name, save_button_text) => {
+    const legacy_selector = `table[id*=design-]:contains(${JSON.stringify(`Variable: ${variable_name}`)})`
+    const current_selector = `table[id*=design-]:contains(${JSON.stringify(`Field Name: ${variable_name}`)})`
+
     cy.get('input#btn-last').click().then(() => {
         cy.get('select#field_type')
             .find('option')
@@ -317,7 +320,7 @@ Given("I add a new {fieldType} field labeled {string} with variable name {string
         cy.get('textarea#field_label').type(field_text)
         cy.get('button').contains(save_button_text).click().then(() => {
             cy.get('table#draggable').should(($t) => {
-                expect($t).to.contain('Variable: '+ variable_name)
+                expect($t).to.contain(`${legacy_selector},${current_selector}`)
             })
         })
     })

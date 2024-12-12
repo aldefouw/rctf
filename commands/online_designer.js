@@ -88,7 +88,7 @@ Cypress.Commands.add('select_field_by_label', (name, timeout = 10000) => {
 })
 
 Cypress.Commands.add('select_field_choices', (timeout = 10000) => {
-    cy.get('form#addFieldForm').children().get('span').contains('Choices').parent().parent().find('textarea')
+    cy.get('textarea#element_enum')
 })
 
 Cypress.Commands.add('select_radio_by_label', ($name, $value, $click = true, $selected = true ) => {
