@@ -107,7 +107,7 @@ Cypress.Commands.add('select_radio_by_label', ($name, $value, $click = true, $se
         } else {
             // Fallback to the nearest radio button - whether that is next or previous parent
             cy.contains($value).then($text => {
-                const parent = Cypress.$($text)
+                const parent = Cypress.$($text).parent()
                 let radio = parent
 
                 if(!parent.find('input[type=radio]').length) {
