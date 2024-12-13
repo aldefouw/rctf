@@ -308,8 +308,9 @@ Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( 
             cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the variable") {
-        outer_element = `table:visible tr:has(:contains(${JSON.stringify(`Variable: ${text}`)})):visible`
-        cy.top_layer(`a:visible`, outer_element).within(() => {
+        const legacy_selector = `table[id*=design-]:contains(${JSON.stringify(`Variable: ${text}`)}):visible`
+        const current_selector = `table[id*=design-]:contains(${JSON.stringify(`Field Name: ${text}`)}):visible`
+        cy.top_layer(`a:visible`, `${legacy_selector},${current_selector}`).within(() => {
             cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the File Repository file named"){
