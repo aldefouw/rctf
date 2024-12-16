@@ -22,7 +22,9 @@ window.userRightChecks = {
     'API Export' : 'api_export',
     'API Import/Update' : 'api_import',
     'REDCap Mobile App - Allow users to collect data offline in the mobile app' : 'mobile_app',
-    'REDCap Mobile App - Allow user to download data for all records to the app?' : 'mobile_app_download_data'
+    'REDCap Mobile App - Allow user to download data for all records to the app?' : 'mobile_app_download_data',
+    'Calendar & Scheduling' : 'calendar',
+    'Email Logging' : 'email_logging'
 }
 
 window.singleChoiceMappings = {
