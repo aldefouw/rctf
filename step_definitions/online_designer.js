@@ -319,8 +319,9 @@ Given("I add a new {fieldType} field labeled {string} with variable name {string
         cy.get('input#field_label_rich_text_checkbox').uncheck()
         cy.get('textarea#field_label').type(field_text)
         cy.get('button').contains(save_button_text).click().then(() => {
-            cy.get('table#draggable').should(($t) => {
-                expect($t).to.contain(`${legacy_selector},${current_selector}`)
+            cy.get('table#draggable:visible').should(($parent) => {
+                const child = $parent.find(`${legacy_selector},${current_selector}`)
+                expect(child).to.have.length.greaterThan(0)
             })
         })
     })
