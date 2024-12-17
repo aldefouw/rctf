@@ -304,8 +304,8 @@ Given("I should see (a )(the )field named {string} {beforeAfter} field named {st
  * @description Creates a new field in the Online Designer
  */
 Given("I add a new {fieldType} field labeled {string} with variable name {string} and click on the {string} button", (field_type, field_text, variable_name, save_button_text) => {
-    const legacy_selector = `${JSON.stringify(`Variable: ${variable_name}`)}`
-    const current_selector = `${JSON.stringify(`Field Name: ${variable_name}`)}`
+    const legacy_selector = `Variable: ${variable_name}`
+    const current_selector = `Field Name: ${variable_name}`
 
     cy.get('input#btn-last').click().then(() => {
         cy.get('select#field_type')
