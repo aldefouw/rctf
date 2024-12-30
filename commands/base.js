@@ -164,7 +164,9 @@ Cypress.Commands.add('get_element_by_label', (label, selector = null, value = nu
                 if (last && $last.find(selector).length) {
                     return cy.filter_elements($last, selector, value)
                 } else if ($last.parent().find(selector).length){
-                    return cy.filter_elements($parent, selector, value)
+                    $last.parent().find(selector).then(($parent) => {
+                        return cy.filter_elements($parent, selector, value)
+                    })
                 } else if (i <= 5) {
                     cy.get_element_by_label(label, `:has(${selector})`, value, original_selector, i + 1, false)
                 }
