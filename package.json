@@ -1,6 +1,6 @@
 {
   "name": "rctf",
-  "version": "1.0.107",
+  "version": "1.0.108",
   "description": "These are the supporting files that underpin the REDCap Cypress Test Framework.",
   "main": "index.js",
   "dependencies": {
