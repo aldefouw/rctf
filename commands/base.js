@@ -151,7 +151,7 @@ Cypress.Commands.add('filter_elements', (elements, selector, value) => {
 })
 
 
-Cypress.Commands.add('get_element_by_label', (label, selector = null, value = null, original_selector = null, i = 0) => {
+Cypress.Commands.add('get_element_by_label', (label, selector = null, value = null, original_selector = null, i = 0, last = true) => {
     if (original_selector === null) { original_selector = selector }
 
     cy.wrap(label).then(($self) => {
@@ -160,11 +160,13 @@ Cypress.Commands.add('get_element_by_label', (label, selector = null, value = nu
         } else if (i === 0 && $self.parent().find(selector).length){
             return cy.filter_elements($self.parent(), selector, value)
         } else {
-            cy.wrap(label).parentsUntil(`:has(${selector})`).last().parent().then(($parent) => {
-                if($parent.find(selector).length){
+            cy.wrap(label).parentsUntil(`:has(${selector})`).last().then(($last) => {
+                if (last && $last.find(selector).length) {
+                    return cy.filter_elements($last, selector, value)
+                } else if ($last.parent().find(selector).length){
                     return cy.filter_elements($parent, selector, value)
                 } else if (i <= 5) {
-                    cy.get_element_by_label(label, `:has(${selector})`, value, original_selector, i + 1)
+                    cy.get_element_by_label(label, `:has(${selector})`, value, original_selector, i + 1, false)
                 }
             })
         }
