@@ -3,20 +3,70 @@
 //#############################################################################
 
 Cypress.Commands.add("dragTo", { prevSubject: 'element'}, (subject, target) => {
-    let rect = cy.get(target).then((element) => {
-        return element[0].getBoundingClientRect()
-    })
 
-    //click on element
-    cy.wrap(subject).trigger('mousedown')
+    //Latest REDCap behavior - let's see that there is a Move Field with an <i> inside
+    if(Cypress.$('a[data-field-action="move-field"] i').length){
 
-    //move mouse to new position
-    cy.get(target).trigger('mousemove', 'bottom')
-        .trigger('mousemove', 'center')
+        // Uncomment if REDCap changes drag and drop functionality ...
+        // It will save you time by seeing what Event handlers are doing
+        //
+        // cy.window().then((win) => {
+        //     const eventsToMonitor = [
+        //         'change',
+        //         'click',
+        //         'keydown',
+        //         'mousedown',
+        //         'mousemove',
+        //         'pointerdown',
+        //         'dragstart',
+        //         'dragend',
+        //         'dragenter',
+        //         'dragleave',
+        //         'drop',
+        //         'dragover',
+        //     ];
+        //
+        //     // Wrap each handler to log the event
+        //     eventsToMonitor.forEach((eventType) => {
+        //         win.document.addEventListener(eventType, (event) => {
+        //             console.log(`Event: ${eventType}`, event);
+        //         })
+        //     })
+        // })
 
-    // target position changed, mouseup on original element
-    cy.wrap(subject).trigger('mouseup')
+        // We need this included as part of the event trigger object!
+        const dataTransfer = new DataTransfer() // See this for specs: https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer
 
+        //Cannot figure out why, but the srcElement kept being this <i> instead of <a> even when we selected <a> ...
+        //If you look at REDCap source code ... element MUST be an <a> ... okay, brute force remove it for the test!
+        cy.wrap(subject).find('a[data-field-action="move-field"] i')
+            .invoke('remove')
+
+        //That's better.  Now, start the drag from the <a> that no longer has an <i> to interfere
+        cy.wrap(subject).find('a[data-field-action="move-field"]')
+            .trigger('dragstart', { dataTransfer: dataTransfer })
+
+        //This is key ... we trigger these events on the target, so we don't have to mess with X / Y coordinates
+        cy.get(target)
+            .trigger('dragenter', { dataTransfer: dataTransfer })
+            .trigger('dragover', { dataTransfer: dataTransfer })
+            .trigger('drop', { dataTransfer: dataTransfer })
+            .trigger('dragend', { dataTransfer: dataTransfer })
+
+    //This is the legacy behavior
+    } else {
+        console.log('Legacy Drag-n-Drop Behavior')
+
+        //click on element
+        cy.wrap(subject).trigger('mousedown')
+
+        //move mouse to new position
+        cy.get(target).trigger('mousemove', 'bottom')
+            .trigger('mousemove', 'center')
+
+        // target position changed, mouseup on original element
+        cy.wrap(subject).trigger('mouseup')
+    }
 })
 
 Cypress.Commands.add("dragToTarget", { prevSubject: 'element'}, (subject, target) => {
