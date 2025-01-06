@@ -268,8 +268,10 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Clicks on an anchor element with a specific text label.
  */
-Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
+Given("I (click)(locate) on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (ordinal = 'first', designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
     before_click_monitor(link_type)
+
+    let element = `a:nth-of-type(${window.ordinalChoices[ordinal] + 1})`
 
     cy.not_loading()
 
@@ -294,65 +296,65 @@ Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( 
         })
 
         outer_element = `tr${contains}:visible`
-        cy.top_layer(`a:visible`, outer_element).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        cy.top_layer(`${element}:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(window.ordinalChoices[ordinal]).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for Data Quality Rule #") {
         outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
-        cy.top_layer(`a:visible`, outer_element).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        cy.top_layer(`${element}:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(window.ordinalChoices[ordinal]).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the Discrepant field labeled") {
         outer_element = `table:visible tr:has(:contains(${JSON.stringify(text)})):visible`
-        cy.top_layer(`a:visible`, outer_element).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        cy.top_layer(`${element}:visible`, outer_element).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(window.ordinalChoices[ordinal]).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the variable") {
         const legacy_selector = `table[id*=design-]:contains(${JSON.stringify(`Variable: ${text}`)}):visible`
         const current_selector = `table[id*=design-]:contains(${JSON.stringify(`Field Name: ${text}`)}):visible`
-        cy.top_layer(`a:visible`, `${legacy_selector},${current_selector}`).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+        cy.top_layer(`${element}:visible`, `${legacy_selector},${current_selector}`).within(() => {
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(window.ordinalChoices[ordinal]).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the File Repository file named"){
         outer_element = `${window.tableMappings['file repository']}:visible tr:has(:contains(${JSON.stringify(text)}))`
-        cy.top_layer(`a:contains(${JSON.stringify(text)})`, outer_element).within(() => {
+        cy.top_layer(`${element}:contains(${JSON.stringify(text)})`, outer_element).within(() => {
             if(file_repo_icons === undefined){
                 file_repo_icons = designer_field_icons
             }
-            cy.get(`${window.fileRepoIcons[file_repo_icons]}`).click()
+            cy.get(`${window.fileRepoIcons[file_repo_icons]}`).eq(window.ordinalChoices[ordinal]).click()
         })
     } else if(exactly === "within the Record Locking Customization table for the Data Collection Instrument named"){
         outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
-        cy.top_layer(`a:has(img:visible)`, outer_element).within(() => {
+        cy.top_layer(`${element}:has(img:visible)`, outer_element).within(() => {
             if(file_repo_icons === undefined){
                 file_repo_icons = designer_field_icons
             }
-            cy.get(`${window.onlineDesignerFieldIcons[file_repo_icons]}`).click()
+            cy.get(`${window.onlineDesignerFieldIcons[file_repo_icons]}`).eq(window.ordinalChoices[ordinal]).click()
         })
     } else if(exactly === 'labeled exactly') {
-        cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
-            cy.get('a:visible').contains(new RegExp("^" + text + "$", "g")).click()
+        cy.top_layer(`${element}:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
+            cy.get('${element}:visible').contains(new RegExp("^" + text + "$", "g")).eq(window.ordinalChoices[ordinal]).click()
         })
     } else if(download.includes('with records in')) {
         let keyword = download.includes('rows') ? 'rows' : 'columns'
 
-        cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
+        cy.top_layer(`${element}:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             //Note: This is a pretty brittle approach, but it works ... best way to handle this weird edge case where we are looking for "Download your Data Import Template", which has two hits
-            cy.get(`a:contains(${JSON.stringify(text)}):visible`).eq(keyword === "rows" ? 0 : 1).contains(text).click()
+            cy.get(`${element}:contains(${JSON.stringify(text)}):visible`).eq(keyword === "rows" ? 0 : 1).contains(text).eq(window.ordinalChoices[ordinal]).click()
         })
 
     } else {
-        cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
-            cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).then(($elm) => {
+        cy.top_layer(`${element}:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
+            cy.get(`${element}:contains(${JSON.stringify(text)}):visible`).contains(text).then(($elm) => {
                 if(base_element === " in the File Repository table"){
                     cy.intercept({
                         method: 'POST',
                         url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
                     }).as('file_breadcrumbs')
                     //cy.get($elm).invoke('attr', 'onclick')
-                    cy.get($elm).click()
+                    cy.get($elm).eq(window.ordinalChoices[ordinal]).click()
                 } else {
-                    cy.wrap($elm).click()
+                    cy.wrap($elm).eq(window.ordinalChoices[ordinal]).click()
                 }
             })
         })
@@ -459,10 +461,10 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 
-Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {string}{baseElement}', (enter_type, text, labeled_exactly, label, base_element) => {
+Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledExactly} {string}{baseElement}', (enter_type, text, ordinal = 'first', labeled_exactly, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
 
-    let element = `textarea:first`
+    let element = `textarea:nth-of-type(${window.ordinalChoices[ordinal] + 1})`
 
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
@@ -488,11 +490,11 @@ Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {strin
                         //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).find(element).type(text)
+                            cy.wrap($parent).find(element).eq(window.ordinalChoices[ordinal]).type(text)
                         } else if (enter_type === "clear field and enter") {
-                            cy.wrap($parent).find(element).clear().type(text)
+                            cy.wrap($parent).find(element).eq(window.ordinalChoices[ordinal]).clear().type(text)
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).find(element).click()
+                            cy.wrap($parent).find(element).eq(window.ordinalChoices[ordinal]).click()
                         }
                     }
 
@@ -506,21 +508,21 @@ Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {strin
                     //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).parent().find(element).type(text)
+                            cy.wrap($parent).parent().find(element).eq(window.ordinalChoices[ordinal]).type(text)
                         } else if (enter_type === "clear field and enter") {
 
                             //Logic editor does not use an actual textarea; we need to invoke the text instead!
                             if(label === "Logic Editor"){
-                              cy.wrap($parent).parent().find(element).
+                              cy.wrap($parent).parent().find(element).eq(window.ordinalChoices[ordinal]).
                                 click({force: true}).
                                 invoke('attr', 'contenteditable', 'true').
                                 type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
                             } else {
-                                cy.wrap($parent).parent().find(element).clear().type(text)
+                                cy.wrap($parent).parent().find(element).eq(window.ordinalChoices[ordinal]).clear().type(text)
                             }
 
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).parent().find(element).click()
+                            cy.wrap($parent).parent().find(element).eq(window.ordinalChoices[ordinal]).click()
                         }
                     }
                 }
