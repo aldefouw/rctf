@@ -1008,10 +1008,10 @@ Given('I move the Hour slider for the open date picker widget to {int}', (hour) 
         cy.wrap(subject).find('span').trigger('mousedown', {force: true})
 
         //Get the current position of the slider and then increment up or down respectively
-        cy.get('.ui_tpicker_time').then(($time) => {
-            const time = $time.text().split(':')
+        cy.get('.ui_tpicker_time_input').then(($time) => {
+            const time = $time.val().split(':')
             let $hour = time[0]
-            cy.move_slider(subject, $hour, 23, 0, hour, "Hour", 20)
+            cy.move_slider(subject, $hour, 23, 0, hour, "Hour")
         })
     })
 })
@@ -1028,10 +1028,10 @@ Given('I move the Minute slider for the open date picker widget to {int}', (min)
         cy.wrap(subject).find('span').trigger('mousedown', {force: true})
 
         //Get the current position of the slider and then increment up or down respectively
-        cy.get('.ui_tpicker_time').then(($time) => {
-            const time = $time.text().split(':')
+        cy.get('.ui_tpicker_time_input').then(($time) => {
+            const time = $time.val().split(':')
             let $min = time[1]
-            cy.move_slider(subject, $min, 59, 0, min, "Minute", 20)
+            cy.move_slider(subject, $min, 59, 0, min, "Minute")
         })
     })
 })
