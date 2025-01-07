@@ -464,7 +464,7 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
 Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledExactly} {string}{baseElement}', (enter_type, text, ordinal = 'first', labeled_exactly, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
 
-    let element = `textarea:nth-of-type(${window.ordinalChoices[ordinal] + 1})`
+    let element = `textarea`
 
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
