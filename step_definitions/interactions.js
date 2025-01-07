@@ -468,7 +468,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
     let ord = 0
     if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
-    let element = `textarea:first`
+    let element = `textarea`
 
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
@@ -485,48 +485,48 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
         cy.contains(label).should('be.visible').then(($label) => {
             cy.wrap($label).parent().then(($parent) =>{
-                if($parent.find(element).length){
+                if($parent.find(element).eq(ord).length){
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.find(element).hasClass('mceEditor')){
-                        cy.customSetTinyMceContent($parent.find(element)[0]['id'], text)
+                        cy.customSetTinyMceContent($parent.eq(ord).attr('id'), text)
 
                         //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).find(element).type(text)
+                            cy.wrap($parent).find(element).eq(ord).type(text)
                         } else if (enter_type === "clear field and enter") {
-                            cy.wrap($parent).find(element).clear().type(text)
+                            cy.wrap($parent).find(element).eq(ord).clear().type(text)
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).find(element).click()
+                            cy.wrap($parent).find(element).eq(ord).click()
                         }
                     }
 
 
-                } else if ($parent.parent().find(element).length) {
+                } else if ($parent.parent().find(element).eq(ord).length) {
 
                     //If the textarea has a TinyMCE editor applied to it
-                    if($parent.parent().find(element).hasClass('mceEditor')){
-                        cy.setTinyMceContent($parent.parent().find(element)[0]['id'], text)
+                    if($parent.parent().find(element).eq(ord).hasClass('mceEditor')){
+                        cy.setTinyMceContent($parent.eq(ord).attr('id'), text)
 
                     //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).parent().find(element).type(text)
+                            cy.wrap($parent).parent().find(element).eq(ord).type(text)
                         } else if (enter_type === "clear field and enter") {
 
                             //Logic editor does not use an actual textarea; we need to invoke the text instead!
                             if(label === "Logic Editor"){
-                              cy.wrap($parent).parent().find(element).
+                              cy.wrap($parent).parent().find(element).eq(ord).
                                 click({force: true}).
                                 invoke('attr', 'contenteditable', 'true').
                                 type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
                             } else {
-                                cy.wrap($parent).parent().find(element).clear().type(text)
+                                cy.wrap($parent).parent().find(element).eq(ord).clear().type(text)
                             }
 
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).parent().find(element).click()
+                            cy.wrap($parent).parent().find(element).eq(ord).click()
                         }
                     }
                 }
