@@ -271,7 +271,7 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
 Given("I (click)(locate) on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (ordinal = 'first', designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
     before_click_monitor(link_type)
 
-    let element = `a:nth-of-type(${window.ordinalChoices[ordinal] + 1})`
+    let element = `a`
 
     cy.not_loading()
 
