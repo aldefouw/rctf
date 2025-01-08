@@ -90,7 +90,7 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
     row_label = escapeCssSelector(row_label)
 
     let selector = `${table_selector}:has(${header_row_type}:contains('${column_label}'):visible):visible`
-    let td_selector = `tr:has(${row_cell_type}:visible):first:visible`
+    let td_selector = `tr:has(${row_cell_type}:visible):visible`
 
     if(row_number === 0) {
         if(table_selector !== body_table){
@@ -99,15 +99,17 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
             selector = `${table_selector}:has(${row_cell_type}:contains('${row_label}'):visible,${header_row_type}:contains('${column_label}'):visible):visible`
         }
 
-        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):first:visible`
+        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):visible`
     }
 
     cy.get(selector).first().within(() => {
         cy.get(`${header_row_type}:contains('${column_label}'):visible`).parent('tr').then(($tr) => {
-            $tr.find(header_row_type).each((thi, th) => {
+            cy.wrap($tr).find(header_row_type).each((thi, th) => {
                 // console.log(Cypress.$(th).text().trim().includes(orig_column_label))
                 // console.log(thi)
-                if (Cypress.$(th).text().trim().includes(orig_column_label) && column_num === 0) column_num = thi
+                cy.log(Cypress.$(thi).text().trim())
+                if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) column_num = th
+                //if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) cy.log(`Column Index: ${th}`)
                 //if (Cypress.$(th).text().trim().includes(column_label) && column_num === 0) console.log(thi)
             })
         })
@@ -122,18 +124,16 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
         }
 
         cy.get(selector).first().within(() => {
-            cy.get(td_selector).then(($td) => {
-                $td.each(($tri, $tr) => {
-                    cy.wrap($tr).each((tri, tr) => {
-                        tri.find(row_cell_type).each((tdi, td) => {
-                            if (tdi === column_num && $tri === row_number){
-                                console.log(column_num)
-                                table_cell = td
-                            }
-                        })
-                    })
+            cy.get(td_selector).eq(row_number).each(($tr, $tri) => {
+                cy.wrap($tr).find(row_cell_type).each((td, tdi) => {
+                    // cy.log(`COL: ${column_num}`)
+                    // cy.log(`ROW: ${row_number}`)
+                    if (tdi === column_num){
+                        table_cell = td
+                    }
                 })
             })
+
         }).then(() => {
             cy.wrap(table_cell)
         })
