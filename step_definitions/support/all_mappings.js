@@ -28,6 +28,7 @@ window.parameterTypes = {
     check: ['checked', 'unchecked'],
     checkBoxRadio: ['checkbox', 'radio'],
     clickType: ['click on', 'check', 'uncheck'],
+    columnLabel: ['', 'in the Matrix column'],
     confirmation: ['accept', 'cancel'],
     dateTimeType: ['timestamp', 'date', 'datetime'],
     dataViewingRights: ['No Access', 'Read Only', 'View & Edit', 'Edit survey responses'],
