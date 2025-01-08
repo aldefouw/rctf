@@ -388,29 +388,32 @@ Given("I click on the button labeled {string} for the row labeled {string}", (te
  * @param {string} label - the label of the field
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  */
-Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {string}{baseElement}{iframeVisibility}', (enter_type, text, input_type, label, base_element, iframe) => {
+Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} field {labeledExactly} {string}{baseElement}{iframeVisibility}', (enter_type, text, ordinal, input_type, labeled_exactly, label, base_element, iframe) => {
     let select = 'input[type=text]:visible,input[type=password]:visible'
     if(input_type === 'password'){
         select = 'input[type=password]:visible'
     }
 
+    let ord = 0
+    if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
+
     if(iframe === " in the iframe"){
         const base = cy.frameLoaded().then(() => { cy.iframe() })
 
         if(input_type === 'password'){
-            select = 'input[type=password]:visible:first'
+            select = 'input[type=password]:visible'
         } else {
-            select = `input[type=text]:visible:first,input[type=password]:visible:first`
+            select = `input[type=text]:visible,input[type=password]:visible`
         }
         base.within(() => {
             let elm = cy.get(select)
 
             if(enter_type === "enter"){
-                elm.scrollIntoView().type(text)
+                elm.eq(ord).scrollIntoView().type(text)
             } else if (enter_type === "clear field and enter") {
-                elm.scrollIntoView().clear().type(text)
+                elm.eq(ord).scrollIntoView().clear().type(text)
             } else if (enter_type === "verify"){
-                elm.scrollIntoView().invoke('val').should('include', text)
+                elm.eq(ord).scrollIntoView().invoke('val').should('include', text)
             }
         })
 
@@ -426,23 +429,29 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
         outer_element.within(() => {
             let elm = null
 
-            cy.contains(label).should('be.visible').then(($label) => {
+            let label_base = labeled_exactly === 'labeled exactly' ?
+                cy.contains(new RegExp("^" + label + "$", "g")) :
+                cy.contains(label)
+
+            label_base.should('be.visible').then(($label) => {
                 cy.wrap($label).parent().then(($parent) =>{
                     if($parent.find(element).length){
-                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        console.log('parent ')
+                        elm = cy.wrap($parent).find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     } else if ($parent.parent().find(element).length) {
-                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        console.log('parent parent ')
+                        elm = cy.wrap($parent).parent().find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     }
 
                     if(enter_type === "enter"){
-                        elm.first().type(text)
+                        elm.eq(ord).type(text)
                     } else if (enter_type === "clear field and enter") {
-                        elm.first().clear().type(text)
+                        elm.eq(ord).clear().type(text)
                     } else if (enter_type === "verify"){
                         if(window.dateFormats.hasOwnProperty(text)){
                             //elm.invoke('val').should('match', window.dateFormats[text])
                         } else {
-                            elm.first().invoke('val').should('include', text)
+                            elm.eq(ord).invoke('val').should('include', text)
                         }
                     }
                 })
