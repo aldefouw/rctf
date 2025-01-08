@@ -84,7 +84,7 @@ Cypress.Commands.add('get_record_status_dashboard', (event, instrument, record_i
 
                             //console.log(instrument_location)
 
-                        } else if (tri > 1) {
+                        } else if (tri >= 1) {
 
                             //console.log('in here')
 
