@@ -35,7 +35,7 @@ window.parameterTypes = {
     disabled: ['is disabled'],
     dropdownType: ['dropdown', 'multiselect', 'checkboxes', 'radio'],
     editEvent: ['Edit', 'Delete'],
-    editField: ['Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],
+    editField: ['Edit', 'Edit Matrix', 'Branching Logic', 'Copy', 'Move', 'Delete Field'],
     editSurveyRights: [
         ' with Edit survey responses checked',
         ' with Edit survey responses unchecked',

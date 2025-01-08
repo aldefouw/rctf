@@ -274,6 +274,7 @@ window.tableHtmlElements = {
 
 window.fieldAction = {
     'edit': 'edit-field',
+    'edit matrix': 'edit-matrix',
     'branching logic': 'branchinglogic',
     'copy': 'copy-field',
     'move': 'move-field',

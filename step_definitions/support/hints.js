@@ -130,7 +130,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'editField',
-            regexp: /|Edit|Branching Logic|Copy|Move|Delete Field/,
+            regexp: /|Edit|Edit Matrix|Branching Logic|Copy|Move|Delete Field/,
         })
 
 defineParameterType({
