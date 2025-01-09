@@ -875,7 +875,7 @@ Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open
 
                     if(type === "dropdown") {
                         cy.wait(500)
-                        cy.wrap($t).select(option)
+                        cy.wrap($t).select(option, { force: true }) //force: true needed for Select2 library
                         cy.wait(500)
                     } else if (type === "multiselect"){
                         let all_options = [option]
