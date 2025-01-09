@@ -278,5 +278,5 @@ window.fieldAction = {
     'branching logic': 'branchinglogic',
     'copy': 'copy-field',
     'move': 'move-field',
-    'delete': 'delete-field'
+    'delete field': 'delete-field'
 }
