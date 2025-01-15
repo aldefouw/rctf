@@ -445,12 +445,14 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
 
             label_base.should('be.visible').then(($label) => {
                 cy.wrap($label).parent().then(($parent) =>{
+                    //We are ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
                     if($parent.find(element).length){
-                        console.log('parent ')
-                        elm = cy.wrap($parent).find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        //console.log('parent')
+                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                    //We are also ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
                     } else if ($parent.parent().find(element).length) {
-                        console.log('parent parent ')
-                        elm = cy.wrap($parent).parent().find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        //console.log('parent parent ')
+                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     }
 
                     if(enter_type === "enter"){
