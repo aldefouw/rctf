@@ -508,7 +508,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.find(element).hasClass('mceEditor')){
-                        cy.customSetTinyMceContent($parent.eq(ord).attr('id'), text)
+                       cy.customSetTinyMceContent($parent.find(element).eq(ord).attr('id'), text)
 
                         //All other cases
                     } else {
@@ -526,7 +526,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.parent().find(element).eq(ord).hasClass('mceEditor')){
-                        cy.setTinyMceContent($parent.eq(ord).attr('id'), text)
+                        cy.customSetTinyMceContent($parent.parent().find(element).eq(ord).attr('id'), text)
 
                     //All other cases
                     } else {
