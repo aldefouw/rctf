@@ -662,10 +662,22 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         element_selector = `tr:contains(${JSON.stringify(label)}):visible td input[type=${type}]:visible:not([disabled])`
     }
 
-    //Special case: "Repeating Instruments and events" popup to select instruments by checkbox
+    //Special case: "Repeating Instruments and events" popup to select instruments by checkbox OR Bulk Record Delete
     if(event_name.length > 0){
-        label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
-        element_selector = `tr:contains(${JSON.stringify(event_name)}):visible td:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
+
+        event_name = event_name.split('"')
+        event_name = event_name[1]
+        let event_num = event_name.split(' ')
+        event_num = event_num[1]
+
+        //Bulk record delete
+        if(Cypress.$(`#choose_select_forms_events_table`).length){
+            label_selector = `div:contains(${JSON.stringify(event_name)}):visible`
+            element_selector = `${label_selector} :contains(${JSON.stringify(label)}):visible input[value^="ef-event_${event_num}"][type=${type}]:visible:not([disabled])`
+        } else {
+            label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
+            element_selector = `tr:contains(${JSON.stringify(event_name)}):visible td:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
+        }
     }
 
     function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
