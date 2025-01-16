@@ -673,7 +673,8 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         //Bulk record delete
         if(Cypress.$(`#choose_select_forms_events_table`).length){
             label_selector = `div:contains(${JSON.stringify(event_name)}):visible`
-            element_selector = `${label_selector} :contains(${JSON.stringify(label)}):visible input[value^="ef-event_${event_num}"][type=${type}]:visible:not([disabled])`
+            element_selector = `${label_selector} :contains(${JSON.stringify(label)}):visible input[value^="ef-event_${event_num}_"][value*="${label.replace(/\s+/g, '_')  // Replace spaces with underscores
+            .toLowerCase()}"][type=${type}]:visible:not([disabled])`
         } else {
             label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
             element_selector = `tr:contains(${JSON.stringify(event_name)}):visible td:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
