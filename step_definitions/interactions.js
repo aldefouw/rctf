@@ -665,13 +665,13 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
     //Special case: "Repeating Instruments and events" popup to select instruments by checkbox OR Bulk Record Delete
     if(event_name.length > 0){
 
-        event_name = event_name.split('"')
-        event_name = event_name[1]
-        let event_num = event_name.split(' ')
-        event_num = event_num[1]
-
         //Bulk record delete
         if(Cypress.$(`#choose_select_forms_events_table`).length){
+            event_name = event_name.split('"')
+            event_name = event_name[1]
+            let event_num = event_name.split(' ')
+            event_num = event_num[1]
+
             label_selector = `div:contains(${JSON.stringify(event_name)}):visible`
             element_selector = `${label_selector} :contains(${JSON.stringify(label)}):visible input[value^="ef-event_${event_num}_"][value*="${label.replace(/\s+/g, '_')  // Replace spaces with underscores
             .toLowerCase()}"][type=${type}]:visible:not([disabled])`
