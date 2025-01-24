@@ -187,7 +187,7 @@ Given("I click on the {addField} input button below the field named {string}", (
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I click on the {editField} image for the field named {string}
- * @param {string} editField - available options: 'Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'
+ * @param {string} editField - available options: 'Edit', 'Edit Matrix', 'Branching Logic', 'Copy', 'Move', 'Delete Field'
  * @param {string} field - the name of the field you want to edit
  * @description Clicks on the image link of the action you want to perform on a field
  */
