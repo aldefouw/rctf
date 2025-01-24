@@ -76,13 +76,20 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
         cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
 
-    const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(3):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
-    const element_selector = `td i.fa-file-pdf`
+    //This initial query gets the column number of the <th> containing "Record" so that we can use that to find the correct base_element to select
+     cy.get(`${window.tableMappings['file repository']}:visible tr th`).
+        contains('Record').
+        invoke('index').then(($col_index) =>{
+         const col_num = $col_index + 1
 
-    cy.top_layer(element_selector, base_element).within(() => {
-        cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
-            cy.wrap($a).click()
-        })
+         const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(${col_num}):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
+         const element_selector = `td i.fa-file-pdf`
+
+         cy.top_layer(element_selector, base_element).within(() => {
+             cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
+                 cy.wrap($a).click()
+             })
+         })
     })
 })
 
@@ -103,10 +110,6 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
     if(Cypress.$('#file-repository-table_processing:visible').length){
         cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
-
-    const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(3):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
-    const element_selector = `td i.fa-file-pdf`
-    let pdf_file = null
 
     function findDateFormat(str) {
         for (const format in window.dateFormats) {
@@ -142,30 +145,41 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
         })
     }
 
-    cy.top_layer(element_selector, base_element).within(() => {
-        cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
+    //This initial query gets the column number of the <th> containing "Record" so that we can use that to find the correct base_element to select
+    cy.get(`${window.tableMappings['file repository']}:visible tr th`).
+    contains('Record').
+    invoke('index').then(($col_index) => {
+        const col_num = $col_index + 1
 
-            pdf_file = `cypress/downloads/${$a.text()}`
+        const base_element = `${window.tableMappings['file repository']}:visible tr:has(td:nth-child(${col_num}):has(a:contains(${JSON.stringify(record)}))):has(:contains(${JSON.stringify(survey)}))`
+        const element_selector = `td i.fa-file-pdf`
+        let pdf_file = null
 
-            waitForFile(pdf_file).then((fileExists) => {
-                if(fileExists){
-                    cy.task('readPdf', { pdf_file: pdf_file }).then((pdf) => {
-                        dataTable['rawTable'].forEach((row, row_index) => {
-                            row.forEach((dataTableCell) => {
-                                const result = findDateFormat(dataTableCell)
-                                if (result === null) {
-                                    expect(pdf.text).to.include(dataTableCell)
-                                } else {
-                                    result.split(' ').forEach((item) => {
-                                        expect(pdf.text).to.include(item)
-                                    })
-                                }
+        cy.top_layer(element_selector, base_element).within(() => {
+            cy.get('td:has(i.fa-file-pdf) a').then(($a) => {
+
+                pdf_file = `cypress/downloads/${$a.text()}`
+
+                waitForFile(pdf_file).then((fileExists) => {
+                    if(fileExists){
+                        cy.task('readPdf', { pdf_file: pdf_file }).then((pdf) => {
+                            dataTable['rawTable'].forEach((row, row_index) => {
+                                row.forEach((dataTableCell) => {
+                                    const result = findDateFormat(dataTableCell)
+                                    if (result === null) {
+                                        expect(pdf.text).to.include(dataTableCell)
+                                    } else {
+                                        result.split(' ').forEach((item) => {
+                                            expect(pdf.text).to.include(item)
+                                        })
+                                    }
+                                })
                             })
                         })
-                    })
-                }
+                    }
+                })
             })
         })
-    })
 
+    })
 })
