@@ -80,17 +80,17 @@ defineParameterType({
 
 defineParameterType({
             name: 'check',
-            regexp: /|checked|unchecked/,
+            regexp: /|checked|unchecked|in the enabled state|in the disabled state/,
         })
 
 defineParameterType({
             name: 'checkBoxRadio',
-            regexp: /|checkbox|radio/,
+            regexp: /|checkbox|radio|toggle button/,
         })
 
 defineParameterType({
             name: 'clickType',
-            regexp: /|click on|check|uncheck/,
+            regexp: /|click on|check|uncheck|enable|disable/,
         })
 
 defineParameterType({
@@ -180,7 +180,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'labeledElement',
-            regexp: /|button|link|field|section break|checkbox/,
+            regexp: /|button|link|field|section break|checkbox|toggle button/,
         })
 
 defineParameterType({

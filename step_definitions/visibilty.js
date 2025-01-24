@@ -96,12 +96,15 @@ Given("I should see the {dropdownType} field labeled {string} with the options b
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I should see a checkbox labeled {string} that is {check}
  * @param {string} label - the label associated with the checkbox field
- * @param {string} check - available options: 'checked', 'unchecked'
+ * @param {string} check - available options: 'checked', 'unchecked', 'enabled', 'disabled'
  * @description Selects a checkbox field by its label
  */
-Given("I (should )see a {checkBoxRadio} {labeledExactly} {string} that is {check}", (type, labeled_exactly, label, check) => {
+Given("I (should see)(see) a {checkBoxRadio} {labeledExactly} {string} that is {check}", (type, labeled_exactly, label, check) => {
     let label_selector = `:has(:contains(${JSON.stringify(label)}):visible):has(input[type=checkbox]:visible)`
     let element_selector = `input[type=checkbox]:visible`
+
+    //This is to accommodate for aliases such as "toggle button" which is actually a checkbox behind the scenes
+    check = window.checkBoxAliases.hasOwnProperty(check) ? window.checkBoxAliases[check] : check
 
     cy.top_layer(label_selector).within(() => {
         let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
@@ -403,6 +406,9 @@ Given("I (should )see the date( and time) {string} in the field labeled {string}
  * @description Verifies that there are no visible elements of the specified type with the label `text`
  */
 Given("I should NOT see( ){articleType}( ){labeledElement} {labeledExactly} {string}{baseElement}", (article_type, el, labeled_exactly, text, base_element) => {
+    //This is to accommodate for aliases such as "toggle button" which is actually a checkbox behind the scenes
+    el = window.checkBoxAliases.hasOwnProperty(el) ? window.checkBoxAliases[el] : el
+
     // double quotes need to be re-escaped before inserting into :contains() selector
     text = text.replaceAll('\"', '\\\"')
     let subsel = {'link':'a', 'button':'button', 'field': 'tr','checkbox':'input'}[el]

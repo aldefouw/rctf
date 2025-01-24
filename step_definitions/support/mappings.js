@@ -280,3 +280,11 @@ window.fieldAction = {
     'move': 'move-field',
     'delete field': 'delete-field'
 }
+
+window.checkBoxAliases = {
+    'in the enabled state': 'checked',
+    'in the disabled state': 'unchecked',
+    'toggle button': 'checkbox',
+    enable: 'check',
+    disable: 'uncheck'
+}
