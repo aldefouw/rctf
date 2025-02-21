@@ -26,12 +26,18 @@ Cypress.Commands.add('login', (options, session) => {
     }
 })
 
-Cypress.Commands.add('login_steps', (options) =>{
-    cy.visit_version({page: "", parameters: "action=logout"})
-    cy.get('html').should('contain', 'Log In')
-    cy.get('input[name=username]').invoke('attr', 'value', options['username'])
-    cy.get('input[name=password]').invoke('attr', 'value', options['password'])
-    cy.get('button').contains('Log In').click()
+Cypress.Commands.add('login_steps', (options) => {
+    cy.url().then(url => {
+        /**
+         * Stay on the existing URL to stay consistent with the actual REDCap behavior
+         * of remaining on the current page upon logging out & back in.
+         */
+        cy.url(url)
+        cy.get('html').should('contain', 'Log In')
+        cy.get('input[name=username]').invoke('attr', 'value', options['username'])
+        cy.get('input[name=password]').invoke('attr', 'value', options['password'])
+        cy.get('button').contains('Log In').click()
+    })
 })
 
 Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
@@ -40,11 +46,13 @@ Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
             try {
                 expect(cookies).to.have.length.greaterThan(0);
                 expect(cookies[0]).to.have.property('name', cookieName)
-                // cy.url().then((currentUrl) => {
-                //     if (currentUrl.includes('/surveys/')) {
-                        cy.visit('/')
-                //     }
-                // })
+                cy.url().then((currentUrl) => {
+                    /**
+                     * Stay on the existing URL to stay consistent with the actual REDCap behavior
+                     * of remaining on the current page upon logging out & back in.
+                     */
+                    cy.visit(currentUrl)
+                })
             } catch (error) {
                 if (retries > 0) {
                     cy.log(`Retrying... attempts left: ${retries}`)
@@ -63,8 +71,23 @@ Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
 Cypress.Commands.add('logout', () => {
     cy.clearCookie('PHPSESSID')
     cy.getCookie('PHPSESSID').should('not.exist')
-    cy.visit('/')
-    cy.contains('button', 'Log In').should('exist')
+    
+    cy.url().then((url) => {
+        debugger
+        if (url === 'about:blank') {
+            // This is the first page load from a blank browser windows
+            url = '/'
+        }
+        else {
+            /**
+             * Stay on the existing URL to stay consistent with the actual REDCap behavior
+             * of remaining on the current page upon logging out & back in.
+             */
+        }
+        
+        cy.visit(url)
+        cy.contains('button', 'Log In').should('exist')
+    })
 })
 
 Cypress.Commands.add('set_user_type', (user_type) => {
