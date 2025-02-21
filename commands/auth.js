@@ -73,9 +73,13 @@ Cypress.Commands.add('logout', () => {
     cy.getCookie('PHPSESSID').should('not.exist')
     
     cy.url().then((url) => {
-        debugger
-        if (url === 'about:blank') {
+        if (
             // This is the first page load from a blank browser windows
+            url === 'about:blank'
+            ||
+            // Take us back to the homepage so the login form will be displayed
+            url.includes('/surveys/')
+        ) {
             url = '/'
         }
         else {
