@@ -47,16 +47,10 @@ Cypress.Commands.add('login', (options, session) => {
 })
 
 Cypress.Commands.add('login_steps', (options) => {
-    cy.url().then(url => {
-        /**
-         * Stay on the existing URL to stay consistent with the actual REDCap behavior
-         * of remaining on the current page upon logging out & back in.
-         */
-        cy.get('html').should('contain', 'Log In')
-        cy.get('input[name=username]').invoke('attr', 'value', options['username'])
-        cy.get('input[name=password]').invoke('attr', 'value', options['password'])
-        cy.get('button').contains('Log In').click()
-    })
+    cy.get('html').should('contain', 'Log In')
+    cy.get('input[name=username]').invoke('attr', 'value', options['username'])
+    cy.get('input[name=password]').invoke('attr', 'value', options['password'])
+    cy.get('button').contains('Log In').click()
 })
 
 Cypress.Commands.add('checkCookieAndLogin', (cookieName, options) => {
