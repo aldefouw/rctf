@@ -36,7 +36,6 @@ const { createEsbuildPlugin }  = require ("@badeball/cypress-cucumber-preprocess
 module.exports = (cypressOn, config) => {
     let on = cypressOn
     on = require('cypress-on-fix')(cypressOn)
-    let shouldSkip = false
 
     addCucumberPreprocessorPlugin(on, config, {
         omitBeforeRunHandler: true,
@@ -264,15 +263,6 @@ module.exports = (cypressOn, config) => {
             return fs.existsSync(filePath)
         },
 
-        resetShouldSkipFlag() {
-            shouldSkip = false;
-            return null;
-        },
-
-        shouldSkip(value) {
-            if (value != null) shouldSkip = value;
-            return shouldSkip;
-        }
     })
 
     return config

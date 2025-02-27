@@ -44,6 +44,8 @@ function rctf_initialize(preprocessor) {
 
     const { Given, BeforeStep, defineParameterType } = preprocessor
 
+    let lastFailingFeature
+
     load_support_files()
     load_core_commands()
     load_core_step_definitions(Given, defineParameterType)
@@ -93,24 +95,26 @@ function rctf_initialize(preprocessor) {
         // })
     })
 
-    /**
-     * This function allows features to fail fast by failing the entire feature immediately after any scenario
-     * fails, rather than running all scenarios regardless.  This is important because our current workflow
-     * allows features to be added to redcap_rsvc that have only passed manual testing
-     * and are not really intended for automated testing yet.  We want those to fail fast so that
-     * cloud build times are not unnecessarily inflated (by as much as one timeout window
-     * per failing scenario).
-     * 
-     * This solution was taken from https://stackoverflow.com/questions/58657895/is-there-a-reliable-way-to-have-cypress-exit-as-soon-as-a-test-fails
-     * Mark tried cypress-fail-fast first, but was unable to get it working for unknown reasons.
-     */
     function abortEarly() {
-        if (this.currentTest.state === 'failed') {
-            return cy.task('shouldSkip', true);
+        const currentFeature = this.currentTest.invocationDetails.originalFile
+        if (currentFeature === lastFailingFeature) {
+            /**
+             * One of the scenarios on this feature has already failed.  Skip the rest
+             * 
+             * This is important because our current workflow allows features to be added to redcap_rsvc
+             * that have passed manual testing, but are not intended for automated testing yet.
+             * We want those to fail fast so that cloud build times are not unnecessarily inflated
+             * (by as much as one timeout window for each failing scenario).
+             * 
+             * This solution was adapted from https://stackoverflow.com/questions/58657895/is-there-a-reliable-way-to-have-cypress-exit-as-soon-as-a-test-fails
+             * Mark tried cypress-fail-fast first, but was unable to get it working for unknown reasons.
+             */
+            this.skip()
         }
-        cy.task('shouldSkip').then(value => {
-            if (value) this.skip();
-        });
+
+        if (this.currentTest.state === 'failed') {
+            lastFailingFeature = currentFeature
+        }
     }
 
     beforeEach(abortEarly);
