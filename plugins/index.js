@@ -261,7 +261,7 @@ module.exports = (cypressOn, config) => {
 
         fileExists(filePath) {
             return fs.existsSync(filePath)
-        }
+        },
 
     })
 
