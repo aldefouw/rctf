@@ -127,7 +127,6 @@ function rctf_initialize(preprocessor) {
              * Automatically save the user & page in case the developer wants to load "Continue Last Run.feature"
              * and pick up where they left off.
              */
-            //Snapshot of the URL and session
             cy.url().then((url) => {
                 cy.task('saveCurrentURL', ({ url: url }))
             })
