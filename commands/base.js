@@ -104,12 +104,37 @@ Cypress.Commands.add("top_layer", (label_selector, base_element = 'div[role=dial
 })
 
 Cypress.Commands.add("get_labeled_element", (element_selector, label, value = null, labeled_exactly = false) => {
+    // Find the top most dialog (if any is displayed).
+    let topDialog = null
+    Cypress.$('.ui-dialog:visible').each((i, dialog) => {
+        if (
+            topDialog === null
+            ||
+            topDialog.style.zIndex < dialog.style.zIndex
+        ) {
+            topDialog = dialog 
+        }
+    })
+
+    let target = cy
+    if (topDialog) {
+        /**
+         * One or more dialogs are visible.  Only search within the top most dialog,
+         * since the user is unable to interact with anything outside that dialog anyway.
+         * 
+         * This is required when matching the "Record Locking Customization" checkbox
+         * when editing User Rights, because there is also a column in the table 
+         * behind the dialog with the same name that would be incorrectly matched without this.
+         */
+        target = cy.wrap(topDialog)
+    }
+
     if(labeled_exactly){
-        cy.contains(new RegExp("^" + label + "$", "g")).then(($label) => {
+        target.contains(new RegExp("^" + label + "$", "g")).then(($label) => {
             cy.get_element_by_label($label, element_selector, value)
         })
     } else {
-        cy.contains(label).then(($label) => {
+        target.contains(label).then(($label) => {
             cy.get_element_by_label($label, element_selector, value)
         })
     }
