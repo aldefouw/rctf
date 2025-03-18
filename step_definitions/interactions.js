@@ -77,6 +77,51 @@ function after_click_monitor(type){
 }
 
 /**
+ * This logic is meant to eventually replace & simplify label matching logic existing in multiple places currently.
+ * Is it specifically designed to help us evolve toward normalizing & simplify association of labels with their clickable elements. 
+ */
+function findClickableElement(link_name, text) {
+    let matchesAndParents = Cypress.$(`:visible:contains(${JSON.stringify(text)})`).toArray()
+    if (matchesAndParents.length === 0) {
+        // No matches.  Search input placeholders as well.
+        Cypress.$(`input[placeholder=${JSON.stringify(text)}]`).each((i, match) => {
+            do {
+                matchesAndParents.unshift(match)
+                match = match.parentElement
+            } while (match.parentElement !== null)
+        })
+    }
+
+    while (matchesAndParents.length > 0) {
+        /**
+         * Search last to first.  This favors more recently rendered elements like dialogs.
+         */
+        const current = matchesAndParents.pop()
+        if (link_name === 'icon') {
+            const icons = current.querySelectorAll('img')
+            if (icons.length === 1) {
+                /**
+                 * Example Step: I click on the icon labeled "[All instruments]"
+                 */
+                return icons[0]
+            }
+            else if (icons.length > 1) {
+                throw 'Mulitple matching icons found'
+            }
+        } else if (
+            current.tagName === 'A'
+            ||
+            current.onclick !== null
+        ) {
+            // This is the first clickable element we've come across.  Consider this our match.
+            return current;
+        }
+    }
+
+    return null
+}
+
+/**
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I select the submit option labeled "{instrumentSaveOptions}" on the Data Collection Instrument
@@ -345,19 +390,23 @@ Given("I (click)(locate) on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){file
         })
 
     } else {
-        cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
-            cy.get(`a:contains(${JSON.stringify(text)}):visible`).contains(text).then(($elm) => {
-                if(base_element === " in the File Repository table"){
-                    cy.intercept({
-                        method: 'POST',
-                        url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
-                    }).as('file_breadcrumbs')
-                    //cy.get($elm).invoke('attr', 'onclick')
-                    cy.get($elm).eq(ord).click()
-                } else {
-                    cy.wrap($elm).eq(ord).click()
-                }
-            })
+        const match = findClickableElement(link_name, text)
+
+        if (!match) {
+            throw 'The specified element could not be found'
+        }
+
+        cy.wrap(match).then(($elm) => {
+            if(base_element === " in the File Repository table"){
+                cy.intercept({
+                    method: 'POST',
+                    url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
+                }).as('file_breadcrumbs')
+                //cy.get($elm).invoke('attr', 'onclick')
+                cy.get($elm).eq(ord).click()
+            } else {
+                cy.wrap($elm).eq(ord).click()
+            }
         })
     }
 
