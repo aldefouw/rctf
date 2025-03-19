@@ -163,12 +163,10 @@ function findClickableElement(link_name, text) {
                              */
                             break
                         }
-                    } else if (
-                        current.tagName === 'A'
-                        ||
-                        current.onclick !== null
-                    ) {
-                        // This is the first clickable element we've come across.  Consider this our match.
+                    } else if (current.tagName === 'A') {
+                        /**
+                         * Default to the first matching "a" tag, if no other cases apply.
+                         */
                         return current
                     }
                 } while (current = current.parentElement)
