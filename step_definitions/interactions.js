@@ -119,60 +119,69 @@ function removeParents(matches) {
  * as the root of much our our existing duplicate logic is the lack of built-in "if" support.
  */
 function findClickableElement(link_name, text) {
-    return cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`).then((matches) => {
-        matches = removeParents(matches)
+    return retryUntilTimeout(() => {
+        return cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`).then((matches) => {
+            matches = removeParents(matches)
 
-        /**
-         * Search last to first.  This favors more recently rendered elements like dialogs.
-         */
-        matches = matches.reverse()
+            /**
+             * Search last to first.  This favors more recently rendered elements like dialogs.
+             */
+            matches = matches.reverse()
 
-        const originalMatches = [...matches]
-        matches.sort((a, b) => {
-            const aExtraChars = a.textContent.replace(text, '').length
-            const bExtraChars = b.textContent.replace(text, '').length
-            if (aExtraChars !== bExtraChars) {
-                /**
-                 * Favor whichever has the fewest number of extra chars.
-                 * This is most commonly used to favor exact matches over partial matches.
-                 */
-                return aExtraChars - bExtraChars
-            }
-            else {
-                // They're equal.  Preserve original order favoring most recently rendered.
-                return originalMatches.indexOf(a) - originalMatches.indexOf(b)
-            }
-        })
-
-        for (let i = 0; i < matches.length; i++){
-            let current = matches[i]
-            do {
-                if (link_name === 'icon') {
-                    const icons = current.querySelectorAll('img')
-                    if (icons.length === 1) {
-                        /**
-                         * Example Step: I click on the icon labeled "[All instruments]"
-                         */
-                        return icons[0]
-                    }
-                    else if (icons.length > 1) {
-                        /**
-                         * We've likely reached a parent element contains several unrelated icons.
-                         * Basically, we didn't find a match.  Move on to the next one.
-                         */
-                        break
-                    }
-                } else if (
-                    current.tagName === 'A'
-                    ||
-                    current.onclick !== null
-                ) {
-                    // This is the first clickable element we've come across.  Consider this our match.
-                    return current
+            const originalMatches = [...matches]
+            matches.sort((a, b) => {
+                const aExtraChars = a.textContent.replace(text, '').length
+                const bExtraChars = b.textContent.replace(text, '').length
+                if (aExtraChars !== bExtraChars) {
+                    /**
+                     * Favor whichever has the fewest number of extra chars.
+                     * This is most commonly used to favor exact matches over partial matches.
+                     */
+                    return aExtraChars - bExtraChars
                 }
-            } while (current = current.parentElement)
+                else {
+                    // They're equal.  Preserve original order favoring most recently rendered.
+                    return originalMatches.indexOf(a) - originalMatches.indexOf(b)
+                }
+            })
+
+            for (let i = 0; i < matches.length; i++){
+                let current = matches[i]
+                do {
+                    if (link_name === 'icon') {
+                        const icons = current.querySelectorAll('img')
+                        if (icons.length === 1) {
+                            /**
+                             * Example Step: I click on the icon labeled "[All instruments]"
+                             */
+                            return icons[0]
+                        }
+                        else if (icons.length > 1) {
+                            /**
+                             * We've likely reached a parent element contains several unrelated icons.
+                             * Basically, we didn't find a match.  Move on to the next one.
+                             */
+                            break
+                        }
+                    } else if (
+                        current.tagName === 'A'
+                        ||
+                        current.onclick !== null
+                    ) {
+                        // This is the first clickable element we've come across.  Consider this our match.
+                        return current
+                    }
+                } while (current = current.parentElement)
+            }
+
+            return null
+        })
+    }).then((match) => {
+        if (!match) {
+            throw 'The specified element could not be found'
         }
-        throw 'The specified element could not be found'
+
+        return match
     })
 }
 
