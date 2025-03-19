@@ -98,6 +98,19 @@ function retryUntilTimeout(action, start) {
     })
 }
 
+function removeParents(matches) {
+    matches = matches.toArray()
+    let newMatches = [...matches]
+
+    matches.forEach(current => {
+        while (current = current.parentElement) {
+            newMatches = newMatches.filter(match => match !== current)
+        }
+    })
+
+    return newMatches
+}
+
 /**
  * This logic is meant to eventually replace & simplify label matching logic existing in multiple places currently.
  * Is it specifically designed to help us evolve toward normalizing & simplify association of labels with their clickable elements.
@@ -106,24 +119,34 @@ function retryUntilTimeout(action, start) {
  * as the root of much our our existing duplicate logic is the lack of built-in "if" support.
  */
 function findClickableElement(link_name, text) {
-    return retryUntilTimeout(() => {
-        return cy.then(() => {
-            let matchesAndParents = Cypress.$(`:visible:contains(${JSON.stringify(text)})`).toArray()
-            if (matchesAndParents.length === 0) {
-                // No matches.  Search input placeholders as well.
-                Cypress.$(`input[placeholder=${JSON.stringify(text)}]`).each((i, match) => {
-                    do {
-                        matchesAndParents.unshift(match)
-                        match = match.parentElement
-                    } while (match.parentElement !== null)
-                })
-            }
-        
-            while (matchesAndParents.length > 0) {
+    return cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`).then((matches) => {
+        matches = removeParents(matches)
+
+        /**
+         * Search last to first.  This favors more recently rendered elements like dialogs.
+         */
+        matches = matches.reverse()
+
+        const originalMatches = [...matches]
+        matches.sort((a, b) => {
+            const aExtraChars = a.textContent.replace(text, '').length
+            const bExtraChars = b.textContent.replace(text, '').length
+            if (aExtraChars !== bExtraChars) {
                 /**
-                 * Search last to first.  This favors more recently rendered elements like dialogs.
+                 * Favor whichever has the fewest number of extra chars.
+                 * This is most commonly used to favor exact matches over partial matches.
                  */
-                const current = matchesAndParents.pop()
+                return aExtraChars - bExtraChars
+            }
+            else {
+                // They're equal.  Preserve original order favoring most recently rendered.
+                return originalMatches.indexOf(a) - originalMatches.indexOf(b)
+            }
+        })
+
+        for (let i = 0; i < matches.length; i++){
+            let current = matches[i]
+            do {
                 if (link_name === 'icon') {
                     const icons = current.querySelectorAll('img')
                     if (icons.length === 1) {
@@ -133,7 +156,11 @@ function findClickableElement(link_name, text) {
                         return icons[0]
                     }
                     else if (icons.length > 1) {
-                        throw 'Mulitple matching icons found'
+                        /**
+                         * We've likely reached a parent element contains several unrelated icons.
+                         * Basically, we didn't find a match.  Move on to the next one.
+                         */
+                        break
                     }
                 } else if (
                     current.tagName === 'A'
@@ -141,18 +168,11 @@ function findClickableElement(link_name, text) {
                     current.onclick !== null
                 ) {
                     // This is the first clickable element we've come across.  Consider this our match.
-                    return current;
+                    return current
                 }
-            }
-        
-            return null
-        })
-    }).then((match) => {
-        if (!match) {
-            throw 'The specified element could not be found'
+            } while (current = current.parentElement)
         }
-
-        return match
+        throw 'The specified element could not be found'
     })
 }
 
