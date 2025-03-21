@@ -118,10 +118,14 @@ function removeParents(matches) {
  * and may want to introduce bahmutov/cypress-if to help with those scenarios,
  * as the root of much our our existing duplicate logic is the lack of built-in "if" support.
  */
-function findClickableElement(link_name, text) {
+function findClickableElement(link_name, text, ordinal) {
     return retryUntilTimeout(() => {
         return cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`).then((matches) => {
             matches = removeParents(matches)
+
+            if (ordinal !== undefined) {
+                matches = [matches[window.ordinalChoices[ordinal]]]
+            }
 
             /**
              * Search last to first.  This favors more recently rendered elements like dialogs.
@@ -452,7 +456,7 @@ Given("I click on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}
         })
 
     } else {
-        findClickableElement(link_name, text).then(($elm) => {
+        findClickableElement(link_name, text, ordinal).then(($elm) => {
             $elm = cy.wrap($elm)
 
             if(base_element === " in the File Repository table"){
@@ -460,11 +464,10 @@ Given("I click on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}
                     method: 'POST',
                     url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
                 }).as('file_breadcrumbs')
-                //cy.get($elm).invoke('attr', 'onclick')
-                $elm.eq(ord).click()
-            } else {
-                $elm.eq(ord).click()
+
             }
+            
+            $elm.click()
         })
     }
 
