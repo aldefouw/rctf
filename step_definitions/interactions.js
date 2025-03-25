@@ -183,7 +183,9 @@ function findClickableElement(link_name, text, ordinal) {
         return cy.window().then((win) => {
             // We tried cy.get() and Cypress.$ here, but neither were finding all possible matches (e.g. B.3.16.2000)
             let matches = win.$(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`)
+            console.log('findClickableElement() unfiltered matches', matches)
             matches = filterMatches(matches)
+            console.log('findClickableElement() filtered matches', matches)
 
             if (ordinal !== undefined) {
                 matches = [matches[window.ordinalChoices[ordinal]]]
@@ -202,7 +204,7 @@ function findClickableElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        const children = findMatchingChildren(match, current, childSelector)
+                        console.log('findClickableElement() children', children)
                         if (children.length === 1) {
                             /**
                              * Example Steps:
