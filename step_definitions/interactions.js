@@ -162,9 +162,10 @@ function filterMatches(matches) {
 /**
  * This logic is meant to eventually replace & simplify label matching logic existing in multiple places currently.
  * Is it specifically designed to help us evolve toward normalizing & simplify association of labels with their clickable elements.
- * We will likely encounter scenarios where plain javascript won't be enough in the future,
- * and may want to introduce bahmutov/cypress-if to help with those scenarios,
- * as the root of much our our existing duplicate logic is the lack of built-in "if" support.
+ * The main differences is that it does not require the tagName to be determined up front,
+ * allowing for significant logic simplification (incrementally over time).
+ * We may want to introduce bahmutov/cypress-if at some point as well,
+ * as the root of some of our existing duplicate logic is the lack of built-in "if" support.
  */
 function findClickableElement(link_name, text, ordinal) {
     return retryUntilTimeout(() => {
