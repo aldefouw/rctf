@@ -98,17 +98,65 @@ function retryUntilTimeout(action, start) {
     })
 }
 
-function removeParents(matches) {
-    matches = matches.toArray()
-    let newMatches = [...matches]
+function getElementText(element) {
+    let text = null
+    if (element.tagName === 'INPUT') {
+        if (element.value !== '') {
+            text = element.value
+        }
+        else {
+            text = element.placeholder
+        }
+    }
+    else {
+        text = element.textContent
+    }
 
+    return text.trim()
+}
+
+function filterMatches(matches) {
+    matches = matches.toArray()
+
+    let topElement = null
+    let matchesWithoutParents = [...matches]
     matches.forEach(current => {
+        if (
+            topElement === null // This will default to "body" by default, which is fine
+            ||
+            topElement.style.zIndex < current.style.zIndex
+        ) {
+            topElement = current
+        }
+        
         while (current = current.parentElement) {
-            newMatches = newMatches.filter(match => match !== current)
+            // Remove parents so only leaf node matches are included
+            matchesWithoutParents = matchesWithoutParents.filter(match => match !== current)
         }
     })
 
-    return newMatches
+    let minChars = null
+    matchesWithoutParents.forEach(element => {
+        const chars = getElementText(element).length
+        if (
+            minChars === null
+            ||
+            chars < minChars
+        ) {
+            minChars = chars
+        }
+    })
+
+    return matchesWithoutParents.filter(element =>
+        // Only include elements withint the top most element (likely a dialog)
+        topElement.contains(element)
+        &&
+        /**
+         * Only include the closest matches as determined by minChars.
+         * If we intend to be match longer strings, we should specify them explicitly.
+         */
+        getElementText(element).length === minChars
+    )
 }
 
 /**
@@ -121,48 +169,36 @@ function removeParents(matches) {
 function findClickableElement(link_name, text, ordinal) {
     return retryUntilTimeout(() => {
         return cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`).then((matches) => {
-            matches = removeParents(matches)
+            matches = filterMatches(matches)
 
             if (ordinal !== undefined) {
                 matches = [matches[window.ordinalChoices[ordinal]]]
             }
 
-            /**
-             * Search last to first.  This favors more recently rendered elements like dialogs.
-             */
-            matches = matches.reverse()
-
-            const originalMatches = [...matches]
-            matches.sort((a, b) => {
-                const aExtraChars = a.textContent.replace(text, '').length
-                const bExtraChars = b.textContent.replace(text, '').length
-                if (aExtraChars !== bExtraChars) {
-                    /**
-                     * Favor whichever has the fewest number of extra chars.
-                     * This is most commonly used to favor exact matches over partial matches.
-                     */
-                    return aExtraChars - bExtraChars
-                }
-                else {
-                    // They're equal.  Preserve original order favoring most recently rendered.
-                    return originalMatches.indexOf(a) - originalMatches.indexOf(b)
-                }
-            })
-
             for (let i = 0; i < matches.length; i++){
                 let current = matches[i]
                 do {
+                    let childSelector = null
                     if (link_name === 'icon') {
-                        const icons = current.querySelectorAll('img')
-                        if (icons.length === 1) {
+                        childSelector = 'img'
+                    }
+                    else if (['checkbox', 'radio'].includes(link_name)) {
+                        childSelector = 'input[type=' + link_name + ']'
+                    }
+
+                    if (childSelector) {
+                        const children = current.querySelectorAll(childSelector)
+                        if (children.length === 1) {
                             /**
-                             * Example Step: I click on the icon labeled "[All instruments]"
+                             * Example Steps:
+                             *  I uncheck the first checkbox labeled "Participant Consent"
+                             *  I click on the icon labeled "[All instruments]"
                              */
-                            return icons[0]
+                            return children[0]
                         }
-                        else if (icons.length > 1) {
+                        else if (children.length > 1) {
                             /**
-                             * We've likely reached a parent element contains several unrelated icons.
+                             * We've likely reached a parent element contains several unrelated matches.
                              * Basically, we didn't find a match.  Move on to the next one.
                              */
                             break
@@ -752,12 +788,13 @@ Given('I clear the field labeled {string}', (label) => {
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I {clickType} the {checkBoxRadio} labeled {string} {baseElement}
  * @param {string} clickType - available options: 'click on', 'check', 'uncheck', 'enable', 'disable'
+ * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'last'
  * @param {string} checkBoxRadio - available options: 'checkbox', 'radio', 'toggle button'
  * @param {string} label - the label associated with the checkbox field
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Selects a checkbox field by its label
  */
-Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optionalString}(\", I )(I ){clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}{iframeVisibility}", (event_name, check, type, labeled_exactly, label, base_element, iframe) => {
+Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optionalString}(\", I )(I ){clickType} the{ordinal} {checkBoxRadio} {labeledExactly} {string}{baseElement}{iframeVisibility}", (event_name, check, ordinal, type, labeled_exactly, label, base_element, iframe) => {
     cy.not_loading()
 
     //This is to accommodate for aliases such as "toggle button" which is actually a checkbox behind the scenes
@@ -797,14 +834,16 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
 
     function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
         cy.top_layer(label_selector, outer_element).within(() => {
-            let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
-            if (type === "radio" || check === "click on") {
-                selector.scrollIntoView().click()
-            } else if (check === "check") {
-                selector.scrollIntoView().check()
-            } else if (check === "uncheck") {
-                selector.scrollIntoView().uncheck()
-            }
+            findClickableElement(type, label, ordinal).then((element) => {
+                element = cy.wrap(element).scrollIntoView()
+                if (type === "radio" || check === "click on") {
+                    element.click()
+                } else if (check === "check") {
+                    element.check()
+                } else if (check === "uncheck") {
+                    element.uncheck()
+                }
+            })
         })
     }
 
