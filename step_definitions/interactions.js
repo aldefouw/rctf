@@ -180,7 +180,9 @@ function findMatchingChildren(originalMatch, searchParent, childSelector) {
  */
 function findClickableElement(link_name, text, ordinal) {
     return retryUntilTimeout(() => {
-        return cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`).then((matches) => {
+        return cy.window().then((win) => {
+            // We tried cy.get() and Cypress.$ here, but neither were finding all possible matches (e.g. B.3.16.2000)
+            let matches = win.$(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`)
             matches = filterMatches(matches)
 
             if (ordinal !== undefined) {
