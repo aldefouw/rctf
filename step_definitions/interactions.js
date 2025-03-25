@@ -159,6 +159,17 @@ function filterMatches(matches) {
     )
 }
 
+function findMatchingChildren(originalMatch, searchParent, childSelector) {
+    const matchTable = originalMatch.closest('table')
+    return Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
+        /**
+         * Only consider it a match if the label & clickable element have the same closest table parent.
+         * Example: I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
+         */
+        return matchTable === child.closest('table')
+    })
+}
+
 /**
  * This logic is meant to eventually replace & simplify label matching logic existing in multiple places currently.
  * Is it specifically designed to help us evolve toward normalizing & simplify association of labels with their clickable elements.
@@ -177,7 +188,8 @@ function findClickableElement(link_name, text, ordinal) {
             }
 
             for (let i = 0; i < matches.length; i++){
-                let current = matches[i]
+                const match = matches[i]
+                let current = match
                 do {
                     let childSelector = null
                     if (link_name === 'icon') {
@@ -188,7 +200,7 @@ function findClickableElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        const children = current.querySelectorAll(childSelector)
+                        const children = findMatchingChildren(match, current, childSelector)
                         if (children.length === 1) {
                             /**
                              * Example Steps:
