@@ -390,6 +390,10 @@ Given("I click on the button labeled {string} for the row labeled {string}", (te
  */
 Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} field( ){columnLabel}( ){labeledExactly} {string}{baseElement}{iframeVisibility}', (enter_type, text, ordinal, input_type, column, labeled_exactly, label, base_element, iframe) => {
     let select = 'input[type=text]:visible,input[type=password]:visible'
+
+    // Also look for inputs that omit a "type", like "Name of trigger"
+    select += ',input:not([type]):visible'
+
     if(input_type === 'password'){
         select = 'input[type=password]:visible'
     }
