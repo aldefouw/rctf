@@ -494,6 +494,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
         element = `div#rc-ace-editor div.ace_line`
+        enter_type = 'clear field and enter'
     }
 
     //Either the base element as specified or the default
