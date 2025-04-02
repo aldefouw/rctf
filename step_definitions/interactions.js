@@ -203,12 +203,19 @@ function getLabeledElement(link_name, text, ordinal) {
                 const match = matches[i]
                 let current = match
                 do {
+                    if (link_name === 'dropdown' && current.tagName === 'SELECT') {
+                        return current
+                    }
+
                     let childSelector = null
                     if (link_name === 'icon') {
                         childSelector = 'img'
                     }
                     else if (['checkbox', 'radio'].includes(link_name)) {
                         childSelector = 'input[type=' + link_name + ']'
+                    }
+                    else if (link_name === 'dropdown') {
+                        childSelector = 'select'
                     }
 
                     if (childSelector) {
@@ -233,8 +240,6 @@ function getLabeledElement(link_name, text, ordinal) {
                         /**
                          * Default to the first matching "a" tag, if no other cases apply.
                          */
-                        return current
-                    } else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
                 } while (current = current.parentElement)
