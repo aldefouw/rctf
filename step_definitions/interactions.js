@@ -98,7 +98,7 @@ function retryUntilTimeout(action, start) {
     })
 }
 
-function getElementText(element) {
+function getShortestMatchingNodeLength(textToFind, element) {
     let text = null
     if (element.tagName === 'INPUT') {
         if (element.value !== '') {
@@ -108,11 +108,20 @@ function getElementText(element) {
             text = element.placeholder
         }
     }
-    else {
+    else if(element.childNodes.length > 0) {
+        // This is required for 'on the dropdown field labeled "to"' syntax
+        element.childNodes.forEach(child => {
+            if(child.constructor.name === 'Text' && child.textContent.includes(textToFind)){
+                text = child.textContent
+            }
+        })
+    }
+
+    if(text === null){
         text = element.textContent
     }
 
-    return text.trim()
+    return text.trim().length
 }
 
 function filterMatches(text, win, matches) {
@@ -145,7 +154,7 @@ function filterMatches(text, win, matches) {
 
     let minChars = null
     matchesWithoutParents.forEach(element => {
-        const chars = getElementText(element).length
+        const chars = getShortestMatchingNodeLength(text, element)
         if (
             minChars === null
             ||
@@ -163,7 +172,7 @@ function filterMatches(text, win, matches) {
          * Only include the closest matches as determined by minChars.
          * If we intend to be match longer strings, we should specify them explicitly.
          */
-        getElementText(element).length === minChars
+        getShortestMatchingNodeLength(text, element) === minChars
     )
 }
 
