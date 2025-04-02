@@ -167,15 +167,28 @@ function filterMatches(text, win, matches) {
     )
 }
 
-function findMatchingChildren(originalMatch, searchParent, childSelector) {
+function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
     const matchTable = originalMatch.closest('table')
-    return Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
+    const children = Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
         /**
          * Only consider it a match if the label & clickable element have the same closest table parent.
          * Example: I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
          */
         return matchTable === child.closest('table')
     })
+
+    const siblingMatch = children.filter(child => {
+        // This is required to support 'dropdown field labeled "Assign user"' syntax
+        const previousSibling = child.previousSibling
+        return previousSibling && previousSibling.textContent.includes(text)
+    })
+
+    if(siblingMatch.length === 1){
+        return siblingMatch
+    }
+    else{
+        return children
+    }
 }
 
 /**
@@ -219,7 +232,7 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        const children = findMatchingChildren(match, current, childSelector)
+                        const children = findMatchingChildren(text, match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
