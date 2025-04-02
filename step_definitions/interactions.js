@@ -204,6 +204,7 @@ function findClickableElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
+                        const children = findMatchingChildren(match, current, childSelector)
                         console.log('findClickableElement() children', children)
                         if (children.length === 1) {
                             /**
