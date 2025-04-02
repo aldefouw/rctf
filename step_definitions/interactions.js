@@ -115,7 +115,7 @@ function getElementText(element) {
     return text.trim()
 }
 
-function filterMatches(matches) {
+function filterMatches(text, win, matches) {
     matches = matches.toArray()
 
     let topElement = null
@@ -127,6 +127,14 @@ function filterMatches(matches) {
             topElement.style.zIndex < current.style.zIndex
         ) {
             topElement = current
+        }
+        
+        if(current.tagName === 'SELECT'){
+            const option = win.$(current).find(`:contains(${JSON.stringify(text)})`)[0]
+            if(!option.selected){
+                // Exclude matches for options that are not currently selected, as they are not visible and should not be considered labels
+                matchesWithoutParents = matchesWithoutParents.filter(match => match !== current)
+            }
         }
         
         while (current = current.parentElement) {
@@ -171,21 +179,21 @@ function findMatchingChildren(originalMatch, searchParent, childSelector) {
 }
 
 /**
- * This logic is meant to eventually replace & simplify label matching logic existing in multiple places currently.
+ * This logic is meant to eventually replace get_labeled_element() and other label matching logic duplicated in multiple places.
  * Is it specifically designed to help us evolve toward normalizing & simplify association of labels with their clickable elements.
  * The main differences is that it does not require the tagName to be determined up front,
  * allowing for significant logic simplification (incrementally over time).
  * We may want to introduce bahmutov/cypress-if at some point as well,
  * as the root of some of our existing duplicate logic is the lack of built-in "if" support.
  */
-function findClickableElement(link_name, text, ordinal) {
+function getLabeledElement(link_name, text, ordinal) {
     return retryUntilTimeout(() => {
         return cy.window().then((win) => {
             // We tried cy.get() and Cypress.$ here, but neither were finding all possible matches (e.g. B.3.16.2000)
             let matches = win.$(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`)
-            console.log('findClickableElement() unfiltered matches', matches)
-            matches = filterMatches(matches)
-            console.log('findClickableElement() filtered matches', matches)
+            console.log('getLabeledElement() unfiltered matches', matches)
+            matches = filterMatches(text, win, matches)
+            console.log('getLabeledElement() filtered matches', matches)
 
             if (ordinal !== undefined) {
                 matches = [matches[window.ordinalChoices[ordinal]]]
@@ -205,7 +213,7 @@ function findClickableElement(link_name, text, ordinal) {
 
                     if (childSelector) {
                         const children = findMatchingChildren(match, current, childSelector)
-                        console.log('findClickableElement() children', children)
+                        console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
                              * Example Steps:
@@ -225,6 +233,8 @@ function findClickableElement(link_name, text, ordinal) {
                         /**
                          * Default to the first matching "a" tag, if no other cases apply.
                          */
+                        return current
+                    } else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
                 } while (current = current.parentElement)
@@ -510,7 +520,7 @@ Given("I click on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}
         })
 
     } else {
-        findClickableElement(link_name, text, ordinal).then(($elm) => {
+        getLabeledElement(link_name, text, ordinal).then(($elm) => {
             $elm = cy.wrap($elm)
 
             if(base_element === " in the File Repository table"){
@@ -852,7 +862,7 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
 
     function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
         cy.top_layer(label_selector, outer_element).within(() => {
-            findClickableElement(type, label, ordinal).then((element) => {
+            getLabeledElement(type, label, ordinal).then((element) => {
                 element = cy.wrap(element).scrollIntoView()
                 if (type === "radio" || check === "click on") {
                     element.click()
@@ -1042,19 +1052,18 @@ Given('I select the checkbox option {string} for the field labeled {string}', (c
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I select {string} on the {dropdownType} field labeled {string} {baseElement}
  * @param {string} text - the text to enter into the field
+ * @param {string} ordinal - available options: 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'last'
  * @param {string} dropdownType - available options: 'dropdown', 'multiselect', 'checkboxes', 'radio'
  * @param {string} label - the label of the field
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Selects a specific item from a dropdown
  */
-Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open date picker widget for) {string}{baseElement}', (option, type, label, base_element) => {
+Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of the open date picker widget for) {string}{baseElement}', (option, ordinal, type, label, base_element) => {
     cy.not_loading()
     let outer_element = window.elementChoices[base_element]
     let label_selector = `:contains(${JSON.stringify(label)}):visible`
     if(type === "dropdown" || type === "multiselect"){
-        let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
-        cy.top_layer(label_selector, outer_element).within(() => {
-            cy.get_labeled_element(element_selector, label, option).then(($select) => {
+        const action = ($select) => {
                 cy.wrap($select).scrollIntoView().
                 should('be.visible').
                 should('be.enabled').then(($t) => {
@@ -1076,8 +1085,17 @@ Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open
                         cy.wrap($t).select(all_options)
                     }
                 })
+        }
+
+        if(type === "dropdown"){
+            getLabeledElement(type, label, ordinal).then(action)
+        }
+        else{
+            let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
+            cy.top_layer(label_selector, outer_element).within(() => {
+                cy.get_labeled_element(element_selector, label, option).then(action)
             })
-        })
+        }
     } else if(type === "radio" || type === "checkboxes"){
         if(type === "checkboxes"){ type = 'checkbox' }
         let label_selector = `:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
