@@ -145,6 +145,7 @@ window.projectModules = {
                                                      'Randomization module',
                                                      'Designate an email field for communications (including survey invitations and alerts)',
                                                      'Twilio SMS and Voice Call services for surveys and alerts',
+                                                     'Mosio SMS services for surveys and alerts',
                                                      'SendGrid Template email services for Alerts & Notifications'
                                                     ]
 }
