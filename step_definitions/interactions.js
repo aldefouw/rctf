@@ -591,6 +591,10 @@ Given("I click on the button labeled {string} for the row labeled {string}", (te
  */
 Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} field( ){columnLabel}( ){labeledExactly} {string}{baseElement}{iframeVisibility}', (enter_type, text, ordinal, input_type, column, labeled_exactly, label, base_element, iframe) => {
     let select = 'input[type=text]:visible,input[type=password]:visible'
+
+    // Also look for inputs that omit a "type", like "Name of trigger"
+    select += ',input:not([type]):visible'
+
     if(input_type === 'password'){
         select = 'input[type=password]:visible'
     }
@@ -695,6 +699,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
         element = `div#rc-ace-editor div.ace_line`
+        enter_type = 'clear field and enter'
     }
 
     //Either the base element as specified or the default
