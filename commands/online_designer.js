@@ -106,7 +106,22 @@ Cypress.Commands.add('select_radio_by_label', ($name, $value, $click = true, $se
             }
         } else {
             // Fallback to the nearest radio button - whether that is next or previous parent
+            const action = (radio) => {
+                if ($click) {
+                    radio.click()
+                } else {
+                    radio.should('have.attr', $selected ? 'checked' : 'unchecked')
+                }
+            }
+
             cy.contains($value).then($text => {
+                const radios = $text.find('input[type=radio]')
+                if (radios.length === 1) {
+                    // The the text and matching radio are the only siblings within a div (e.g. "Lock/Unlock Records").
+                    action(radios[0])
+                    return
+                }
+
                 const parent = Cypress.$($text).parent()
                 let radio = parent
 
@@ -117,11 +132,7 @@ Cypress.Commands.add('select_radio_by_label', ($name, $value, $click = true, $se
                 }
 
                 if (radio.length) {
-                    if ($click) {
-                        cy.wrap(radio).find('input[type=radio]').click();
-                    } else {
-                        cy.wrap(radio).find('input[type=radio]').should('have.attr', $selected ? 'checked' : 'unchecked');
-                    }
+                    cy.wrap(radio).find('input[type=radio]').then(action)
                 }
             })
         }
