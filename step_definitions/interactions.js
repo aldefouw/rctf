@@ -185,7 +185,19 @@ function filterMatches(text, matches) {
  *      the dropdown field labeled "Assign user"
  *      the radio labeled "Use Data Access Groups"
  */
-function getPreferredSibling(originalMatch, one, two){
+function getPreferredSibling(text, originalMatch, one, two){
+    if(originalMatch === one.parentElement){
+        const nodeMatches = Array.from(originalMatch.childNodes).filter(child => {
+            return child.textContent.includes(text)
+        })
+
+        if(nodeMatches.length !== 1){
+            throw 'Found an unexpexcted number of node matches'
+        }
+
+        originalMatch = nodeMatches[0]
+    }
+
     if(
         originalMatch.parentElement === one.parentElement
         &&
@@ -198,13 +210,24 @@ function getPreferredSibling(originalMatch, one, two){
         return undefined
     }
 
-    const siblings = Array.from(originalMatch.parentElement.children)
+    const siblings = Array.from(originalMatch.parentElement.childNodes)
     const matchIndex = siblings.indexOf(originalMatch)
+    if(matchIndex === -1){
+        console.log(1, originalMatch, siblings)
+        throw 'Could not determine match index'
+    }
+
     const indexOne = siblings.indexOf(one)
     const indexTwo = siblings.indexOf(two)
     const distanceOne = Math.abs(matchIndex - indexOne)
     const distanceTwo = Math.abs(matchIndex - indexTwo)
     if(distanceOne === distanceTwo){
+        if(text === 'to'){
+            // Support the special case for 'dropdown field labeled "to"' language
+            // Alternatively, we could replaces such steps with 'dropdown field labeled "[No Assignment]"' to resolve this.
+            return two
+        }
+
         throw 'Two sibling matches were found the same distance away.  We should consider implementing a way to definitively determine which to match.'
     }
     else if(distanceOne < distanceTwo){
@@ -215,12 +238,12 @@ function getPreferredSibling(originalMatch, one, two){
     }
 }
 
-function removeUnpreferredSiblings(originalMatch, children){
+function removeUnpreferredSiblings(text, originalMatch, children){
     for(let i=0; i<children.length-1; i++){
         const current = children[i]
         const next = children[i+1]
 
-        const preferredSibling = getPreferredSibling(originalMatch, current, next)
+        const preferredSibling = getPreferredSibling(text, originalMatch, current, next)
         let indexToRemove
         if(preferredSibling === current){
             indexToRemove = i+1
@@ -240,7 +263,7 @@ function removeUnpreferredSiblings(originalMatch, children){
     }
 }
 
-function findMatchingChildren(originalMatch, searchParent, childSelector) {
+function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
     const matchTable = originalMatch.closest('table')
     const children = Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
         /**
@@ -250,7 +273,7 @@ function findMatchingChildren(originalMatch, searchParent, childSelector) {
         return matchTable === child.closest('table')
     })
 
-    removeUnpreferredSiblings(originalMatch, children)
+    removeUnpreferredSiblings(text, originalMatch, children)
 
     return children
 }
@@ -312,7 +335,7 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        const children = findMatchingChildren(match, current, childSelector)
+                        const children = findMatchingChildren(text, match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
