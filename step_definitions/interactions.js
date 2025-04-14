@@ -76,9 +76,13 @@ function after_click_monitor(type){
     }
 }
 
-function retryUntilTimeout(action, start) {
+function retryUntilTimeout(action, start, lastRun) {
     if (start === undefined) {
         start = Date.now()
+    }
+
+    if(lastRun === undefined){
+        lastRun = false
     }
 
     const isAfterTimeout = () => {
@@ -86,13 +90,13 @@ function retryUntilTimeout(action, start) {
         return elapsed > Cypress.config('defaultCommandTimeout')
     }
 
-    return action().then((result) => {
-        if (result || isAfterTimeout()) {
+    return action(lastRun).then((result) => {
+        if (result || (isAfterTimeout() && lastRun)) {
             return result
         }
         else {
             cy.wait(250).then(() => {
-                retryUntilTimeout(action, start)
+                retryUntilTimeout(action, start, isAfterTimeout())
             })
         }
     })
@@ -124,7 +128,7 @@ function getShortestMatchingNodeLength(textToFind, element) {
     return text.trim().length
 }
 
-function filterMatches(text, win, matches) {
+function filterMatches(text, matches) {
     matches = matches.toArray()
 
     let topElement = null
@@ -139,7 +143,7 @@ function filterMatches(text, win, matches) {
         }
         
         if(current.tagName === 'SELECT'){
-            const option = win.$(current).find(`:contains(${JSON.stringify(text)})`)[0]
+            const option = Cypress.$(current).find(`:contains(${JSON.stringify(text)})`)[0]
             if(!option.selected){
                 // Exclude matches for options that are not currently selected, as they are not visible and should not be considered labels
                 matchesWithoutParents = matchesWithoutParents.filter(match => match !== current)
@@ -176,7 +180,67 @@ function filterMatches(text, win, matches) {
     )
 }
 
-function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
+/**
+ * This is required to support steps containing the following:
+ *      the dropdown field labeled "Assign user"
+ *      the radio labeled "Use Data Access Groups"
+ */
+function getPreferredSibling(originalMatch, one, two){
+    if(
+        originalMatch.parentElement === one.parentElement
+        &&
+        originalMatch.parentElement === two.parentElement
+    ){
+        // All three have the same parent, so the logic in this method is useful
+    }
+    else{
+        // This method is not useful in its current form since the three are not siblings
+        return undefined
+    }
+
+    const siblings = Array.from(originalMatch.parentElement.children)
+    const matchIndex = siblings.indexOf(originalMatch)
+    const indexOne = siblings.indexOf(one)
+    const indexTwo = siblings.indexOf(two)
+    const distanceOne = Math.abs(matchIndex - indexOne)
+    const distanceTwo = Math.abs(matchIndex - indexTwo)
+    if(distanceOne === distanceTwo){
+        throw 'Two sibling matches were found the same distance away.  We should consider implementing a way to definitively determine which to match.'
+    }
+    else if(distanceOne < distanceTwo){
+        return one
+    }
+    else{
+        return two
+    }
+}
+
+function removeUnpreferredSiblings(originalMatch, children){
+    for(let i=0; i<children.length-1; i++){
+        const current = children[i]
+        const next = children[i+1]
+
+        const preferredSibling = getPreferredSibling(originalMatch, current, next)
+        let indexToRemove
+        if(preferredSibling === current){
+            indexToRemove = i+1
+        }
+        else if(preferredSibling === next){
+            indexToRemove = i
+        }
+        else{
+            // Neither was preferred
+            indexToRemove = null
+        }
+
+        if(indexToRemove !== null){
+            children.splice(indexToRemove, 1)
+            i--
+        }
+    }
+}
+
+function findMatchingChildren(originalMatch, searchParent, childSelector) {
     const matchTable = originalMatch.closest('table')
     const children = Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
         /**
@@ -186,18 +250,9 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector) 
         return matchTable === child.closest('table')
     })
 
-    const siblingMatch = children.filter(child => {
-        // This is required to support 'dropdown field labeled "Assign user"' syntax
-        const previousSibling = child.previousSibling
-        return previousSibling && previousSibling.textContent.includes(text)
-    })
+    removeUnpreferredSiblings(originalMatch, children)
 
-    if(siblingMatch.length === 1){
-        return siblingMatch
-    }
-    else{
-        return children
-    }
+    return children
 }
 
 /**
@@ -209,12 +264,28 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector) 
  * as the root of some of our existing duplicate logic is the lack of built-in "if" support.
  */
 function getLabeledElement(link_name, text, ordinal) {
-    return retryUntilTimeout(() => {
-        return cy.window().then((win) => {
-            // We tried cy.get() and Cypress.$ here, but neither were finding all possible matches (e.g. B.3.16.2000)
-            let matches = win.$(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`)
+    return retryUntilTimeout((lastRun) => {
+        /**
+         * We tried using "window().then(win => win.$(`:contains..." to combine the following two cases,
+         * but it could not find iframe content like cy.get() can.
+         * We also tried Cypress.$, but it seems to return similar results to cy.get().
+         * Example from A.6.4.0200.: I click on the radio labeled "Keep ALL data saved so far." in the dialog box in the iframe
+        */
+        let next
+        if(!lastRun){
+            next = cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`)
+        }
+        else{
+            /**
+             * The results from cy.get() don't make sense sometimes, so we fall back to cy.contains() on the last run.
+             * Example from B.3.16.2000.: I check the checkbox labeled "Require a 'reason' when making changes to existing records?"
+             */
+            next = cy.contains(text)
+        }
+
+        return next.then(matches => {
             console.log('getLabeledElement() unfiltered matches', matches)
-            matches = filterMatches(text, win, matches)
+            matches = filterMatches(text, matches)
             console.log('getLabeledElement() filtered matches', matches)
 
             if (ordinal !== undefined) {
@@ -241,7 +312,7 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        const children = findMatchingChildren(text, match, current, childSelector)
+                        const children = findMatchingChildren(match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
