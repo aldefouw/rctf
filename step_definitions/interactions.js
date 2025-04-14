@@ -180,7 +180,67 @@ function filterMatches(text, matches) {
     )
 }
 
-function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
+/**
+ * This is required to support steps containing the following:
+ *      the dropdown field labeled "Assign user"
+ *      the radio labeled "Use Data Access Groups"
+ */
+function getPreferredSibling(originalMatch, one, two){
+    if(
+        originalMatch.parentElement === one.parentElement
+        &&
+        originalMatch.parentElement === two.parentElement
+    ){
+        // All three have the same parent, so the logic in this method is useful
+    }
+    else{
+        // This method is not useful in its current form since the three are not siblings
+        return undefined
+    }
+
+    const siblings = Array.from(originalMatch.parentElement.children)
+    const matchIndex = siblings.indexOf(originalMatch)
+    const indexOne = siblings.indexOf(one)
+    const indexTwo = siblings.indexOf(two)
+    const distanceOne = Math.abs(matchIndex - indexOne)
+    const distanceTwo = Math.abs(matchIndex - indexTwo)
+    if(distanceOne === distanceTwo){
+        throw 'Two sibling matches were found the same distance away.  We should consider implementing a way to definitively determine which to match.'
+    }
+    else if(distanceOne < distanceTwo){
+        return one
+    }
+    else{
+        return two
+    }
+}
+
+function removeUnpreferredSiblings(originalMatch, children){
+    for(let i=0; i<children.length-1; i++){
+        const current = children[i]
+        const next = children[i+1]
+
+        const preferredSibling = getPreferredSibling(originalMatch, current, next)
+        let indexToRemove
+        if(preferredSibling === current){
+            indexToRemove = i+1
+        }
+        else if(preferredSibling === next){
+            indexToRemove = i
+        }
+        else{
+            // Neither was preferred
+            indexToRemove = null
+        }
+
+        if(indexToRemove !== null){
+            children.splice(indexToRemove, 1)
+            i--
+        }
+    }
+}
+
+function findMatchingChildren(originalMatch, searchParent, childSelector) {
     const matchTable = originalMatch.closest('table')
     const children = Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
         /**
@@ -190,18 +250,9 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector) 
         return matchTable === child.closest('table')
     })
 
-    const siblingMatch = children.filter(child => {
-        // This is required to support 'dropdown field labeled "Assign user"' syntax
-        const previousSibling = child.previousSibling
-        return previousSibling && previousSibling.textContent.includes(text)
-    })
+    removeUnpreferredSiblings(originalMatch, children)
 
-    if(siblingMatch.length === 1){
-        return siblingMatch
-    }
-    else{
-        return children
-    }
+    return children
 }
 
 /**
@@ -261,7 +312,7 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        const children = findMatchingChildren(text, match, current, childSelector)
+                        const children = findMatchingChildren(match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
