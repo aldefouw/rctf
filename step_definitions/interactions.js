@@ -349,11 +349,19 @@ function getLabeledElement(link_name, text, ordinal) {
                              */
                             return children[0]
                         }
-                        else if (children.length > 1) {
+                        else if (
                             /**
                              * We've likely reached a parent element contains several unrelated matches.
                              * Basically, we didn't find a match.  Move on to the next one.
                              */
+                            children.length > 1
+                            ||
+                            /**
+                             * We have likely found a link that unintentionally has the same name as the label
+                             * for the field we're looking for. Do not search its parents, and move on to the next match.
+                             */
+                            current.tagName === 'A'
+                        ) {
                             break
                         }
                     } else if (current.tagName === 'A') {
