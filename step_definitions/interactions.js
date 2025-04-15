@@ -321,7 +321,13 @@ function getLabeledElement(link_name, text, ordinal) {
                 do {
                     console.log('getLabeledElement() current', current)
 
-                    if (link_name === 'dropdown' && current.tagName === 'SELECT') {
+                    if(current.clientHeight > 500){
+                        /**
+                         * We've reached a parent that is large enough that our scope is now too large for a valid match
+                         */
+                        break
+                    }
+                    else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
                     else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
@@ -358,12 +364,6 @@ function getLabeledElement(link_name, text, ordinal) {
                              * Basically, we didn't find a match.  Move on to the next one.
                              */
                             children.length > 1
-                            ||
-                            /**
-                             * We have likely found a link that unintentionally has the same name as the label
-                             * for the field we're looking for. Do not search its parents, and move on to the next match.
-                             */
-                            current.tagName === 'A'
                         ) {
                             break
                         }
