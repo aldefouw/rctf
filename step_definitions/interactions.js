@@ -319,6 +319,8 @@ function getLabeledElement(link_name, text, ordinal) {
                 const match = matches[i]
                 let current = match
                 do {
+                    console.log('getLabeledElement() current', current)
+
                     if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
