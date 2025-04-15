@@ -265,7 +265,7 @@ function removeUnpreferredSiblings(text, originalMatch, children){
 
 function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
     const matchTable = originalMatch.closest('table')
-    const children = Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
+    const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
         /**
          * Only consider it a match if the label & clickable element have the same closest table parent.
          * Example: I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
@@ -339,6 +339,7 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
+                        childSelector += ':visible'
                         const children = findMatchingChildren(text, match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
