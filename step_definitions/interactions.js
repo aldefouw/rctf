@@ -267,10 +267,15 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector) 
     const matchTable = originalMatch.closest('table')
     const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
         /**
-         * Only consider it a match if the label & clickable element have the same closest table parent.
-         * Example: I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
+         * Only consider it a match if the label & clickable element are within the same table.
+         * Examples:
+         *      I select "DDChoice6" on the dropdown field labeled "Multiple Choice Dropdown Manual"
+         *      I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
          */
+        const childTable = child.closest('table')
         return matchTable === child.closest('table')
+            || Cypress.$.contains(matchTable, childTable)
+            || Cypress.$.contains(childTable, matchTable)
     })
 
     removeUnpreferredSiblings(text, originalMatch, children)
