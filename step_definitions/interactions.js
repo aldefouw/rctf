@@ -322,6 +322,10 @@ function getLabeledElement(link_name, text, ordinal) {
                     if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
+                    else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
+                        // This label has the 'for' attribute set.  Use it.
+                        return cy.get('#' + current.htmlFor)
+                    }
 
                     let childSelector = null
                     if (link_name === 'icon') {
