@@ -263,19 +263,9 @@ function removeUnpreferredSiblings(text, originalMatch, children){
     }
 }
 
-function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
-    const matchTable = originalMatch.closest('table')
+function findMatchingChildren(text, originalMatch, searchParent, childSelector, childrenToIgnore) {
     const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
-        /**
-         * Only consider it a match if the label & clickable element are within the same table.
-         * Examples:
-         *      I select "DDChoice6" on the dropdown field labeled "Multiple Choice Dropdown Manual"
-         *      I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
-         */
-        const childTable = child.closest('table')
-        return matchTable === child.closest('table')
-            || Cypress.$.contains(matchTable, childTable)
-            || Cypress.$.contains(childTable, matchTable)
+       return !childrenToIgnore.includes(child)
     })
 
     removeUnpreferredSiblings(text, originalMatch, children)
@@ -317,6 +307,7 @@ function getLabeledElement(link_name, text, ordinal) {
             for (let i = 0; i < matches.length; i++){
                 const match = matches[i]
                 let current = match
+                const childrenToIgnore = []
                 do {
                     console.log('getLabeledElement() current', current)
 
@@ -351,7 +342,7 @@ function getLabeledElement(link_name, text, ordinal) {
                             childSelector += ':visible'
                         }
 
-                        const children = findMatchingChildren(text, match, current, childSelector)
+                        const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
@@ -363,12 +354,13 @@ function getLabeledElement(link_name, text, ordinal) {
                         }
                         else if (
                             /**
-                             * We've likely reached a parent element contains several unrelated matches.
-                             * Basically, we didn't find a match.  Move on to the next one.
+                             * We're likely matching an unrelated group of elements.
+                             * They could be children or distant siblings of the desired match
+                             * Regardles, ignore this grouping and start the search again from the next parent.
                              */
                             children.length > 1
                         ) {
-                            break
+                            childrenToIgnore.push(...children)
                         }
                     } else if (current.tagName === 'A') {
                         /**
@@ -1239,7 +1231,13 @@ Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of
         }
 
         if(type === "dropdown"){
-            getLabeledElement(type, label, ordinal).then(action)
+            if(label.startsWith('datetime')){
+                // For "of the open date picker widget for" syntax
+                cy.get(`#ui-datepicker-div option:contains(${JSON.stringify(option)})`).closest('select').then(action)
+            }
+            else{
+                getLabeledElement(type, label, ordinal).then(action)
+            }
         }
         else{
             let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
