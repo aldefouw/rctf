@@ -322,6 +322,10 @@ function getLabeledElement(link_name, text, ordinal) {
                     if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
+                    else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
+                        // This label has the 'for' attribute set.  Use it.
+                        return cy.get('#' + current.htmlFor)
+                    }
 
                     let childSelector = null
                     if (link_name === 'icon') {
@@ -345,11 +349,19 @@ function getLabeledElement(link_name, text, ordinal) {
                              */
                             return children[0]
                         }
-                        else if (children.length > 1) {
+                        else if (
                             /**
                              * We've likely reached a parent element contains several unrelated matches.
                              * Basically, we didn't find a match.  Move on to the next one.
                              */
+                            children.length > 1
+                            ||
+                            /**
+                             * We have likely found a link that unintentionally has the same name as the label
+                             * for the field we're looking for. Do not search its parents, and move on to the next match.
+                             */
+                            current.tagName === 'A'
+                        ) {
                             break
                         }
                     } else if (current.tagName === 'A') {
@@ -986,17 +998,21 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         }
     }
 
-    function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
+    function clickElement(element){
+        element = element.scrollIntoView()
+        if (type === "radio" || check === "click on") {
+            element.click()
+        } else if (check === "check") {
+            element.check()
+        } else if (check === "uncheck") {
+            element.uncheck()
+        }
+    }
+
+    function findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
         cy.top_layer(label_selector, outer_element).within(() => {
-            getLabeledElement(type, label, ordinal).then((element) => {
-                element = cy.wrap(element).scrollIntoView()
-                if (type === "radio" || check === "click on") {
-                    element.click()
-                } else if (check === "check") {
-                    element.check()
-                } else if (check === "uncheck") {
-                    element.uncheck()
-                }
+            getLabeledElement(type, label, ordinal).then(element => {
+                clickElement(cy.wrap(element))
             })
         })
     }
@@ -1012,13 +1028,16 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         }).then(() => {
             outer_element = `${window.tableMappings['record locking']}:visible`
             label_selector = `tr:contains(${JSON.stringify(label)}):visible`
-            clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
+            cy.top_layer(label_selector, outer_element).within(() => {
+                let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
+                clickElement(selector)
+            })
         })
 
     } else if(iframe === " in the iframe") {
-        elm.within(() => { clickElement(label_selector, outer_element, element_selector, label, labeled_exactly) })
+        elm.within(() => { findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly) })
     } else {
-        clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
+        findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
     }
 })
 
