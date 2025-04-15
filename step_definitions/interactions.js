@@ -265,7 +265,7 @@ function removeUnpreferredSiblings(text, originalMatch, children){
 
 function findMatchingChildren(text, originalMatch, searchParent, childSelector) {
     const matchTable = originalMatch.closest('table')
-    const children = Array.from(searchParent.querySelectorAll(childSelector)).filter(child => {
+    const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
         /**
          * Only consider it a match if the label & clickable element have the same closest table parent.
          * Example: I click on the radio labeled exactly "Drag-N-Drop Logic Builder"
@@ -319,7 +319,15 @@ function getLabeledElement(link_name, text, ordinal) {
                 const match = matches[i]
                 let current = match
                 do {
-                    if (link_name === 'dropdown' && current.tagName === 'SELECT') {
+                    console.log('getLabeledElement() current', current)
+
+                    if(current.clientHeight > 500){
+                        /**
+                         * We've reached a parent that is large enough that our scope is now too large for a valid match
+                         */
+                        break
+                    }
+                    else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
                     else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
@@ -339,6 +347,7 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
+                        childSelector += ':visible'
                         const children = findMatchingChildren(text, match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
@@ -355,12 +364,6 @@ function getLabeledElement(link_name, text, ordinal) {
                              * Basically, we didn't find a match.  Move on to the next one.
                              */
                             children.length > 1
-                            ||
-                            /**
-                             * We have likely found a link that unintentionally has the same name as the label
-                             * for the field we're looking for. Do not search its parents, and move on to the next match.
-                             */
-                            current.tagName === 'A'
                         ) {
                             break
                         }
