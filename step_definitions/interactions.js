@@ -87,7 +87,7 @@ function retryUntilTimeout(action, start, lastRun) {
 
     const isAfterTimeout = () => {
         const elapsed = Date.now() - start
-        return elapsed > Cypress.config('defaultCommandTimeout')
+        return elapsed > 3000
     }
 
     return action(lastRun).then((result) => {
@@ -294,19 +294,13 @@ function getLabeledElement(link_name, text, ordinal) {
          * We also tried Cypress.$, but it seems to return similar results to cy.get().
          * Example from A.6.4.0200.: I click on the radio labeled "Keep ALL data saved so far." in the dialog box in the iframe
         */
-        let next
+        let selector = `input[placeholder=${JSON.stringify(text)}],:contains(${JSON.stringify(text)})`
         if(!lastRun){
-            next = cy.get(`:contains(${JSON.stringify(text)}):visible,input[placeholder=${JSON.stringify(text)}]`)
-        }
-        else{
-            /**
-             * The results from cy.get() don't make sense sometimes, so we fall back to cy.contains() on the last run.
-             * Example from B.3.16.2000.: I check the checkbox labeled "Require a 'reason' when making changes to existing records?"
-             */
-            next = cy.contains(text)
+            // Favor visible items until the lastRun.  Keep in mind items that must be scrolled into view aren't considered visible.
+            selector += ':visible'
         }
 
-        return next.then(matches => {
+        return cy.get(selector).then(matches => {
             console.log('getLabeledElement() unfiltered matches', matches)
             matches = filterMatches(text, matches)
             console.log('getLabeledElement() filtered matches', matches)
@@ -347,7 +341,11 @@ function getLabeledElement(link_name, text, ordinal) {
                     }
 
                     if (childSelector) {
-                        childSelector += ':visible'
+                        if(!lastRun){
+                            // Favor visible items until the lastRun.  Keep in mind items that must be scrolled into view aren't considered visible.
+                            childSelector += ':visible'
+                        }
+
                         const children = findMatchingChildren(text, match, current, childSelector)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
