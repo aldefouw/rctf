@@ -992,13 +992,13 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
 
     function clickElement(element){
         element = element.scrollIntoView()
-                if (type === "radio" || check === "click on") {
-                    element.click()
-                } else if (check === "check") {
-                    element.check()
-                } else if (check === "uncheck") {
-                    element.uncheck()
-                }
+        if (type === "radio" || check === "click on") {
+            element.click()
+        } else if (check === "check") {
+            element.check()
+        } else if (check === "uncheck") {
+            element.uncheck()
+        }
     }
 
     function findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
