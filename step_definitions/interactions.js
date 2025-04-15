@@ -1231,7 +1231,13 @@ Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of
         }
 
         if(type === "dropdown"){
-            getLabeledElement(type, label, ordinal).then(action)
+            if(label.startsWith('datetime')){
+                // For "of the open date picker widget for" syntax
+                cy.get(`#ui-datepicker-div option:contains(${JSON.stringify(option)})`).closest('select').then(action)
+            }
+            else{
+                getLabeledElement(type, label, ordinal).then(action)
+            }
         }
         else{
             let element_selector = `select:has(option:contains(${JSON.stringify(option)})):visible:enabled`
