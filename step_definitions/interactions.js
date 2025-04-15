@@ -990,10 +990,8 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         }
     }
 
-    function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
-        cy.top_layer(label_selector, outer_element).within(() => {
-            getLabeledElement(type, label, ordinal).then((element) => {
-                element = cy.wrap(element).scrollIntoView()
+    function clickElement(element){
+        element = element.scrollIntoView()
                 if (type === "radio" || check === "click on") {
                     element.click()
                 } else if (check === "check") {
@@ -1001,6 +999,12 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
                 } else if (check === "uncheck") {
                     element.uncheck()
                 }
+    }
+
+    function findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
+        cy.top_layer(label_selector, outer_element).within(() => {
+            getLabeledElement(type, label, ordinal).then(element => {
+                clickElement(cy.wrap(element))
             })
         })
     }
@@ -1016,13 +1020,16 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         }).then(() => {
             outer_element = `${window.tableMappings['record locking']}:visible`
             label_selector = `tr:contains(${JSON.stringify(label)}):visible`
-            clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
+            cy.top_layer(label_selector, outer_element).within(() => {
+                let selector = cy.get_labeled_element(element_selector, label, null, labeled_exactly === "labeled exactly")
+                clickElement(selector)
+            })
         })
 
     } else if(iframe === " in the iframe") {
-        elm.within(() => { clickElement(label_selector, outer_element, element_selector, label, labeled_exactly) })
+        elm.within(() => { findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly) })
     } else {
-        clickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
+        findAndClickElement(label_selector, outer_element, element_selector, label, labeled_exactly)
     }
 })
 
