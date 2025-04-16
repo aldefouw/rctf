@@ -239,8 +239,6 @@ Given("I (should )see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButt
         cy.get(`${window.elementChoices[base_element]}:has(${window.icons[text]}):visible`).
         should('be.visible').
         should('have.descendants', window.icons[text])
-    } else if (labeled_exactly === " in the File Repository breadcrumb" || labeled_exactly === " in the File Repository table") {
-        cy.wait('@file_breadcrumbs')
     } else if(window.parameterTypes['visibilityPrefix'].includes(prefix)){
 
         if (prefix === "Project status:" && window.parameterTypes['projectStatus'].includes(text)) {
@@ -535,12 +533,6 @@ Given('I should see {string} in (the ){tableTypes} table', (text, table_type = '
  */
 Given('I (should )see (a )table( ){headerOrNot}( row)(s) containing the following values in (the ){tableTypes} table{baseElement}:', (header, table_type = 'a', base_element, dataTable) => {
     cy.not_loading()
-
-    if(table_type === 'file repository'){
-        cy.wait('@file_breadcrumbs')
-        cy.wait('@file_list')
-        cy.wait('@file_breadcrumbs')
-    }
 
     cy.url().then((currentUrl) => {
         cy.get('body').then(($body) => {

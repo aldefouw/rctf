@@ -216,7 +216,6 @@ Cypress.Commands.add('file_repo_upload', (fileNames, id = 'input#file-repository
                     })
                 }
             }
-            cy.wait('@file_breadcrumbs')
         })
 
     })
