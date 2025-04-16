@@ -290,7 +290,8 @@ function getLabeledElement(link_name, text, ordinal, selectOption) {
          * Example from A.6.4.0200.: I click on the radio labeled "Keep ALL data saved so far." in the dialog box in the iframe
         */
         let selector = `input[placeholder=${JSON.stringify(text)}],:contains(${JSON.stringify(text)})`
-        if(!lastRun){
+        const limitToVisibleMatches = link_name !== 'dropdown' && !lastRun
+        if(limitToVisibleMatches){
             // Favor visible items until the lastRun.  Keep in mind items that must be scrolled into view aren't considered visible.
             selector += ':visible'
         }
@@ -337,7 +338,7 @@ function getLabeledElement(link_name, text, ordinal, selectOption) {
                     }
 
                     if (childSelector) {
-                        if(!lastRun){
+                        if(limitToVisibleMatches){
                             // Favor visible items until the lastRun.  Keep in mind items that must be scrolled into view aren't considered visible.
                             childSelector += ':visible'
                         }
