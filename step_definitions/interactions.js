@@ -281,7 +281,7 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector, 
  * We may want to introduce bahmutov/cypress-if at some point as well,
  * as the root of some of our existing duplicate logic is the lack of built-in "if" support.
  */
-function getLabeledElement(link_name, text, ordinal) {
+function getLabeledElement(link_name, text, ordinal, selectOption) {
     return retryUntilTimeout((lastRun) => {
         /**
          * We tried using "window().then(win => win.$(`:contains..." to combine the following two cases,
@@ -320,10 +320,6 @@ function getLabeledElement(link_name, text, ordinal) {
                     else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
-                    else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
-                        // This label has the 'for' attribute set.  Use it.
-                        return cy.get('#' + current.htmlFor)
-                    }
 
                     let childSelector = null
                     if (link_name === 'icon') {
@@ -332,19 +328,19 @@ function getLabeledElement(link_name, text, ordinal) {
                     else if (['checkbox', 'radio'].includes(link_name)) {
                         childSelector = 'input[type=' + link_name + ']'
                     }
-                    else if (link_name === 'dropdown') {
-                        childSelector = 'select'
+                    else if (link_name === 'dropdown' && selectOption !== undefined) {
+                        childSelector = `option:contains(${JSON.stringify(selectOption)})`
                     }
 
                     if (childSelector) {
-                        if(!lastRun){
-                            // Favor visible items until the lastRun.  Keep in mind items that must be scrolled into view aren't considered visible.
-                            childSelector += ':visible'
-                        }
-
                         const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
+                            if (link_name === 'dropdown') {
+                                // We're matching an 'option' element, but we want to return the associated 'select'
+                                return children[0].closest('select')
+                            }
+
                             /**
                              * Example Steps:
                              *  I uncheck the first checkbox labeled "Participant Consent"
@@ -367,6 +363,15 @@ function getLabeledElement(link_name, text, ordinal) {
                          * Default to the first matching "a" tag, if no other cases apply.
                          */
                         return current
+                    }
+
+                    /**
+                     * Some label elements in REDCap contain mulitple fields.
+                     * Only use 'for' for matching as a last resort if none of the logic above matched the field.
+                     */
+                    if (current.tagName === 'LABEL' && current.htmlFor !== '') {
+                        // This label has the 'for' attribute set.  Use it.
+                        return cy.get('#' + current.htmlFor)
                     }
                 } while (current = current.parentElement)
             }
@@ -1227,7 +1232,7 @@ Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of
                 cy.get(`#ui-datepicker-div option:contains(${JSON.stringify(option)})`).closest('select').then(action)
             }
             else{
-                getLabeledElement(type, label, ordinal).then(action)
+                getLabeledElement(type, label, ordinal, option).then(action)
             }
         }
         else{
