@@ -321,10 +321,6 @@ function getLabeledElement(link_name, text, ordinal, selectOption) {
                     else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
-                    else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
-                        // This label has the 'for' attribute set.  Use it.
-                        return cy.get('#' + current.htmlFor)
-                    }
 
                     let childSelector = null
                     if (link_name === 'icon') {
@@ -373,6 +369,15 @@ function getLabeledElement(link_name, text, ordinal, selectOption) {
                          * Default to the first matching "a" tag, if no other cases apply.
                          */
                         return current
+                    }
+
+                    /**
+                     * Some label elements in REDCap contain mulitple fields.
+                     * Only use 'for' for matching as a last resort if none of the logic above matched the field.
+                     */
+                    if (current.tagName === 'LABEL' && current.htmlFor !== '') {
+                        // This label has the 'for' attribute set.  Use it.
+                        return cy.get('#' + current.htmlFor)
                     }
                 } while (current = current.parentElement)
             }
