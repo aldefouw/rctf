@@ -75,16 +75,6 @@ function rctf_initialize(preprocessor) {
                 window.lastAlert.push(str)
             }
         })
-
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
-        }).as('file_breadcrumbs')
-
-        cy.intercept({
-            method: 'POST',
-            url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getFileList*"
-        }).as('file_list')
     })
 
     beforeEach(() => {

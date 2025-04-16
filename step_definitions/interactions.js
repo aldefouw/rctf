@@ -653,15 +653,6 @@ Given("I click on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}
     } else {
         getLabeledElement(link_name, text, ordinal).then(($elm) => {
             $elm = cy.wrap($elm)
-
-            if(base_element === " in the File Repository table"){
-                cy.intercept({
-                    method: 'POST',
-                    url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
-                }).as('file_breadcrumbs')
-
-            }
-            
             $elm.click()
         })
     }
