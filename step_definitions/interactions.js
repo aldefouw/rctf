@@ -265,7 +265,9 @@ function removeUnpreferredSiblings(text, originalMatch, children){
 
 function findMatchingChildren(text, originalMatch, searchParent, childSelector, childrenToIgnore) {
     const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
-       return !childrenToIgnore.includes(child)
+        return !childrenToIgnore.includes(child)
+            // B.3.14.0900.
+            && child.closest('.ui-helper-hidden-accessible') === null
     })
 
     removeUnpreferredSiblings(text, originalMatch, children)
