@@ -281,7 +281,7 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector, 
  * We may want to introduce bahmutov/cypress-if at some point as well,
  * as the root of some of our existing duplicate logic is the lack of built-in "if" support.
  */
-function getLabeledElement(link_name, text, ordinal, selectOption) {
+function getLabeledElement(type, text, ordinal, selectOption) {
     return retryUntilTimeout((lastRun) => {
         /**
          * We tried using "window().then(win => win.$(`:contains..." to combine the following two cases,
@@ -317,18 +317,18 @@ function getLabeledElement(link_name, text, ordinal, selectOption) {
                          */
                         break
                     }
-                    else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
+                    else if (type === 'dropdown' && current.tagName === 'SELECT') {
                         return current
                     }
 
                     let childSelector = null
-                    if (link_name === 'icon') {
+                    if (type === 'icon') {
                         childSelector = 'img'
                     }
-                    else if (['checkbox', 'radio'].includes(link_name)) {
-                        childSelector = 'input[type=' + link_name + ']'
+                    else if (['checkbox', 'radio'].includes(type)) {
+                        childSelector = 'input[type=' + type + ']'
                     }
-                    else if (link_name === 'dropdown' && selectOption !== undefined) {
+                    else if (type === 'dropdown' && selectOption !== undefined) {
                         childSelector = `option:contains(${JSON.stringify(selectOption)})`
                     }
 
@@ -336,7 +336,7 @@ function getLabeledElement(link_name, text, ordinal, selectOption) {
                         const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
-                            if (link_name === 'dropdown') {
+                            if (type === 'dropdown') {
                                 // We're matching an 'option' element, but we want to return the associated 'select'
                                 return children[0].closest('select')
                             }
