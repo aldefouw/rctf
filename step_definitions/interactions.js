@@ -331,6 +331,9 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                     else if (type === 'dropdown' && selectOption !== undefined) {
                         childSelector = `option:contains(${JSON.stringify(selectOption)})`
                     }
+                    else if (type === 'input'){
+                        childSelector = 'input'
+                    }
 
                     if (childSelector) {
                         const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
@@ -733,47 +736,19 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
         })
 
     } else {
-        let sel = `:contains(${JSON.stringify(label)}):visible`
-        let element = select
+        const elm = getLabeledElement('input', label, ordinal)
 
-        //Either the base element as specified or the default
-        let outer_element = base_element.length > 0 ?
-            cy.top_layer(sel, window.elementChoices[base_element]) :
-            cy.top_layer(sel)
-
-        outer_element.within(() => {
-            let elm = null
-
-            let label_base = labeled_exactly === 'labeled exactly' ?
-                cy.contains(new RegExp("^" + label + "$", "g")) :
-                cy.contains(label)
-
-            label_base.should('be.visible').then(($label) => {
-                cy.wrap($label).parent().then(($parent) =>{
-                    //We are ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
-                    if($parent.find(element).length){
-                        //console.log('parent')
-                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
-                    //We are also ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
-                    } else if ($parent.parent().find(element).length) {
-                        //console.log('parent parent ')
-                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
-                    }
-
-                    if(enter_type === "enter"){
-                        elm.eq(ord).type(text)
-                    } else if (enter_type === "clear field and enter") {
-                        elm.eq(ord).clear().type(text)
-                    } else if (enter_type === "verify"){
-                        if(window.dateFormats.hasOwnProperty(text)){
-                            //elm.invoke('val').should('match', window.dateFormats[text])
-                        } else {
-                            elm.eq(ord).invoke('val').should('include', text)
-                        }
-                    }
-                })
-            })
-        })
+        if(enter_type === "enter"){
+            elm.eq(ord).type(text)
+        } else if (enter_type === "clear field and enter") {
+            elm.eq(ord).clear().type(text)
+        } else if (enter_type === "verify"){
+            if(window.dateFormats.hasOwnProperty(text)){
+                //elm.invoke('val').should('match', window.dateFormats[text])
+            } else {
+                elm.eq(ord).invoke('val').should('include', text)
+            }
+        }
     }
 })
 
