@@ -179,47 +179,6 @@ Given("I (should )see( ){articleType}( ){visibilityPrefix}( ){onlineDesignerButt
     cy.not_loading()
 
     let opt_str = prefix
-
-    // console.log(not_see)
-    // console.log(article_type)
-    // console.log(prefix)
-    // console.log(opt_str)
-    // console.log(text)
-    // console.log(online_buttons)
-    // console.log(el)
-    // console.log(labeled_exactly)
-    // console.log(text)
-    // console.log(iframe)
-    // console.log(base_element)
-    // console.log(disabled_text)
-
-    // console.log(opt_str.includes('icon') && opt_str.includes('longitudinal instrument on event'))
-    // console.log(opt_str.includes('icon'))
-    // console.log(opt_str.includes('longitudinal instrument on event'))
-
-    function extractQuotedStrings(str) {
-        let inQuotes = false
-        let currentQuote = ''
-        const result = []
-
-        for (let i = 0; i < str.length; i++) {
-            const char = str[i]
-
-            if (char === '"') {
-                if (inQuotes) {
-                    result.push(currentQuote)
-                    currentQuote = ''
-                }
-                inQuotes = !inQuotes;
-            } else if (inQuotes) {
-                currentQuote += char
-            }
-        }
-
-        return result
-    }
-
-
     let base
     let subsel = ''
 
