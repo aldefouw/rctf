@@ -1,5 +1,10 @@
 const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
+function normalizeString(s){
+  // Replace '&nbsp;' so that normal spaces in steps will match that character
+  return s.trim().replaceAll('\u00a0', ' ')
+}
+
 /**
  * We tried implementing this as an exact match at first, but that made some steps unweildly.
  * For example:
@@ -8,16 +13,13 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
  *      I select "gender (Do you describe yourself as a man, a woman, or in some other way?)..."...
  */
 Cypress.$.expr[':'].containsCustom = Cypress.$.expr.createPseudo(function(arg) {
+    arg = normalizeString(arg)
+
     // Remove any double quote escaping added by JSON.stringify()
     arg = JSON.parse('"' + arg + '"')
 
     return function( elem ) {
-        let text = Cypress.$(elem).text()
-
-        // Replace '&nbsp;' so that normal spaces in steps will match that character
-        text = text.replaceAll('\u00a0', ' ')
-
-        return text.includes(arg.trim())
+        return normalizeString(Cypress.$(elem).text()).includes(arg)
     };
 });
 
@@ -284,14 +286,24 @@ function removeUnpreferredSiblings(text, originalMatch, children){
     }
 }
 
-function findMatchingChildren(text, originalMatch, searchParent, childSelector, childrenToIgnore) {
-    const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
+function findMatchingChildren(text, selectOption, originalMatch, searchParent, childSelector, childrenToIgnore) {
+    selectOption = normalizeString(selectOption)
+
+    let children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
         return !childrenToIgnore.includes(child)
             // B.3.14.0900.
             && child.closest('.ui-helper-hidden-accessible') === null
     })
 
     removeUnpreferredSiblings(text, originalMatch, children)
+
+    const exactMatches = children.filter(child =>{
+        return normalizeString(child.textContent) === selectOption // B.6.7.1900.
+    })
+
+    if(exactMatches.length > 0){
+        children = exactMatches
+    }
 
     return children
 }
@@ -356,7 +368,7 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                     }
 
                     if (childSelector) {
-                        const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
+                        const children = findMatchingChildren(text, selectOption, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
