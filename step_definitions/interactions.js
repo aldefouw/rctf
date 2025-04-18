@@ -2,13 +2,16 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
 // Copied from https://stackoverflow.com/a/18462522
 Cypress.$.expr[':'].textEquals = Cypress.$.expr.createPseudo(function(arg) {
+    // Remove any double quote escaping added by JSON.stringify()
+    arg = JSON.parse('"' + arg + '"')
+
     return function( elem ) {
         let text = Cypress.$(elem).text()
 
         // Replace '&nbsp;' so that normal spaces in steps will match that character
         text = text.replaceAll('\u00a0', ' ')
 
-        return text.match("^" + arg + "$");
+        return text === arg
     };
 });
 
