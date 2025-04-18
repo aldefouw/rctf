@@ -1,5 +1,17 @@
 const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
+// Copied from https://stackoverflow.com/a/18462522
+Cypress.$.expr[':'].textEquals = Cypress.$.expr.createPseudo(function(arg) {
+    return function( elem ) {
+        let text = Cypress.$(elem).text()
+
+        // Replace '&nbsp;' so that normal spaces in steps will match that character
+        text = text.replaceAll('\u00a0', ' ')
+
+        return text.match("^" + arg + "$");
+    };
+});
+
 function before_click_monitor(type){
     if(type === ' in the "Add New Field" dialog box' || type === ' in the "Edit Field" dialog box' ){
         cy.intercept({
@@ -265,7 +277,9 @@ function removeUnpreferredSiblings(text, originalMatch, children){
 
 function findMatchingChildren(text, originalMatch, searchParent, childSelector, childrenToIgnore) {
     const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
-       return !childrenToIgnore.includes(child)
+        return !childrenToIgnore.includes(child)
+            // B.3.14.0900.
+            && child.closest('.ui-helper-hidden-accessible') === null
     })
 
     removeUnpreferredSiblings(text, originalMatch, children)
@@ -329,7 +343,7 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                         childSelector = 'input[type=' + type + ']'
                     }
                     else if (type === 'dropdown' && selectOption !== undefined) {
-                        childSelector = `option:contains(${JSON.stringify(selectOption)})`
+                        childSelector = `option:textEquals(${JSON.stringify(selectOption)})`
                     }
                     else if (type === 'input'){
                         childSelector = 'input'
@@ -339,11 +353,6 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                         const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
-                            if (type === 'dropdown') {
-                                // We're matching an 'option' element, but we want to return the associated 'select'
-                                return children[0].closest('select')
-                            }
-
                             /**
                              * Example Steps:
                              *  I uncheck the first checkbox labeled "Participant Consent"
@@ -1207,7 +1216,17 @@ Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of
                 cy.get(`#ui-datepicker-div option:contains(${JSON.stringify(option)})`).closest('select').then(action)
             }
             else{
-                getLabeledElement(type, label, ordinal, option).then(action)
+                getLabeledElement(type, label, ordinal, option).then(optionElement =>{
+                    /**
+                     * getLabeledElement() returns an <option> element when the 'option' argument is specified
+                     * It's text may be slightly different than what is specified in the step.
+                     * For example, it may use '&nbsp;' rather than a space like in B.6.7.1900.
+                     * The cy.select() method only matches exact text,
+                     * so use to value of the <option> element returned instead 
+                     */
+                    option = optionElement[0].textContent
+                    action(optionElement.closest('select'))
+                })
             }
         }
         else{
