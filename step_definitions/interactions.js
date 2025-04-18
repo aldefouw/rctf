@@ -334,9 +334,6 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                          */
                         break
                     }
-                    else if (type === 'dropdown' && current.tagName === 'SELECT') {
-                        return current
-                    }
 
                     let childSelector = null
                     if (type === 'icon') {
