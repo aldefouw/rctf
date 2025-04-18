@@ -1,7 +1,13 @@
 const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
-// Copied from https://stackoverflow.com/a/18462522
-Cypress.$.expr[':'].textEquals = Cypress.$.expr.createPseudo(function(arg) {
+/**
+ * We tried implementing this as an exact match at first, but that made some steps unweildly.
+ * For example:
+ *      I select "gender"...
+ * Changed to:
+ *      I select "gender (Do you describe yourself as a man, a woman, or in some other way?)..."...
+ */
+Cypress.$.expr[':'].containsCustom = Cypress.$.expr.createPseudo(function(arg) {
     // Remove any double quote escaping added by JSON.stringify()
     arg = JSON.parse('"' + arg + '"')
 
@@ -11,7 +17,7 @@ Cypress.$.expr[':'].textEquals = Cypress.$.expr.createPseudo(function(arg) {
         // Replace '&nbsp;' so that normal spaces in steps will match that character
         text = text.replaceAll('\u00a0', ' ')
 
-        return text.trim() === arg.trim()
+        return text.includes(arg.trim())
     };
 });
 
@@ -343,7 +349,7 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                         childSelector = 'input[type=' + type + ']'
                     }
                     else if (type === 'dropdown' && selectOption !== undefined) {
-                        childSelector = `option:textEquals(${JSON.stringify(selectOption)})`
+                        childSelector = `option:containsCustom(${JSON.stringify(selectOption)})`
                     }
                     else if (type === 'input'){
                         childSelector = 'input'
