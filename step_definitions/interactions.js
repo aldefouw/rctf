@@ -1,8 +1,12 @@
 const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
 function normalizeString(s){
-  // Replace '&nbsp;' so that normal spaces in steps will match that character
-  return s.trim().replaceAll('\u00a0', ' ')
+    if(s === undefined){
+        return undefined
+    }
+
+    // Replace '&nbsp;' so that normal spaces in steps will match that character
+    return s.trim().replaceAll('\u00a0', ' ')
 }
 
 /**
