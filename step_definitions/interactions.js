@@ -11,7 +11,7 @@ Cypress.$.expr[':'].textEquals = Cypress.$.expr.createPseudo(function(arg) {
         // Replace '&nbsp;' so that normal spaces in steps will match that character
         text = text.replaceAll('\u00a0', ' ')
 
-        return text === arg
+        return text.trim() === arg.trim()
     };
 });
 
@@ -1226,8 +1226,9 @@ Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of
                      * For example, it may use '&nbsp;' rather than a space like in B.6.7.1900.
                      * The cy.select() method only matches exact text,
                      * so use to value of the <option> element returned instead 
+                     * Using '.trim()' is required as cy.select() seems to trim all options when looking for a match.
                      */
-                    option = optionElement[0].textContent
+                    option = optionElement[0].textContent.trim()
                     action(optionElement.closest('select'))
                 })
             }
