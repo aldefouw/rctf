@@ -1,5 +1,32 @@
 const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
+function normalizeString(s){
+    if(s === undefined){
+        return undefined
+    }
+
+    // Replace '&nbsp;' so that normal spaces in steps will match that character
+    return s.trim().replaceAll('\u00a0', ' ')
+}
+
+/**
+ * We tried implementing this as an exact match at first, but that made some steps unweildly.
+ * For example:
+ *      I select "gender"...
+ * Changed to:
+ *      I select "gender (Do you describe yourself as a man, a woman, or in some other way?)..."...
+ */
+Cypress.$.expr[':'].containsCustom = Cypress.$.expr.createPseudo(function(arg) {
+    arg = normalizeString(arg)
+
+    // Remove any double quote escaping added by JSON.stringify()
+    arg = JSON.parse('"' + arg + '"')
+
+    return function( elem ) {
+        return normalizeString(Cypress.$(elem).text()).includes(arg)
+    };
+});
+
 function before_click_monitor(type){
     if(type === ' in the "Add New Field" dialog box' || type === ' in the "Edit Field" dialog box' ){
         cy.intercept({
@@ -261,12 +288,24 @@ function removeUnpreferredSiblings(text, originalMatch, children){
     }
 }
 
-function findMatchingChildren(text, originalMatch, searchParent, childSelector, childrenToIgnore) {
-    const children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
-       return !childrenToIgnore.includes(child)
+function findMatchingChildren(text, selectOption, originalMatch, searchParent, childSelector, childrenToIgnore) {
+    selectOption = normalizeString(selectOption)
+
+    let children = Array.from(Cypress.$(searchParent).find(childSelector)).filter(child => {
+        return !childrenToIgnore.includes(child)
+            // B.3.14.0900.
+            && child.closest('.ui-helper-hidden-accessible') === null
     })
 
     removeUnpreferredSiblings(text, originalMatch, children)
+
+    const exactMatches = children.filter(child =>{
+        return normalizeString(child.textContent) === selectOption // B.6.7.1900.
+    })
+
+    if(exactMatches.length > 0){
+        children = exactMatches
+    }
 
     return children
 }
@@ -279,7 +318,7 @@ function findMatchingChildren(text, originalMatch, searchParent, childSelector, 
  * We may want to introduce bahmutov/cypress-if at some point as well,
  * as the root of some of our existing duplicate logic is the lack of built-in "if" support.
  */
-function getLabeledElement(link_name, text, ordinal) {
+function getLabeledElement(type, text, ordinal, selectOption) {
     return retryUntilTimeout((lastRun) => {
         /**
          * We tried using "window().then(win => win.$(`:contains..." to combine the following two cases,
@@ -315,32 +354,23 @@ function getLabeledElement(link_name, text, ordinal) {
                          */
                         break
                     }
-                    else if (link_name === 'dropdown' && current.tagName === 'SELECT') {
-                        return current
-                    }
-                    else if (current.tagName === 'LABEL' && current.htmlFor !== '') {
-                        // This label has the 'for' attribute set.  Use it.
-                        return cy.get('#' + current.htmlFor)
-                    }
 
                     let childSelector = null
-                    if (link_name === 'icon') {
+                    if (type === 'icon') {
                         childSelector = 'img'
                     }
-                    else if (['checkbox', 'radio'].includes(link_name)) {
-                        childSelector = 'input[type=' + link_name + ']'
+                    else if (['checkbox', 'radio'].includes(type)) {
+                        childSelector = 'input[type=' + type + ']'
                     }
-                    else if (link_name === 'dropdown') {
-                        childSelector = 'select'
+                    else if (type === 'dropdown' && selectOption !== undefined) {
+                        childSelector = `option:containsCustom(${JSON.stringify(selectOption)})`
+                    }
+                    else if (type === 'input'){
+                        childSelector = 'input'
                     }
 
                     if (childSelector) {
-                        if(!lastRun){
-                            // Favor visible items until the lastRun.  Keep in mind items that must be scrolled into view aren't considered visible.
-                            childSelector += ':visible'
-                        }
-
-                        const children = findMatchingChildren(text, match, current, childSelector, childrenToIgnore)
+                        const children = findMatchingChildren(text, selectOption, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
                         if (children.length === 1) {
                             /**
@@ -365,6 +395,15 @@ function getLabeledElement(link_name, text, ordinal) {
                          * Default to the first matching "a" tag, if no other cases apply.
                          */
                         return current
+                    }
+
+                    /**
+                     * Some label elements in REDCap contain mulitple fields.
+                     * Only use 'for' for matching as a last resort if none of the logic above matched the field.
+                     */
+                    if (current.tagName === 'LABEL' && current.htmlFor !== '') {
+                        // This label has the 'for' attribute set.  Use it.
+                        return cy.get('#' + current.htmlFor)
                     }
                 } while (current = current.parentElement)
             }
@@ -726,47 +765,19 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
         })
 
     } else {
-        let sel = `:contains(${JSON.stringify(label)}):visible`
-        let element = select
+        const elm = getLabeledElement('input', label, ordinal)
 
-        //Either the base element as specified or the default
-        let outer_element = base_element.length > 0 ?
-            cy.top_layer(sel, window.elementChoices[base_element]) :
-            cy.top_layer(sel)
-
-        outer_element.within(() => {
-            let elm = null
-
-            let label_base = labeled_exactly === 'labeled exactly' ?
-                cy.contains(new RegExp("^" + label + "$", "g")) :
-                cy.contains(label)
-
-            label_base.should('be.visible').then(($label) => {
-                cy.wrap($label).parent().then(($parent) =>{
-                    //We are ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
-                    if($parent.find(element).length){
-                        //console.log('parent')
-                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
-                    //We are also ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
-                    } else if ($parent.parent().find(element).length) {
-                        //console.log('parent parent ')
-                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
-                    }
-
-                    if(enter_type === "enter"){
-                        elm.eq(ord).type(text)
-                    } else if (enter_type === "clear field and enter") {
-                        elm.eq(ord).clear().type(text)
-                    } else if (enter_type === "verify"){
-                        if(window.dateFormats.hasOwnProperty(text)){
-                            //elm.invoke('val').should('match', window.dateFormats[text])
-                        } else {
-                            elm.eq(ord).invoke('val').should('include', text)
-                        }
-                    }
-                })
-            })
-        })
+        if(enter_type === "enter"){
+            elm.eq(ord).type(text)
+        } else if (enter_type === "clear field and enter") {
+            elm.eq(ord).clear().type(text)
+        } else if (enter_type === "verify"){
+            if(window.dateFormats.hasOwnProperty(text)){
+                //elm.invoke('val').should('match', window.dateFormats[text])
+            } else {
+                elm.eq(ord).invoke('val').should('include', text)
+            }
+        }
     }
 })
 
@@ -1225,7 +1236,18 @@ Given('I select {string} (in)(on) the{ordinal} {dropdownType} (field labeled)(of
                 cy.get(`#ui-datepicker-div option:contains(${JSON.stringify(option)})`).closest('select').then(action)
             }
             else{
-                getLabeledElement(type, label, ordinal).then(action)
+                getLabeledElement(type, label, ordinal, option).then(optionElement =>{
+                    /**
+                     * getLabeledElement() returns an <option> element when the 'option' argument is specified
+                     * It's text may be slightly different than what is specified in the step.
+                     * For example, it may use '&nbsp;' rather than a space like in B.6.7.1900.
+                     * The cy.select() method only matches exact text,
+                     * so use to value of the <option> element returned instead 
+                     * Using '.trim()' is required as cy.select() seems to trim all options when looking for a match.
+                     */
+                    option = optionElement[0].textContent.trim()
+                    action(optionElement.closest('select'))
+                })
             }
         }
         else{
