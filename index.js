@@ -118,7 +118,18 @@ function rctf_initialize(preprocessor) {
              * and pick up where they left off.
              */
             cy.url().then((url) => {
-                cy.task('saveCurrentURL', ({ url: url }))
+                if(url === 'about:blank'){
+                    /**
+                     * There was likely some error restoring the previosly saved url.
+                     * Leave the previously saved url in places for troubleshooting.
+                     */
+                    return
+                }
+
+                cy.task('saveCurrentURL', ({
+                    url: url,
+                    redcap_url_pre_survey: window.redcap_url_pre_survey
+                }))
             })
         }
     })
