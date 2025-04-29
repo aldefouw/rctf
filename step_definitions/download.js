@@ -123,7 +123,7 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
         return null
     }
 
-    function waitForFile(filename, timeout = 30000) {
+    function waitForFile(pdf_file, timeout = 30000) {
         const startTime = Date.now()
 
         const checkFile = (resolve, reject) => {
