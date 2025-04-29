@@ -47,6 +47,18 @@ function downloadFile(text){
     })
 }
 
+function shouldOrShouldNotToBoolean(shouldOrShouldNot){
+    if(shouldOrShouldNot === 'should'){
+        return true
+    }
+    else if(shouldOrShouldNot === 'should NOT'){
+        return false
+    }
+    else{
+        throw 'Unexpected value for shouldOrShouldNotToBoolean()'
+    }
+}
+
 /**
  * @module Download
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
@@ -93,6 +105,25 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
     })
 })
 
+Given("I {shouldOrShouldNot} see a signature for the {string} field in the downloaded PDF for record {string} and survey {string}", (shouldOrShouldNot, signatureField, record, survey) => {
+    loadPDF(record, survey, (pdf) => {
+        signatureField += '\n \n'
+        const fieldIndex = pdf.text.indexOf(signatureField)
+        const nextChar = pdf.text[fieldIndex+signatureField.length+1]
+        const signaturePresent = nextChar !== '_'
+        const signatureExpected = shouldOrShouldNotToBoolean(shouldOrShouldNot)
+
+        if(signaturePresent !== signatureExpected){
+            if(signatureExpected){
+                throw 'Expected a signature but did not find one'
+            }
+            else{
+                throw 'Found an unexpected signature'
+            }
+        }
+    })
+})
+
 
 /**
  * @module Download
@@ -103,14 +134,6 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
  * @description Verifies the values within a PDF in the PDF Archive
  */
 Given("I should see the following values in the downloaded PDF for record {string} and survey {string}", (record, survey, dataTable) => {
-    //Make sure DataTables has loaded before we do anything here
-    cy.wait_for_datatables().assertWindowProperties()
-
-    //Make sure the page is not loading
-    if(Cypress.$('#file-repository-table_processing:visible').length){
-        cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
-    }
-
     function findDateFormat(str) {
         for (const format in window.dateFormats) {
             const regex = window.dateFormats[format]
@@ -121,6 +144,31 @@ Given("I should see the following values in the downloaded PDF for record {strin
             }
         }
         return null
+    }
+
+    loadPDF(record, survey, (pdf) => {
+        dataTable['rawTable'].forEach((row, row_index) => {
+            row.forEach((dataTableCell) => {
+                const result = findDateFormat(dataTableCell)
+                if (result === null) {
+                    expect(pdf.text).to.include(dataTableCell)
+                } else {
+                    result.split(' ').forEach((item) => {
+                        expect(pdf.text).to.include(item)
+                    })
+                }
+            })
+        })
+    })
+})
+
+function loadPDF(record, survey, next){
+    //Make sure DataTables has loaded before we do anything here
+    cy.wait_for_datatables().assertWindowProperties()
+
+    //Make sure the page is not loading
+    if(Cypress.$('#file-repository-table_processing:visible').length){
+        cy.get('#file-repository-table_processing').should('have.css', 'display', 'none')
     }
 
     function waitForFile(pdf_file, timeout = 30000) {
@@ -161,23 +209,10 @@ Given("I should see the following values in the downloaded PDF for record {strin
                 pdf_file = `cypress/downloads/${$a.text()}`
 
                 waitForFile(pdf_file).then((fileExists) => {
-                    cy.task('readPdf', { pdf_file: pdf_file }).then((pdf) => {
-                        dataTable['rawTable'].forEach((row, row_index) => {
-                            row.forEach((dataTableCell) => {
-                                const result = findDateFormat(dataTableCell)
-                                if (result === null) {
-                                    expect(pdf.text).to.include(dataTableCell)
-                                } else {
-                                    result.split(' ').forEach((item) => {
-                                        expect(pdf.text).to.include(item)
-                                    })
-                                }
-                            })
-                        })
-                    })
+                    cy.task('readPdf', { pdf_file: pdf_file }).then(next)
                 })
             })
         })
 
     })
-})
+}

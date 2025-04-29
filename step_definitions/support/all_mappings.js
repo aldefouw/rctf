@@ -77,6 +77,7 @@ window.parameterTypes = {
     projectRequestLabel: ['Create Project', 'Send Request'],
     notSeeDC: ['should see a Data Collection Instrument named', 'should NOT see a Data Collection Instrument named', 'should no longer see a Data Collection Instrument named'],
     notSee: ['', 'should NOT', 'should no longer', 'no longer'],
+    shouldOrShouldNot: ['should', 'should NOT'],
     ordering: ['ascending', 'descending'],
     onlineDesignerButtons: ['"Enable"', '"Disable"', '"Choose action"', '"Survey settings"', '"Automated Invitations"', 'enabled survey icon', '"View Report"', '"Export Data"', '"Stats & Charts"', '"Execute"', '"Save"'],
     projectStatus: ['Production', 'Development', 'Analysis/Cleanup'],

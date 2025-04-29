@@ -214,6 +214,11 @@ defineParameterType({
         })
 
 defineParameterType({
+            name: 'shouldOrShouldNot',
+            regexp: /|should|should NOT/,
+        })
+
+defineParameterType({
             name: 'ordering',
             regexp: /|ascending|descending/,
         })
