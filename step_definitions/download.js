@@ -161,22 +161,20 @@ Given("I (should )see the following values in the downloaded PDF for Record {str
                 pdf_file = `cypress/downloads/${$a.text()}`
 
                 waitForFile(pdf_file).then((fileExists) => {
-                    if(fileExists){
-                        cy.task('readPdf', { pdf_file: pdf_file }).then((pdf) => {
-                            dataTable['rawTable'].forEach((row, row_index) => {
-                                row.forEach((dataTableCell) => {
-                                    const result = findDateFormat(dataTableCell)
-                                    if (result === null) {
-                                        expect(pdf.text).to.include(dataTableCell)
-                                    } else {
-                                        result.split(' ').forEach((item) => {
-                                            expect(pdf.text).to.include(item)
-                                        })
-                                    }
-                                })
+                    cy.task('readPdf', { pdf_file: pdf_file }).then((pdf) => {
+                        dataTable['rawTable'].forEach((row, row_index) => {
+                            row.forEach((dataTableCell) => {
+                                const result = findDateFormat(dataTableCell)
+                                if (result === null) {
+                                    expect(pdf.text).to.include(dataTableCell)
+                                } else {
+                                    result.split(' ').forEach((item) => {
+                                        expect(pdf.text).to.include(item)
+                                    })
+                                }
                             })
                         })
-                    }
+                    })
                 })
             })
         })
