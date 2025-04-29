@@ -102,7 +102,7 @@ Given("I download the PDF by clicking on the link for Record {string} and Survey
  * @param {string} survey - the Survey / Event of the record the PDF is associated with
  * @description Verifies the values within a PDF in the PDF Archive
  */
-Given("I should see the following values in the downloaded PDF for Record {string} and Survey {string}", (record, survey, dataTable) => {
+Given("I should see the following values in the downloaded PDF for record {string} and survey {string}", (record, survey, dataTable) => {
     //Make sure DataTables has loaded before we do anything here
     cy.wait_for_datatables().assertWindowProperties()
 
