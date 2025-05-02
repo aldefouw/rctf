@@ -1483,3 +1483,27 @@ Given("I click on the {string} {labeledElement} within (a)(the) {tableTypes} tab
         $elm.attr('target', '_self')
     }).click()
 })
+
+/**
+ * @module Interactions
+ * @author Mark McEver <mark.mcever@vumc.org>
+ * @example I click on the icon in the column labeled "Setup" and the row labeled "1"
+ * @param {string} column_label - the label of the table column
+ * @param {string} row_label - the label of the table row
+ * @description Clicks on icon in the table cell matching the specified column & row
+ */
+Given("I click on the icon in the column labeled {string} and the row labeled {string}", (column_label, row_label) => {
+    cy.table_cell_by_column_and_row_label(column_label, row_label).then(($td) => {
+        $td = cy.wrap($td)
+        $td.within(() => {
+            cy.get('i').then(results =>{
+                if(results.length === 1){
+                    $td.click()
+                }
+                else{
+                    throw 'Expected to find a single icon in the table cell, but found ' + results.length + ' icons'
+                }
+            })
+        })
+    })
+})
