@@ -9,6 +9,19 @@ function normalizeString(s){
     return s.trim().replaceAll('\u00a0', ' ')
 }
 
+function performAction(action, element){
+    element = cy.wrap(element)
+    if(action === 'click on the'){
+        element.click()
+    }
+    else if(action === 'should see a'){
+        element.should('be.visible')
+    }
+    else{
+        throw 'Action not found: ' + action
+    }
+}
+
 /**
  * We tried implementing this as an exact match at first, but that made some steps unweildly.
  * For example:
@@ -392,10 +405,13 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                         ) {
                             childrenToIgnore.push(...children)
                         }
-                    } else if (current.tagName === 'A') {
-                        /**
-                         * Default to the first matching "a" tag, if no other cases apply.
-                         */
+                    } else if (
+                        // e.g. <button>
+                        type === current.tagName.toLowerCase()
+                        ||
+                        // Default to the first matching "a" tag, if no other cases apply.
+                        current.tagName === 'A'
+                     ){
                         return current
                     }
 
@@ -1505,5 +1521,32 @@ Given("I click on the icon in the column labeled {string} and the row labeled {s
                 }
             })
         })
+    })
+})
+
+/**
+ * @module Interactions
+ * @author Mark McEver <mark.mcever@vumc.org>
+ * @example I should see a button labeled "Edit" in the column labeled "Management Options" and the row labeled "1"
+ * @param {action} action - the type of action to perform
+ * @param {labeledElement} type - the type of element we're looking for
+ * @param {string} text - the label for the element
+ * @param {string} column_label - the label of the table column
+ * @param {string} row_label - the label of the table row
+ * @description Performs an action on a labeled element in a specific row & column of table
+ */
+Given("I {action} {labeledElement} labeled {string} in the column labeled {string} and the row labeled {string}", (action, type, text, column_label, row_label) => {
+    cy.table_cell_by_column_and_row_label(column_label, row_label).then(($td) => {
+        $td = cy.wrap($td)
+        if(action === 'should NOT see a'){
+            $td.should('not.contain', text)
+        }
+        else{
+            $td.within(() => {
+                getLabeledElement(type, text).then(element =>{
+                    performAction(action, element)
+                })
+            })
+        }
     })
 })

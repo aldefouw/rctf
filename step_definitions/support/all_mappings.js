@@ -12,6 +12,7 @@ window.parameterTypes = {
     fileRepoIcons: transformKeysToRegExp(window.fileRepoIcons),
     onlineDesignerFieldIcons: transformKeysToRegExp(window.onlineDesignerFieldIcons),
     participantListIcons: transformKeysToRegExp(window.participantListIcons),
+    action: ['click on the', 'should see a', 'should NOT see a'],
     addEditField: ['Add New Field', 'Edit Field'],
     addField: ['Add Field', 'Add Matrix of Fields', 'Import from Field Bank'],
     addOrSelect: ['add', 'select'],
