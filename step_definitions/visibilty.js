@@ -435,30 +435,6 @@ Given("I (should )see (a )(an ){string} within the {string} row of the column la
 
 /**
  * @module Visibility
- * @author Mark McEver <mark.mcever@vumc.org>
- * @example I click on the icon in the column labeled "Setup" and the row labeled "1"
- * @param {string} column_label - the label of the table column
- * @param {string} row_label - the label of the table row
- * @description Clicks on icon in the table cell matching the specified column & row
- */
-Given("I click on the icon in the column labeled {string} and the row labeled {string}", (column_label, row_label) => {
-    cy.table_cell_by_column_and_row_label(column_label, row_label).then(($td) => {
-        $td = cy.wrap($td)
-        $td.within(() => {
-            cy.get('i').then(results =>{
-                if(results.length === 1){
-                    $td.click()
-                }
-                else{
-                    throw 'Expected to find a single icon in the table cell, but found ' + results.length + ' icons'
-                }
-            })
-        })
-    })
-})
-
-/**
- * @module Visibility
  * @author Rushi Patel <rushi.patel@uhnresearch.ca>
  * @example I should see {string} in (the) {tableTypes} table
  * @param {string} text - text to look for
