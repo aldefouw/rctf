@@ -955,8 +955,8 @@ Given('I {enterType} {string} (is within)(into) the data entry form field labele
  * @description Clears the text from an input field based upon its label
  */
 Given('I clear the field labeled {string}', (label) => {
-    cy.contains(label).then(($label) => {
-        cy.wrap($label).parent().find('input').clear()
+    getLabeledElement('input', label).then(element =>{
+        cy.wrap(element).clear()
     })
 })
 
