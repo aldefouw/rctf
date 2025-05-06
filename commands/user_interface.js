@@ -79,6 +79,10 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
     let column_num = 0
     let table_cell = null
 
+    if(column_label === ''){
+        no_col_match_body = true
+    }
+
     function escapeCssSelector(str) {
         // Escape special characters in CSS selectors
         return str.replace(/([!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g, "\\$1");
@@ -103,16 +107,18 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
     }
 
     cy.get(selector).first().within(() => {
-        cy.get(`${header_row_type}:contains('${column_label}'):visible`).parent('tr').then(($tr) => {
-            cy.wrap($tr).find(header_row_type).each((thi, th) => {
-                // console.log(Cypress.$(th).text().trim().includes(orig_column_label))
-                // console.log(thi)
-                cy.log(Cypress.$(thi).text().trim())
-                if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) column_num = th
-                //if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) cy.log(`Column Index: ${th}`)
-                //if (Cypress.$(th).text().trim().includes(column_label) && column_num === 0) console.log(thi)
+        if(no_col_match_body === false){
+            cy.get(`${header_row_type}:contains('${column_label}'):visible`).parent('tr').then(($tr) => {
+                cy.wrap($tr).find(header_row_type).each((thi, th) => {
+                    // console.log(Cypress.$(th).text().trim().includes(orig_column_label))
+                    // console.log(thi)
+                    cy.log(Cypress.$(thi).text().trim())
+                    if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) column_num = th
+                    //if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) cy.log(`Column Index: ${th}`)
+                    //if (Cypress.$(th).text().trim().includes(column_label) && column_num === 0) console.log(thi)
+                })
             })
-        })
+        }
     }).then(() => {
 
         if(body_table !== 'table'){

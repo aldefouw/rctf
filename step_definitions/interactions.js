@@ -1550,3 +1550,32 @@ Given("I {action} {labeledElement} labeled {string} in the column labeled {strin
         }
     })
 })
+
+/**
+ * @module Interactions
+ * @author Mark McEver <mark.mcever@vumc.org>
+ * @example I should see a link labeled "Remove file" in the row labeled "Coordinator Signature file"
+ * @param {action} action - the type of action to perform
+ * @param {labeledElement} type - the type of element we're looking for
+ * @param {string} text - the label for the element
+ * @param {string} row_label - the label of the table row
+ * @description Performs an action on a labeled element in a specific row & column of table
+ */
+Given("I {action} {labeledElement} labeled {string} in the row labeled {string}", (action, type, text, row_label) => {
+    cy.get(`tr:contains("${row_label}")`).then(results => {
+        results = results.filter((i, row) => {
+            return row.textContent.trim().startsWith(row_label)
+                && !(row.closest('table').classList.contains('form-label-table'))
+        })
+
+        if(results.length !== 1){
+            throw 'Row with given label not found'
+        }
+
+        cy.wrap(results[0]).within(() => {
+            getLabeledElement(type, text).then(element =>{
+                performAction(action, element)
+            })
+        })
+    })
+})
