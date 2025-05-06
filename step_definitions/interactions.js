@@ -384,6 +384,11 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                         childSelector = 'input'
                     }
 
+                    if(type !== 'dropdown'){
+                        // Required for the 'input field labeled "Search"' step in C.3.24.2100
+                        childSelector += ':visible'
+                    }
+
                     if (childSelector) {
                         const children = findMatchingChildren(text, selectOption, match, current, childSelector, childrenToIgnore)
                         console.log('getLabeledElement() children', children)
