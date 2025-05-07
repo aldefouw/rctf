@@ -786,7 +786,12 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
         const elm = getLabeledElement('input', label, ordinal).eq(ord)
 
         if(enter_type === "enter"){
-            elm.type(text)
+            if(text === ''){
+                elm.clear()                
+            }
+            else{
+                elm.type(text)
+            }
         } else if (enter_type === "clear field and enter") {
             elm.clear().type(text)
         } else if (enter_type === "verify"){
