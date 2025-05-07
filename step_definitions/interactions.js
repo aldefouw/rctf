@@ -375,7 +375,7 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                     else if (type === 'dropdown' && selectOption !== undefined) {
                         childSelector = `option:containsCustom(${JSON.stringify(selectOption)})`
                     }
-                    else {
+                    else if (type !== 'link'){
                         childSelector = type // Covers input, textbox, button, etc.
                     }
 
