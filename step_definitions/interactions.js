@@ -847,12 +847,14 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
                         //All other cases
                     } else {
+                        elm = cy.wrap($parent).find(element).eq(ord)
+
                         if(enter_type === "enter"){
-                            cy.wrap($parent).find(element).eq(ord).type(text)
+                            elm.type(text)
                         } else if (enter_type === "clear field and enter") {
-                            cy.wrap($parent).find(element).eq(ord).clear().type(text)
+                            elm.clear().type(text)
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).find(element).eq(ord).click()
+                            elm.click()
                         }
                     }
 
