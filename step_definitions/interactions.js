@@ -375,8 +375,8 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                     else if (type === 'dropdown' && selectOption !== undefined) {
                         childSelector = `option:containsCustom(${JSON.stringify(selectOption)})`
                     }
-                    else if (type === 'input'){
-                        childSelector = 'input'
+                    else {
+                        childSelector = type // Covers input, textbox, button, etc.
                     }
 
                     if(childSelector !== null && type !== 'dropdown'){
@@ -406,7 +406,7 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                             childrenToIgnore.push(...children)
                         }
                     } else if (
-                        // e.g. <button>
+                        // e.g. input, textarea, button, etc.
                         type === current.tagName.toLowerCase()
                         ||
                         // Default to the first matching "a" tag, if no other cases apply.
