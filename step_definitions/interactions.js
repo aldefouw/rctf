@@ -783,17 +783,17 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
         })
 
     } else {
-        const elm = getLabeledElement('input', label, ordinal)
+        const elm = getLabeledElement('input', label, ordinal).eq(ord)
 
         if(enter_type === "enter"){
-            elm.eq(ord).type(text)
+            elm.type(text)
         } else if (enter_type === "clear field and enter") {
-            elm.eq(ord).clear().type(text)
+            elm.clear().type(text)
         } else if (enter_type === "verify"){
             if(window.dateFormats.hasOwnProperty(text)){
                 //elm.invoke('val').should('match', window.dateFormats[text])
             } else {
-                elm.eq(ord).invoke('val').should('include', text)
+                elm.invoke('val').should('include', text)
             }
         }
     }
