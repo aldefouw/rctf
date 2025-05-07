@@ -9,6 +9,19 @@ function normalizeString(s){
     return s.trim().replaceAll('\u00a0', ' ')
 }
 
+function performAction(action, element){
+    element = cy.wrap(element)
+    if(action === 'click on the'){
+        element.click()
+    }
+    else if(action === 'should see a'){
+        element.should('be.visible')
+    }
+    else{
+        throw 'Action not found: ' + action
+    }
+}
+
 /**
  * We tried implementing this as an exact match at first, but that made some steps unweildly.
  * For example:
@@ -132,12 +145,7 @@ function retryUntilTimeout(action, start, lastRun) {
 function getShortestMatchingNodeLength(textToFind, element) {
     let text = null
     if (element.tagName === 'INPUT') {
-        if (element.value !== '') {
-            text = element.value
-        }
-        else {
-            text = element.placeholder
-        }
+        text = element.placeholder
     }
     else if(element.childNodes.length > 0) {
         // This is required for 'on the dropdown field labeled "to"' syntax
@@ -367,8 +375,13 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                     else if (type === 'dropdown' && selectOption !== undefined) {
                         childSelector = `option:containsCustom(${JSON.stringify(selectOption)})`
                     }
-                    else if (type === 'input'){
-                        childSelector = 'input'
+                    else if (type !== 'link'){
+                        childSelector = type // Covers input, textbox, button, etc.
+                    }
+
+                    if(childSelector !== null && type !== 'dropdown'){
+                        // Required for the 'input field labeled "Search"' step in C.3.24.2100
+                        childSelector += ':visible'
                     }
 
                     if (childSelector) {
@@ -392,10 +405,10 @@ function getLabeledElement(type, text, ordinal, selectOption) {
                         ) {
                             childrenToIgnore.push(...children)
                         }
-                    } else if (current.tagName === 'A') {
-                        /**
-                         * Default to the first matching "a" tag, if no other cases apply.
-                         */
+                    } else if (
+                        // Default to the first matching "a" tag, if no other cases apply.
+                        current.tagName === 'A'
+                     ){
                         return current
                     }
 
@@ -767,17 +780,22 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
         })
 
     } else {
-        const elm = getLabeledElement('input', label, ordinal)
+        const elm = getLabeledElement('input', label, ordinal).eq(ord)
 
         if(enter_type === "enter"){
-            elm.eq(ord).type(text)
+            if(text === ''){
+                elm.clear()                
+            }
+            else{
+                elm.type(text)
+            }
         } else if (enter_type === "clear field and enter") {
-            elm.eq(ord).clear().type(text)
+            elm.clear().type(text)
         } else if (enter_type === "verify"){
             if(window.dateFormats.hasOwnProperty(text)){
                 //elm.invoke('val').should('match', window.dateFormats[text])
             } else {
-                elm.eq(ord).invoke('val').should('include', text)
+                elm.invoke('val').should('include', text)
             }
         }
     }
@@ -801,10 +819,11 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
     if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
     let element = `textarea`
+    const aceEditorSelector = `div#rc-ace-editor div.ace_line`
 
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
-        element = `div#rc-ace-editor div.ace_line`
+        element = aceEditorSelector
         enter_type = 'clear field and enter'
     }
 
@@ -818,6 +837,20 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
         cy.contains(label).should('be.visible').then(($label) => {
             cy.wrap($label).parent().then(($parent) =>{
+                const typeIntoLogicEditor = (element) => {
+                    element = cy.wrap(element)
+
+                    element.click({force: true}).
+                    invoke('attr', 'contenteditable', 'true')
+
+                    // This line ensures the logic editor is fully rendered before we try to type into it
+                    cy.contains('Use the text box below to compose your logic')
+
+                    element.type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
+
+                    cy.get('button:contains("Update & Close Editor")').click()
+                }
+
                 if($parent.find(element).eq(ord).length){
 
                     //If the textarea has a TinyMCE editor applied to it
@@ -826,12 +859,22 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
                         //All other cases
                     } else {
+                        elm = cy.wrap($parent).find(element).eq(ord)
+
                         if(enter_type === "enter"){
-                            cy.wrap($parent).find(element).eq(ord).type(text)
+                            if(label.startsWith('When the following logic becomes true')){
+                                elm.click()
+                                cy.document().within((document) => {
+                                    cy.wrap(document).get(aceEditorSelector).then(typeIntoLogicEditor)
+                                })
+                            }
+                            else{
+                                elm.type(text)
+                            }
                         } else if (enter_type === "clear field and enter") {
-                            cy.wrap($parent).find(element).eq(ord).clear().type(text)
+                            elm.clear().type(text)
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).find(element).eq(ord).click()
+                            elm.click()
                         }
                     }
 
@@ -845,15 +888,20 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
                     //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).parent().find(element).eq(ord).type(text)
+                            cy.wrap($parent).parent().find(element).then((elementObject) => {
+                                const onFocus = elementObject.attr('onfocus') ?? ''
+                                if(onFocus.startsWith('openLogicEditor')){
+                                    typeIntoLogicEditor(elementObject)
+                                }
+                                else{
+                                    cy.wrap(elementObject).eq(ord).type(text)
+                                }
+                            })
                         } else if (enter_type === "clear field and enter") {
 
                             //Logic editor does not use an actual textarea; we need to invoke the text instead!
                             if(label === "Logic Editor"){
-                              cy.wrap($parent).parent().find(element).eq(ord).
-                                click({force: true}).
-                                invoke('attr', 'contenteditable', 'true').
-                                type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
+                              cy.wrap($parent).parent().find(element).eq(ord).then(typeIntoLogicEditor)
                             } else {
                                 cy.wrap($parent).parent().find(element).eq(ord).clear().type(text)
                             }
@@ -944,8 +992,8 @@ Given('I {enterType} {string} (is within)(into) the data entry form field labele
  * @description Clears the text from an input field based upon its label
  */
 Given('I clear the field labeled {string}', (label) => {
-    cy.contains(label).then(($label) => {
-        cy.wrap($label).parent().find('input').clear()
+    getLabeledElement('input', label).then(element =>{
+        cy.wrap(element).clear()
     })
 })
 
@@ -1482,4 +1530,84 @@ Given("I click on the {string} {labeledElement} within (a)(the) {tableTypes} tab
     cy.get(`${selector}:visible tr${tds}:visible ${subsel}`).then(($elm) => {
         $elm.attr('target', '_self')
     }).click()
+})
+
+/**
+ * @module Interactions
+ * @author Mark McEver <mark.mcever@vumc.org>
+ * @example I click on the icon in the column labeled "Setup" and the row labeled "1"
+ * @param {string} column_label - the label of the table column
+ * @param {string} row_label - the label of the table row
+ * @description Clicks on icon in the table cell matching the specified column & row
+ */
+Given("I click on the icon in the column labeled {string} and the row labeled {string}", (column_label, row_label) => {
+    cy.table_cell_by_column_and_row_label(column_label, row_label).then(($td) => {
+        $td = cy.wrap($td)
+        $td.within(() => {
+            cy.get('i').then(results =>{
+                if(results.length === 1){
+                    $td.click()
+                }
+                else{
+                    throw 'Expected to find a single icon in the table cell, but found ' + results.length + ' icons'
+                }
+            })
+        })
+    })
+})
+
+/**
+ * @module Interactions
+ * @author Mark McEver <mark.mcever@vumc.org>
+ * @example I should see a button labeled "Edit" in the column labeled "Management Options" and the row labeled "1"
+ * @param {action} action - the type of action to perform
+ * @param {labeledElement} type - the type of element we're looking for
+ * @param {string} text - the label for the element
+ * @param {string} column_label - the label of the table column
+ * @param {string} row_label - the label of the table row
+ * @description Performs an action on a labeled element in a specific row & column of table
+ */
+Given("I {action} {labeledElement} labeled {string} in the column labeled {string} and the row labeled {string}", (action, type, text, column_label, row_label) => {
+    cy.table_cell_by_column_and_row_label(column_label, row_label).then(($td) => {
+        $td = cy.wrap($td)
+        if(action === 'should NOT see a'){
+            $td.should('not.contain', text)
+        }
+        else{
+            $td.within(() => {
+                getLabeledElement(type, text).then(element =>{
+                    performAction(action, element)
+                })
+            })
+        }
+    })
+})
+
+/**
+ * @module Interactions
+ * @author Mark McEver <mark.mcever@vumc.org>
+ * @example I should see a link labeled "Remove file" in the row labeled "Coordinator Signature file"
+ * @param {action} action - the type of action to perform
+ * @param {labeledElement} type - the type of element we're looking for
+ * @param {string} text - the label for the element
+ * @param {string} row_label - the label of the table row
+ * @description Performs an action on a labeled element in a specific row & column of table
+ */
+Given("I {action} {labeledElement} labeled {string} in the row labeled {string}", (action, type, text, row_label) => {
+    cy.get(`tr:contains("${row_label}")`).then(results => {
+        results = results.filter((i, row) => {
+            return row.textContent.trim().startsWith(row_label)
+                && !(row.closest('table').classList.contains('form-label-table'))
+        })
+
+        if(results.length !== 1){
+            throw 'Row with given label not found'
+        }
+
+        cy.wrap(results[0]).within(() => {
+            getLabeledElement(type, text).then(element =>{
+                performAction(action, element)
+            })
+        })
+    })
 })
