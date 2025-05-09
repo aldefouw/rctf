@@ -77,7 +77,6 @@ Cypress.Commands.add("dragToTarget", { prevSubject: 'element'}, (subject, target
 
 Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_label, table_selector= 'table', header_row_type = 'th', row_cell_type = 'td', row_number = 0, body_table = 'table', no_col_match_body = false) => {
     let column_num = 0
-    let table_cell = null
 
     if(column_label === ''){
         no_col_match_body = true
@@ -137,18 +136,21 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
         }
 
         table.within(() => {
-            cy.get(td_selector).eq(row_number).each(($tr, $tri) => {
+            row = cy.get(td_selector).eq(row_number)
+            if(no_col_match_body){
+                return row
+            }
+
+            row.each(($tr, $tri) => {
                 cy.wrap($tr).find(row_cell_type).each((td, tdi) => {
                     // cy.log(`COL: ${column_num}`)
                     // cy.log(`ROW: ${row_number}`)
                     if (tdi === column_num){
-                        table_cell = td
+                        return cy.wrap(td)
                     }
                 })
             })
 
-        }).then(() => {
-            cy.wrap(table_cell)
         })
     })
 })
